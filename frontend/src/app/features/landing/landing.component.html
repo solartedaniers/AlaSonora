@@ -1,0 +1,237 @@
+<div class="flex flex-col w-full min-h-screen bg-surface text-on-surface">
+  <!-- Header -->
+  <header class="w-full px-6 lg:px-12 py-4 bg-surface-container-low/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-primary text-[32px]">graphic_eq</span>
+        <div class="flex flex-col">
+          <span class="font-display font-bold text-on-surface tracking-tight text-lg leading-none">
+            Ala<span class="text-primary">Sonora</span>
+          </span>
+          <span class="font-mono text-[10px] tracking-widest text-on-surface-variant uppercase">
+            {{ 'app.tagline' | translate }}
+          </span>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 sm:gap-4">
+        <app-lang-toggle />
+        <app-theme-toggle />
+        <a routerLink="/login" class="font-display text-sm font-semibold text-primary hover:text-on-surface transition-colors whitespace-nowrap">
+          {{ 'nav.login' | translate }}
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="relative w-full px-6 lg:px-12 pt-12 pb-20 lg:pt-16 lg:pb-28 overflow-hidden">
+    <div class="absolute -top-24 -left-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute top-1/2 -right-24 w-[480px] h-[480px] bg-secondary/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+      <div class="lg:col-span-6 flex flex-col items-start text-left">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container-high mb-6">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+          </span>
+          <span class="font-mono text-[11px] font-semibold uppercase tracking-wider text-primary">
+            {{ 'landing.badge' | translate }}
+          </span>
+        </div>
+
+        <h1 class="font-display text-4xl lg:text-5xl font-bold text-on-surface leading-tight tracking-tight mb-6">
+          {{ 'landing.title' | translate }}
+        </h1>
+
+        <p class="text-on-surface-variant max-w-xl mb-8 leading-relaxed">
+          {{ 'landing.subtitle' | translate }}
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mb-6">
+          <a
+            routerLink="/register"
+            class="px-8 py-4 rounded-xl bg-primary-container hover:opacity-90 text-on-primary font-display font-semibold shadow-lg transition-all flex items-center justify-center gap-2.5"
+          >
+            <span class="material-symbols-outlined">mic</span>
+            <span>{{ 'landing.ctaPrimary' | translate }}</span>
+          </a>
+          <a
+            routerLink="/map"
+            class="px-6 py-4 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-primary shadow-sm font-display font-semibold transition-all flex items-center justify-center gap-2"
+          >
+            <span class="material-symbols-outlined">public</span>
+            <span>{{ 'landing.ctaSecondary' | translate }}</span>
+          </a>
+        </div>
+
+        <div class="flex items-center gap-3 text-on-surface-variant">
+          <span class="text-sm">{{ 'landing.alreadyHaveAccount' | translate }}</span>
+          <a routerLink="/login" class="font-display text-sm font-semibold text-primary hover:underline">
+            {{ 'nav.login' | translate }} →
+          </a>
+        </div>
+      </div>
+
+      <!-- Live spectrogram hero card -->
+      <div class="lg:col-span-6 w-full">
+        <div class="w-full bg-surface-container-lowest rounded-3xl p-5 sm:p-7 shadow-2xl relative overflow-hidden">
+          <div class="flex items-center justify-between pb-4 mb-4">
+            <div class="flex items-center gap-3">
+              <span class="p-2 rounded-xl bg-surface-container text-primary flex items-center justify-center">
+                <span class="material-symbols-outlined text-[20px]">graphic_eq</span>
+              </span>
+              <div>
+                <p class="font-display text-sm text-on-surface font-semibold">Monitoreo Bioacústico en Vivo</p>
+                <p class="font-mono text-[10px] text-primary">96kHz / 24-bit</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5 px-3 py-1 bg-surface-container rounded-full">
+              <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+              <span class="font-mono text-[10px] text-tertiary font-bold">{{ 'recording.listening' | translate }}</span>
+            </div>
+          </div>
+
+          <div class="relative w-full h-44 sm:h-52 rounded-2xl bg-surface-container-lowest overflow-hidden shadow-inner">
+            <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 600 200">
+              <defs>
+                <linearGradient id="heroSpectro" x1="0%" y1="100%" x2="0%" y2="0%">
+                  <stop offset="0%" stop-color="#0a1826" stop-opacity="0.2" />
+                  <stop offset="30%" stop-color="#2d6a4f" stop-opacity="0.7" />
+                  <stop offset="65%" stop-color="#95d4b3" stop-opacity="0.9" />
+                  <stop offset="100%" stop-color="#ffb703" stop-opacity="1" />
+                </linearGradient>
+              </defs>
+              <path d="M 60,140 Q 90,70 120,130 T 170,110 T 210,145" fill="none" stroke="url(#heroSpectro)" stroke-width="10" stroke-linecap="round" opacity="0.9" />
+              <path d="M 260,120 Q 300,30 340,90 T 390,60 T 430,130" fill="none" stroke="url(#heroSpectro)" stroke-width="14" stroke-linecap="round" />
+              <path d="M 480,110 Q 510,70 540,115 T 580,125" fill="none" stroke="url(#heroSpectro)" stroke-width="8" stroke-linecap="round" opacity="0.8" />
+              <line x1="340" y1="0" x2="340" y2="185" stroke="#38bdf8" stroke-width="2" class="animate-pulse" />
+            </svg>
+          </div>
+
+          <div class="mt-4 p-4 rounded-2xl bg-surface-container-high flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3.5">
+              <div class="w-14 h-14 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary shrink-0">
+                <span class="material-symbols-outlined text-[26px]">flutter_dash</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="font-display font-bold text-on-surface">Zorzal Chiguanco</h4>
+                  <span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono text-[10px] font-semibold">98.4% IA</span>
+                </div>
+                <p class="text-xs text-on-surface-variant italic">Turdus chiguanco</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="px-4 py-2.5 rounded-xl bg-primary text-on-primary font-display text-sm font-semibold flex items-center gap-2 shadow-sm"
+            >
+              <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+              <span>{{ 'common.listen' | translate }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats bar -->
+  @if (stats(); as s) {
+    <section class="w-full bg-surface-container-low py-10 shadow-sm">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div class="flex flex-col items-center text-center">
+          <span class="font-display text-3xl font-bold text-primary">{{ s.recordingsToday | number }}+</span>
+          <span class="text-sm text-on-surface-variant mt-1">{{ 'landing.stats.recordingsToday' | translate }}</span>
+          <span class="text-xs text-primary font-semibold mt-1 flex items-center gap-1">
+            <span class="material-symbols-outlined text-[14px]">trending_up</span> +{{ s.recordingsTodayDeltaPct }}%
+          </span>
+        </div>
+        <div class="flex flex-col items-center text-center">
+          <span class="font-display text-3xl font-bold text-primary">{{ s.catalogedSpecies }}</span>
+          <span class="text-sm text-on-surface-variant mt-1">{{ 'landing.stats.species' | translate }}</span>
+        </div>
+        <div class="flex flex-col items-center text-center">
+          <span class="font-display text-3xl font-bold text-primary">{{ s.activeObservers | number }}</span>
+          <span class="text-sm text-on-surface-variant mt-1">{{ 'landing.stats.observers' | translate }}</span>
+          <span class="text-xs text-on-surface-variant mt-1">{{ s.countriesCount }} países</span>
+        </div>
+        <div class="flex flex-col items-center text-center">
+          <span class="font-display text-3xl font-bold text-primary">{{ s.validatedAccuracyPct }}%</span>
+          <span class="text-sm text-on-surface-variant mt-1">{{ 'landing.stats.accuracy' | translate }}</span>
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- How it works -->
+  <section class="w-full px-6 lg:px-12 py-20">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="font-mono text-xs uppercase tracking-widest text-primary font-semibold">
+          {{ 'landing.how.eyebrow' | translate }}
+        </span>
+        <h2 class="font-display text-2xl md:text-3xl font-bold mt-2 tracking-tight">
+          {{ 'landing.how.title' | translate }}
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-surface-container-low rounded-3xl p-8 shadow-sm flex flex-col gap-4">
+          <span class="material-symbols-outlined text-primary text-3xl">mic</span>
+          <h3 class="font-display font-bold text-lg">{{ 'landing.how.step1Title' | translate }}</h3>
+          <p class="text-sm text-on-surface-variant leading-relaxed">{{ 'landing.how.step1Body' | translate }}</p>
+        </div>
+        <div class="bg-surface-container-low rounded-3xl p-8 shadow-sm flex flex-col gap-4">
+          <span class="material-symbols-outlined text-primary text-3xl">neurology</span>
+          <h3 class="font-display font-bold text-lg">{{ 'landing.how.step2Title' | translate }}</h3>
+          <p class="text-sm text-on-surface-variant leading-relaxed">{{ 'landing.how.step2Body' | translate }}</p>
+        </div>
+        <div class="bg-surface-container-low rounded-3xl p-8 shadow-sm flex flex-col gap-4">
+          <span class="material-symbols-outlined text-primary text-3xl">travel_explore</span>
+          <h3 class="font-display font-bold text-lg">{{ 'landing.how.step3Title' | translate }}</h3>
+          <p class="text-sm text-on-surface-variant leading-relaxed">{{ 'landing.how.step3Body' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Offline banner -->
+  <section class="w-full px-6 lg:px-12 py-16">
+    <div class="max-w-7xl mx-auto">
+      <div class="w-full bg-primary-container text-on-primary-container rounded-3xl p-8 sm:p-12 lg:p-16 relative overflow-hidden shadow-xl flex flex-col lg:flex-row items-center justify-between gap-10">
+        <div class="max-w-2xl z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/10 font-mono text-[11px] font-semibold uppercase mb-4">
+            <span class="material-symbols-outlined text-[16px]">cloud_off</span>
+            <span>{{ 'landing.offline.badge' | translate }}</span>
+          </div>
+          <h2 class="font-display text-2xl md:text-3xl font-bold tracking-tight mb-4">
+            {{ 'landing.offline.title' | translate }}
+          </h2>
+          <p class="leading-relaxed opacity-90">
+            {{ 'landing.offline.body' | translate }}
+          </p>
+        </div>
+        <button
+          type="button"
+          class="z-10 px-8 py-4 rounded-xl bg-on-primary-container text-primary-container font-display font-semibold shadow-lg flex items-center gap-2 shrink-0"
+        >
+          <span class="material-symbols-outlined">download</span>
+          <span>{{ 'landing.offline.cta' | translate }}</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="w-full bg-surface-container-low px-6 lg:px-12 py-12">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-on-surface-variant">
+      <span>© 2026 AlaSonora — {{ 'footer.rights' | translate }}</span>
+      <div class="flex flex-wrap items-center gap-6">
+        <a class="hover:text-on-surface transition-colors" href="#">{{ 'footer.privacy' | translate }}</a>
+        <a class="hover:text-on-surface transition-colors" href="#">{{ 'footer.protocol' | translate }}</a>
+        <a class="hover:text-on-surface transition-colors" href="#">{{ 'footer.api' | translate }}</a>
+        <a class="hover:text-on-surface transition-colors" href="#">{{ 'footer.contact' | translate }}</a>
+      </div>
+    </div>
+  </footer>
+</div>

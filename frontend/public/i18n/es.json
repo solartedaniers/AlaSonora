@@ -1,0 +1,225 @@
+{
+  "app": {
+    "name": "AlaSonora",
+    "tagline": "Bioacústica & IA"
+  },
+  "nav": {
+    "landing": "Inicio",
+    "dashboard": "Dashboard",
+    "record": "Grabar / Subir",
+    "history": "Mi Historial",
+    "map": "Mapa Público",
+    "profile": "Mi Perfil",
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar Sesión",
+    "register": "Crear Cuenta"
+  },
+  "theme": {
+    "light": "Modo Claro",
+    "dark": "Modo Oscuro",
+    "system": "Automático"
+  },
+  "common": {
+    "loading": "Cargando…",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "discard": "Descartar",
+    "confidence": "Certeza IA",
+    "seeMore": "Ver más",
+    "seeDetail": "Ver detalle",
+    "listen": "Escuchar",
+    "play": "Reproducir",
+    "pause": "Pausar",
+    "download": "Descargar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "high": "Alta",
+    "medium": "Media",
+    "low": "Baja"
+  },
+  "iucn": {
+    "lc": "Preocupación Menor",
+    "nt": "Casi Amenazada",
+    "vu": "Vulnerable",
+    "en": "En Peligro",
+    "cr": "En Peligro Crítico"
+  },
+  "landing": {
+    "badge": "Modelo Bioacústico Activo",
+    "title": "Descubre qué ave canta en tu entorno en segundos con Inteligencia Artificial",
+    "subtitle": "Una herramienta de ciencia ciudadana y monitoreo ecológico para biólogos, guardaparques y entusiastas de la naturaleza. Identificación acústica instantánea a partir de cantos, reclamos y trinos en campo abierto.",
+    "ctaPrimary": "Comenzar a Identificar Gratis",
+    "ctaSecondary": "Ver Mapa de Avistamientos",
+    "alreadyHaveAccount": "¿Ya tienes cuenta activa?",
+    "stats": {
+      "recordingsToday": "Grabaciones hoy",
+      "species": "Especies catalogadas",
+      "observers": "Observadores en campo",
+      "accuracy": "Precisión validada"
+    },
+    "how": {
+      "eyebrow": "Proceso de Identificación",
+      "title": "De un murmullo entre el follaje a una certeza taxonómica",
+      "step1Title": "Graba o sube el canto",
+      "step1Body": "Captura directa con el micrófono de tu teléfono o subida de audios WAV y MP3. Funciona incluso sin datos móviles.",
+      "step2Title": "Análisis bioacústico con IA",
+      "step2Body": "El modelo descompone armónicos, frecuencias centrales y cadencias vocales en menos de un segundo.",
+      "step3Title": "Registro y ciencia ciudadana",
+      "step3Body": "Guarda tus hallazgos, explora mapas de distribución y nutre el atlas colectivo de biodiversidad."
+    },
+    "offline": {
+      "badge": "Cero Dependencia de Red",
+      "title": "Diseñado para el rigor del trabajo en campo",
+      "body": "Funciona sin conexión en la selva, quebradas o alta montaña. Tus grabaciones se guardan en tu dispositivo y sincronizan tan pronto recuperes cobertura.",
+      "cta": "Instalar PWA de Campo"
+    }
+  },
+  "auth": {
+    "register": {
+      "eyebrow": "Estación de Registro Global",
+      "title": "Únete a la Red de Bioacústica y Conservación",
+      "subtitle": "Monitorea bioindicadores, sincroniza grabaciones de campo con IA taxonómica y colabora en el mapeo acústico planetario.",
+      "orQuick": "Acceso rápido con",
+      "orManual": "o registro manual de campo",
+      "fullName": "Nombre y Apellido",
+      "fullNamePlaceholder": "Dra. Elena Valenzuela",
+      "role": "Perfil de Observador",
+      "email": "Correo Electrónico",
+      "emailPlaceholder": "investigador@instituto.org",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "passwordStrength": "Fuerza de la clave",
+      "consentScience": "Compartir datos bioacústicos anonimizados con la red global de biodiversidad (GBIF/eBird).",
+      "consentTerms": "Acepto los Términos de Conservación Ética y la Política de Tratamiento Bioacústico.",
+      "submit": "Crear Cuenta de Campo",
+      "haveAccount": "¿Ya tienes una cuenta activa?",
+      "goToLogin": "Iniciar Sesión en Campo"
+    },
+    "login": {
+      "title": "Bienvenido de vuelta al campo",
+      "subtitle": "Ingresa para sincronizar tus grabaciones y acceder a tu cuaderno bioacústico.",
+      "email": "Correo electrónico o ID de Observador",
+      "emailPlaceholder": "observador@biota.org",
+      "password": "Contraseña",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "remember": "Mantener sesión activa en este dispositivo",
+      "submit": "Iniciar Sesión",
+      "orGateway": "O ingresar con pasarela científica",
+      "noAccount": "¿Primera vez en AlaSonora?",
+      "goToRegister": "Crear cuenta gratuita",
+      "errorTitle": "Credenciales no reconocidas",
+      "errorBody": "Correo o contraseña incorrectos. Verifica tus datos de acceso."
+    },
+    "roles": {
+      "ornithologist": "Ornitólogo / Investigador",
+      "ranger": "Guardaparques",
+      "biologist": "Biólogo de Campo",
+      "hobbyist": "Observador Aficionado",
+      "student": "Estudiante / Investigador Junior"
+    }
+  },
+  "dashboard": {
+    "welcome": "Bienvenida al campo",
+    "subtitle": "Bioacústica activa para la preservación de avifauna neotropical en tiempo real.",
+    "recordCta": "+ Nueva Grabación en Campo",
+    "recordCtaBody": "Captura pasiva continua con aislamiento de frecuencia vocal",
+    "uploadCta": "Subir Archivo de Audio",
+    "uploadCtaBody": "WAV, FLAC, MP3 hasta 500MB",
+    "metrics": {
+      "species": "Especies Detectadas",
+      "recordings": "Grabaciones Totales",
+      "streak": "Racha de Campo",
+      "hours": "Horas de Escucha"
+    },
+    "lastDetection": "Última Detección Algorítmica",
+    "recentActivity": "Actividad Reciente en la Reserva",
+    "viewAll": "Ver Todo"
+  },
+  "recording": {
+    "tabLive": "Grabar en Vivo",
+    "tabUpload": "Subir Archivo",
+    "micPermissionTitle": "Captura de Audio Local Habilitada",
+    "micPermissionBody": "Se requiere permiso de micrófono. Si el navegador lo bloquea, revisa el ícono de candado en la barra de direcciones.",
+    "fieldTipTitle": "Consejo de Campo",
+    "fieldTipBody": "Apunta hacia el estrato medio-alto del dosel y evita ráfagas de viento cruzado para conservar la claridad de los armónicos.",
+    "samplingTime": "Tiempo de Muestreo",
+    "listening": "IA Escuchando…",
+    "gain": "Ganancia Preamplificador",
+    "highPassFilter": "Filtro Pasa-Altos (Anti-Viento)",
+    "candidates": "Candidatos en Escucha",
+    "pause": "Pausar Captura",
+    "stopAndClassify": "Detener y Clasificar Muestra",
+    "dropzoneTitle": "Arrastra tu audio aquí o examina archivos",
+    "dropzoneBody": "Soporta WAV, MP3 y FLAC de hasta 500MB.",
+    "browseFiles": "Explorar Archivos Locales"
+  },
+  "result": {
+    "completedTitle": "Identificación Bioacústica Completada",
+    "spectrogramTitle": "Espectrograma Térmico & Ventana Armónica",
+    "confidenceBreakdown": "Barra de Certeza de IA",
+    "alternatives": "Especies Alternativas",
+    "fieldNotes": "Notas Ecológicas de Campo",
+    "fieldNotesPlaceholder": "Describe el comportamiento del espécimen observado…",
+    "confirmSave": "Confirmar y Guardar en mi Cuaderno",
+    "reRecord": "Grabar Otra Muestra",
+    "viewHistory": "Ver en Mi Historial",
+    "reportIncorrect": "¿No es correcto? Reportar para revisión comunitaria",
+    "peakFrequency": "Pico Espectral",
+    "duration": "Duración",
+    "snr": "Relación Señal/Ruido"
+  },
+  "history": {
+    "title": "Cuaderno de Campo Bioacústico",
+    "subtitle": "Grabaciones archivadas, procesadas con el modelo bioacústico.",
+    "searchPlaceholder": "Buscar por especie, nombre científico o ubicación…",
+    "viewGallery": "Tarjetas",
+    "viewList": "Lista",
+    "statusAll": "Todas",
+    "statusValidated": "Validadas",
+    "statusPending": "Pendientes Offline",
+    "statusReview": "Requiere Revisión",
+    "export": "Exportar a eBird / Darwin Core",
+    "syncNow": "Sincronizar ahora",
+    "emptyTitle": "Aún no hay grabaciones",
+    "emptyBody": "Graba o sube tu primer audio para empezar tu cuaderno de campo."
+  },
+  "map": {
+    "title": "Mapa Vivo de Avistamientos y Biofonía",
+    "subtitle": "Explora las grabaciones recientes identificadas por la red en tiempo real.",
+    "searchPlaceholder": "Buscar por especie, familia o parque natural…",
+    "filterFamily": "Filtrar por Familia",
+    "contribute": "Aportar Registro",
+    "liveFeed": "Detecciones en Vivo",
+    "threatenedOnly": "Solo especies amenazadas (UICN)",
+    "heatmapLayer": "Capa de puntos calientes"
+  },
+  "profile": {
+    "editProfile": "Editar Datos de Perfil",
+    "credential": "Credencial Científica",
+    "impactTitle": "Impacto Científico & Red eBird/GBIF",
+    "recordingsUploaded": "Grabaciones Subidas",
+    "speciesConfirmed": "Especies Confirmadas",
+    "communityValidation": "Validación de Comunidad",
+    "openScienceContributions": "Aportes Ciencia Abierta",
+    "systemSettings": "Configuración del Sistema",
+    "appearance": "Tema de Interfaz",
+    "languageTaxonomy": "Idioma & Taxonomía Primaria",
+    "offlineManagement": "Gestión de Grabaciones Offline",
+    "micHardware": "Micrófono & Ganancia de Campo",
+    "logout": "Cerrar Sesión Segura",
+    "logoutConfirm": "¿Deseas cerrar la sesión activa? Los registros offline permanecerán seguros en tu dispositivo."
+  },
+  "workers": {
+    "offlineBannerTitle": "Modo Campo Sin Conexión Activo",
+    "offlineBannerBody": "Las grabaciones se guardan localmente y se sincronizan al recuperar conexión.",
+    "syncPending": "grabaciones en cola",
+    "forceSync": "Forzar Sincronización"
+  },
+  "footer": {
+    "rights": "Plataforma Abierta de Bioacústica & Conservación",
+    "privacy": "Privacidad de Datos Ecológicos",
+    "protocol": "Protocolo de Grabación",
+    "api": "API para Investigadores",
+    "contact": "Contacto Científico"
+  }
+}

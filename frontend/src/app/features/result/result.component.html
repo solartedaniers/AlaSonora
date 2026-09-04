@@ -1,0 +1,182 @@
+<div class="flex flex-col w-full min-h-screen bg-surface text-on-surface">
+  <app-nav-header />
+
+  @if (detection(); as d) {
+    <div class="w-full px-4 md:px-8 py-8 max-w-7xl mx-auto flex flex-col gap-6">
+      <!-- Success banner -->
+      <div class="w-full bg-primary/10 rounded-2xl px-5 py-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary">verified</span>
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="font-display font-semibold">{{ 'result.completedTitle' | translate }}</span>
+              <app-confidence-badge [value]="d.confidence" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero card -->
+      <div class="bg-surface-container-low rounded-2xl p-6 md:p-8 shadow-xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div class="lg:col-span-4 flex flex-col gap-3">
+          <div class="relative w-full aspect-square rounded-xl overflow-hidden shadow-lg bg-surface-container-high flex items-center justify-center">
+            <span class="material-symbols-outlined text-6xl text-primary">flutter_dash</span>
+          </div>
+        </div>
+
+        <div class="lg:col-span-8 flex flex-col gap-3">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="px-2 py-1 rounded-md bg-surface-container-high text-primary font-mono text-xs">{{ d.species.family }}</span>
+            <span class="px-2 py-1 rounded-md bg-surface-container-high text-on-surface-variant font-mono text-xs">
+              {{ ('iucn.' + d.species.iucnStatus.toLowerCase()) | translate }}
+            </span>
+          </div>
+          <div>
+            <h1 class="font-display text-3xl font-bold tracking-tight">{{ d.species.commonName }}</h1>
+            <p class="text-lg text-primary italic">{{ d.species.scientificName }}</p>
+          </div>
+          <div class="grid grid-cols-3 gap-2 pt-2">
+            <div class="bg-surface-container-high p-2.5 rounded-md">
+              <span class="block text-[10px] uppercase text-on-surface-variant">{{ 'result.peakFrequency' | translate }}</span>
+              <span class="block font-display font-bold text-primary">{{ d.peakFrequencyHz | number }} Hz</span>
+            </div>
+            <div class="bg-surface-container-high p-2.5 rounded-md">
+              <span class="block text-[10px] uppercase text-on-surface-variant">{{ 'result.duration' | translate }}</span>
+              <span class="block font-display font-bold">{{ d.durationSeconds }}s</span>
+            </div>
+            <div class="bg-surface-container-high p-2.5 rounded-md">
+              <span class="block text-[10px] uppercase text-on-surface-variant">{{ 'result.snr' | translate }}</span>
+              <span class="block font-display font-bold text-secondary">+24.6 dB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spectrogram + audio player -->
+      <div class="bg-surface-container-low rounded-2xl p-6 shadow-lg flex flex-col gap-4">
+        <h2 class="font-display font-semibold flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">graphic_eq</span>
+          {{ 'result.spectrogramTitle' | translate }}
+        </h2>
+        <div class="relative w-full h-64 bg-surface-container-lowest rounded-lg overflow-hidden shadow-inner">
+          <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 800 240">
+            <defs>
+              <linearGradient id="resultSpectro" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stop-color="#071611" stop-opacity="0.2" />
+                <stop offset="55%" stop-color="#2d6a4f" stop-opacity="0.85" />
+                <stop offset="90%" stop-color="#f9c74f" stop-opacity="1" />
+              </linearGradient>
+            </defs>
+            <path d="M 280,195 C 310,140 340,115 390,135 C 430,150 460,190 510,185" fill="none" stroke="url(#resultSpectro)" stroke-width="8" stroke-linecap="round" />
+            <path d="M 290,165 C 320,110 350,85 400,105 C 440,120 470,160 520,155" fill="none" stroke="url(#resultSpectro)" stroke-width="4" stroke-linecap="round" opacity="0.8" />
+          </svg>
+        </div>
+        <div class="flex items-center gap-4">
+          <button
+            type="button"
+            (click)="togglePlayback()"
+            class="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-md"
+          >
+            <span class="material-symbols-outlined text-2xl">{{ isPlaying() ? 'pause' : 'play_arrow' }}</span>
+          </button>
+          <span class="text-sm text-on-surface-variant font-mono">00:00 / 00:{{ d.durationSeconds < 10 ? '0' + d.durationSeconds : d.durationSeconds }}</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Confidence breakdown -->
+        <div class="lg:col-span-7 bg-surface-container-low rounded-2xl p-6 shadow-md flex flex-col gap-4">
+          <h3 class="font-display font-semibold flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">analytics</span>
+            {{ 'result.confidenceBreakdown' | translate }}
+          </h3>
+          <div class="flex flex-col gap-3">
+            @for (row of [
+              { label: 'Patrón temporal', value: 99.0 },
+              { label: 'Frecuencia fundamental', value: 98.2 },
+              { label: 'Contorno sonoro', value: 98.0 }
+            ]; track row.label) {
+              <div>
+                <div class="flex justify-between text-sm mb-1">
+                  <span>{{ row.label }}</span>
+                  <span class="font-mono text-primary font-semibold">{{ row.value }}%</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
+                  <div class="h-full bg-primary rounded-full" [style.width.%]="row.value"></div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Alternatives -->
+        <div class="lg:col-span-5 bg-surface-container-low rounded-2xl p-6 shadow-md flex flex-col gap-3">
+          <h3 class="font-display font-semibold flex items-center gap-2">
+            <span class="material-symbols-outlined text-secondary">compare_arrows</span>
+            {{ 'result.alternatives' | translate }}
+          </h3>
+          @for (alt of d.alternatives; track alt.species.id) {
+            <div class="p-2.5 rounded-lg bg-surface-container-high flex items-center justify-between">
+              <div>
+                <p class="text-sm font-semibold">{{ alt.species.commonName }}</p>
+                <p class="text-xs italic text-on-surface-variant">{{ alt.species.scientificName }}</p>
+              </div>
+              <span class="font-mono text-xs text-on-surface-variant">{{ alt.confidence }}%</span>
+            </div>
+          } @empty {
+            <p class="text-sm text-on-surface-variant">—</p>
+          }
+        </div>
+      </div>
+
+      <!-- Field notes -->
+      <div class="bg-surface-container-low rounded-2xl p-6 shadow-md flex flex-col gap-3">
+        <h3 class="font-display font-semibold flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">edit_note</span>
+          {{ 'result.fieldNotes' | translate }}
+        </h3>
+        <textarea
+          rows="3"
+          [value]="fieldNotesDraft()"
+          (input)="fieldNotesDraft.set($any($event.target).value)"
+          [placeholder]="'result.fieldNotesPlaceholder' | translate"
+          class="w-full bg-surface-container-lowest text-on-surface p-3.5 rounded-xl shadow-inner outline-none resize-none focus:ring-2 focus:ring-primary transition-shadow"
+        ></textarea>
+      </div>
+
+      <!-- Actions -->
+      <div class="bg-surface-container-high p-4 md:p-6 rounded-xl shadow-xl grid grid-cols-1 md:grid-cols-3 gap-3">
+        <button
+          type="button"
+          (click)="confirmSave()"
+          class="h-14 rounded-lg bg-primary-container hover:opacity-90 text-on-primary font-display font-bold flex items-center justify-center gap-2 shadow-lg transition-all"
+        >
+          <span class="material-symbols-outlined text-2xl">{{ saved() ? 'check_circle' : 'check_circle' }}</span>
+          <span>{{ saved() ? ('common.save' | translate) + ' ✓' : ('result.confirmSave' | translate) }}</span>
+        </button>
+        <button
+          type="button"
+          (click)="recordAnother()"
+          class="h-14 rounded-lg bg-surface-container hover:bg-surface-container-highest text-primary font-display font-semibold flex items-center justify-center gap-2 shadow transition-all"
+        >
+          <span class="material-symbols-outlined text-2xl">mic</span>
+          <span>{{ 'result.reRecord' | translate }}</span>
+        </button>
+        <a
+          routerLink="/history"
+          class="h-14 rounded-lg bg-surface-container hover:bg-surface-container-highest text-on-surface font-display font-medium flex items-center justify-center gap-2 shadow transition-all"
+        >
+          <span class="material-symbols-outlined text-2xl text-on-surface-variant">history_edu</span>
+          <span>{{ 'result.viewHistory' | translate }}</span>
+        </a>
+      </div>
+
+      <div class="flex items-center justify-center pt-1 pb-6">
+        <a href="#" class="text-on-surface-variant hover:text-error text-sm flex items-center gap-1 transition-colors">
+          <span class="material-symbols-outlined text-base">flag</span>
+          <span>{{ 'result.reportIncorrect' | translate }}</span>
+        </a>
+      </div>
+    </div>
+  }
+</div>

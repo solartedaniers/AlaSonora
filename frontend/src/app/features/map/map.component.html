@@ -1,0 +1,108 @@
+<div class="flex flex-col w-full min-h-screen bg-surface text-on-surface">
+  <app-nav-header />
+
+  <!-- Filter bar -->
+  <section class="w-full bg-surface-container px-4 md:px-8 py-3 shadow-sm">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center gap-3">
+      <div class="relative flex-1 flex items-center">
+        <span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none">search</span>
+        <input
+          type="text"
+          [placeholder]="'map.searchPlaceholder' | translate"
+          class="w-full pl-11 pr-4 py-2 bg-surface-container-lowest rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
+        />
+      </div>
+      <button type="button" class="px-3.5 py-2 rounded-lg bg-surface-container-high text-on-surface font-display text-sm flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[18px] text-primary">filter_alt</span>
+        {{ 'map.filterFamily' | translate }}
+      </button>
+      <label class="flex items-center gap-2 text-xs text-on-surface-variant cursor-pointer select-none">
+        <input type="checkbox" [checked]="threatenedOnly()" (change)="threatenedOnly.set($any($event.target).checked)" class="accent-secondary" />
+        {{ 'map.threatenedOnly' | translate }}
+      </label>
+      <label class="flex items-center gap-2 text-xs text-on-surface-variant cursor-pointer select-none">
+        <input type="checkbox" [checked]="heatmapLayer()" (change)="heatmapLayer.set($any($event.target).checked)" class="accent-primary" />
+        {{ 'map.heatmapLayer' | translate }}
+      </label>
+      @if (liveSync.activeTabCount() > 1) {
+        <span class="text-xs font-mono text-primary flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+          {{ liveSync.activeTabCount() }} pestañas sincronizadas
+        </span>
+      }
+    </div>
+  </section>
+
+  <!-- Map canvas + feed -->
+  <section class="relative w-full flex-1 min-h-[600px] bg-surface-container-lowest overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-surface-container-low to-surface-container-lowest"></div>
+
+    <!-- Markers -->
+    @for (d of feed(); track d.id; let i = $index) {
+      <button
+        type="button"
+        class="absolute -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer group"
+        [style.top]="markerOffset(i).top"
+        [style.left]="markerOffset(i).left"
+        (click)="select(d)"
+      >
+        <span class="absolute w-10 h-10 -inset-2 rounded-full bg-primary/20 animate-ping"></span>
+        <span
+          class="relative w-7 h-7 rounded-full flex items-center justify-center shadow-lg transition-transform group-hover:scale-110"
+          [class.bg-primary]="selected()?.id === d.id"
+          [class.text-on-primary]="selected()?.id === d.id"
+          [class.bg-surface-container-high]="selected()?.id !== d.id"
+          [class.text-primary]="selected()?.id !== d.id"
+        >
+          <span class="material-symbols-outlined text-[16px]">graphic_eq</span>
+        </span>
+      </button>
+    }
+
+    <!-- Selected detection popup -->
+    @if (selected(); as d) {
+      <div class="absolute top-4 left-4 sm:left-auto sm:right-4 z-30 w-[92%] sm:w-96 rounded-2xl bg-surface-container-high/95 backdrop-blur-xl p-5 shadow-2xl">
+        <div class="flex items-center gap-2 mb-3">
+          <app-confidence-badge [value]="d.confidence" />
+        </div>
+        <h3 class="font-display text-lg font-semibold">{{ d.species.commonName }}</h3>
+        <p class="text-sm italic text-primary">{{ d.species.scientificName }}</p>
+        <div class="mt-3 flex items-center gap-2 py-2 px-3 bg-surface-container-lowest/80 rounded-xl text-xs text-on-surface-variant">
+          <span class="material-symbols-outlined text-[16px] text-primary">location_on</span>
+          <span class="truncate">{{ d.location.placeName }}</span>
+        </div>
+      </div>
+    }
+
+    <!-- Live feed dock -->
+    <aside class="hidden xl:flex flex-col absolute top-4 bottom-4 right-4 w-80 bg-surface-container-low/95 backdrop-blur-xl rounded-2xl shadow-2xl p-4 z-20 overflow-hidden">
+      <div class="flex items-center gap-2 pb-3">
+        <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+        <h4 class="font-display font-semibold">{{ 'map.liveFeed' | translate }}</h4>
+      </div>
+      <div class="flex-1 overflow-y-auto space-y-2 pr-1">
+        @for (d of feed(); track d.id) {
+          <button
+            type="button"
+            (click)="select(d)"
+            class="w-full text-left p-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors shadow-sm"
+          >
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs text-on-surface-variant">{{ d.recordedAt | date: 'shortTime' }}</span>
+              <span class="text-xs text-on-surface-variant">{{ d.confidence }}% IA</span>
+            </div>
+            <div class="font-display text-sm truncate">{{ d.species.commonName }}</div>
+            <div class="text-[11px] text-on-surface-variant truncate">{{ d.observerName }}</div>
+          </button>
+        }
+      </div>
+      <button
+        type="button"
+        class="mt-3 w-full py-3 rounded-xl bg-primary-container text-on-primary font-display font-semibold flex items-center justify-center gap-2 shadow-lg"
+      >
+        <span class="material-symbols-outlined text-[20px]">mic</span>
+        {{ 'map.contribute' | translate }}
+      </button>
+    </aside>
+  </section>
+</div>

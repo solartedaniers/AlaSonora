@@ -1,0 +1,44 @@
+# AlaSonora — .gitignore único para todo el proyecto (frontend + backend + BD)
+
+# ---- Secretos ----
+.env
+.env.*
+!.env.example
+
+# ---- Frontend (Angular) ----
+frontend/dist/
+frontend/.angular/cache/
+frontend/node_modules/
+frontend/npm-debug.log*
+frontend/yarn-error.log*
+frontend/coverage/
+frontend/tmp/
+frontend/out-tsc/
+
+# ---- Backend (Python / FastAPI — fase posterior) ----
+backend/__pycache__/
+backend/**/__pycache__/
+backend/.venv/
+backend/venv/
+backend/*.egg-info/
+backend/.pytest_cache/
+backend/.mypy_cache/
+
+# ---- Modelos BirdNET descargados (pesados, no van al repo) ----
+backend/models/*.tflite
+backend/models/*.pb
+
+# ---- Base de datos / Supabase (fase posterior) ----
+database/*.sqlite
+database/.supabase/
+
+# ---- IDEs y sistema operativo ----
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.log

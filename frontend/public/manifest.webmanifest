@@ -1,0 +1,17 @@
+{
+  "name": "AlaSonora — Bioacústica & IA",
+  "short_name": "AlaSonora",
+  "description": "Identificación de aves por su canto mediante inteligencia artificial, con soporte de campo sin conexión.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#071611",
+  "theme_color": "#1b4332",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}

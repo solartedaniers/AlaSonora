@@ -1,0 +1,10 @@
+// AlaSonora — Typography tokens
+// Plus Jakarta Sans (headlines / UI actions), Inter (body), JetBrains Mono
+// (telemetry / technical labels) — consistent across every screen in the
+// Stitch design.
+
+:root {
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}

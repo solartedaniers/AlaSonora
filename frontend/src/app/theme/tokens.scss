@@ -1,0 +1,125 @@
+// AlaSonora — Design tokens
+//
+// Fuente única de verdad para el color de toda la app. Los componentes NUNCA
+// deben usar valores hex sueltos: siempre referencian estas variables CSS
+// (vía las clases de utilidad de Tailwind configuradas en tailwind.config.js).
+//
+// Los valores de :root (modo oscuro) vienen directamente de la paleta Material
+// que trae el config de Tailwind de los mockups de Stitch (todas las pantallas
+// comparten el mismo set). Los valores de .theme-light se completan a partir
+// de los hex sueltos usados en las variantes claras de landing/login/registro/
+// resultado, mapeados al mismo esquema semántico para que ambos modos usen
+// exactamente las mismas claves.
+
+:root,
+.theme-dark {
+  --color-primary: #95d4b3;
+  --color-on-primary: #003824;
+  --color-primary-container: #2d6a4f;
+  --color-on-primary-container: #a8e7c5;
+  --color-primary-fixed: #b1f0ce;
+  --color-primary-fixed-dim: #95d4b3;
+  --color-on-primary-fixed: #002114;
+  --color-on-primary-fixed-variant: #0e5138;
+
+  --color-secondary: #eabe9a;
+  --color-on-secondary: #452a11;
+  --color-secondary-container: #5f4025;
+  --color-on-secondary-container: #d7ad8a;
+  --color-secondary-fixed: #ffdcc1;
+  --color-secondary-fixed-dim: #eabe9a;
+  --color-on-secondary-fixed: #2d1601;
+  --color-on-secondary-fixed-variant: #5f4025;
+
+  --color-tertiary: #93ccff;
+  --color-on-tertiary: #003351;
+  --color-tertiary-container: #006499;
+  --color-on-tertiary-container: #bbddff;
+  --color-tertiary-fixed: #cce5ff;
+  --color-tertiary-fixed-dim: #93ccff;
+  --color-on-tertiary-fixed: #001d31;
+  --color-on-tertiary-fixed-variant: #004b73;
+
+  --color-error: #ffb4ab;
+  --color-on-error: #690005;
+  --color-error-container: #93000a;
+  --color-on-error-container: #ffdad6;
+
+  --color-background: #071611;
+  --color-on-background: #d5e7dd;
+  --color-surface: #071611;
+  --color-on-surface: #d5e7dd;
+  --color-surface-variant: #293831;
+  --color-on-surface-variant: #bfc9c1;
+  --color-surface-dim: #071611;
+  --color-surface-bright: #2d3c36;
+  --color-surface-container-lowest: #03110c;
+  --color-surface-container-low: #0f1e19;
+  --color-surface-container: #14231d;
+  --color-surface-container-high: #1e2d27;
+  --color-surface-container-highest: #293831;
+
+  --color-outline: #8a938c;
+  --color-outline-variant: #404943;
+  --color-inverse-surface: #d5e7dd;
+  --color-inverse-on-surface: #24342d;
+  --color-inverse-primary: #2c694e;
+  --color-surface-tint: #95d4b3;
+}
+
+// Modo claro — mismo esquema semántico, valores tomados de las variantes
+// "field-light" de landing / login / registro / resultado.
+.theme-light {
+  --color-primary: #2d6a4f;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #b1f0ce;
+  --color-on-primary-container: #0e5138;
+  --color-primary-fixed: #b1f0ce;
+  --color-primary-fixed-dim: #95d4b3;
+  --color-on-primary-fixed: #002114;
+  --color-on-primary-fixed-variant: #0e5138;
+
+  --color-secondary: #74512f;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #ffdcc1;
+  --color-on-secondary-container: #5a3c1c;
+  --color-secondary-fixed: #ffdcc1;
+  --color-secondary-fixed-dim: #eabe9a;
+  --color-on-secondary-fixed: #2d1601;
+  --color-on-secondary-fixed-variant: #5f4025;
+
+  --color-tertiary: #006499;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #cce5ff;
+  --color-on-tertiary-container: #004b73;
+  --color-tertiary-fixed: #cce5ff;
+  --color-tertiary-fixed-dim: #93ccff;
+  --color-on-tertiary-fixed: #001d31;
+  --color-on-tertiary-fixed-variant: #004b73;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #410002;
+
+  --color-background: #f7faf8;
+  --color-on-background: #1b4332;
+  --color-surface: #f7faf8;
+  --color-on-surface: #1b2b22;
+  --color-surface-variant: #dde5e0;
+  --color-on-surface-variant: #404943;
+  --color-surface-dim: #d7dbd5;
+  --color-surface-bright: #f7faf8;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f1f4ef;
+  --color-surface-container: #ebeee9;
+  --color-surface-container-high: #e5e8e3;
+  --color-surface-container-highest: #dfe2dd;
+
+  --color-outline: #72796f;
+  --color-outline-variant: #c1c9be;
+  --color-inverse-surface: #1b2b22;
+  --color-inverse-on-surface: #edf3ea;
+  --color-inverse-primary: #95d4b3;
+  --color-surface-tint: #2d6a4f;
+}

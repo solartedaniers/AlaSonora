@@ -1,0 +1,131 @@
+<div class="flex flex-col w-full min-h-screen bg-surface text-on-surface">
+  <app-nav-header />
+  <app-offline-banner />
+
+  <div class="w-full px-gutter-mobile md:px-8 py-8 flex flex-col gap-8 max-w-7xl mx-auto">
+    <!-- Welcome + coordinates -->
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-surface-container-low p-6 rounded-xl shadow-sm">
+      <div class="flex flex-col gap-1">
+        <h1 class="font-display text-2xl font-bold tracking-tight">
+          {{ 'dashboard.welcome' | translate }}, {{ user.currentUser().fullName }}
+        </h1>
+        <p class="text-sm text-on-surface-variant">{{ 'dashboard.subtitle' | translate }}</p>
+      </div>
+      <div class="flex items-center gap-3 bg-surface-container p-3 rounded-xl">
+        <span class="material-symbols-outlined text-secondary text-xl">location_on</span>
+        <div class="flex flex-col">
+          <span class="text-xs text-on-surface-variant">{{ user.currentUser().stationName }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action row -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+      <a
+        routerLink="/record"
+        class="md:col-span-8 group relative flex items-center justify-between px-6 py-6 bg-primary-container hover:opacity-95 text-on-primary rounded-2xl shadow-xl transition-all overflow-hidden"
+      >
+        <div class="flex items-center gap-5 z-10">
+          <div class="flex items-center justify-center w-14 h-14 rounded-full bg-black/10">
+            <span class="material-symbols-outlined text-[30px] animate-pulse">mic</span>
+          </div>
+          <div class="flex flex-col text-left">
+            <span class="text-lg font-display font-bold tracking-tight">{{ 'dashboard.recordCta' | translate }}</span>
+            <span class="text-sm opacity-90">{{ 'dashboard.recordCtaBody' | translate }}</span>
+          </div>
+        </div>
+        <span class="material-symbols-outlined hidden sm:block">arrow_forward</span>
+      </a>
+
+      <a
+        routerLink="/record"
+        class="md:col-span-4 flex items-center gap-3 px-6 py-6 bg-surface-container-low hover:bg-surface-container text-on-surface rounded-2xl shadow-sm transition-all"
+      >
+        <div class="p-2.5 rounded-xl bg-surface-container-high text-tertiary">
+          <span class="material-symbols-outlined text-[24px]">upload_file</span>
+        </div>
+        <div class="flex flex-col text-left">
+          <span class="font-display font-semibold">{{ 'dashboard.uploadCta' | translate }}</span>
+          <span class="text-xs text-on-surface-variant">{{ 'dashboard.uploadCtaBody' | translate }}</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Metrics -->
+    @if (stats(); as s) {
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-surface-container-low p-5 rounded-xl shadow-sm flex flex-col gap-2">
+          <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.species' | translate }}</span>
+          <span class="font-display text-3xl font-bold">{{ s.distinctSpecies }}</span>
+        </div>
+        <div class="bg-surface-container-low p-5 rounded-xl shadow-sm flex flex-col gap-2">
+          <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.recordings' | translate }}</span>
+          <span class="font-display text-3xl font-bold">{{ s.totalRecordings }}</span>
+        </div>
+        <div class="bg-surface-container-low p-5 rounded-xl shadow-sm flex flex-col gap-2">
+          <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.streak' | translate }}</span>
+          <span class="font-display text-3xl font-bold text-secondary">{{ s.activeStreakDays }}</span>
+        </div>
+        <div class="bg-surface-container-low p-5 rounded-xl shadow-sm flex flex-col gap-2">
+          <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.hours' | translate }}</span>
+          <span class="font-display text-3xl font-bold">{{ s.averageConfidence }}%</span>
+        </div>
+      </div>
+    }
+
+    <!-- Last detection -->
+    @if (latest(); as d) {
+      <div class="flex flex-col gap-3">
+        <h2 class="font-display text-lg font-semibold flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">auto_awesome</span>
+          {{ 'dashboard.lastDetection' | translate }}
+        </h2>
+        <a
+          [routerLink]="['/result', d.id]"
+          class="bg-surface-container-low p-6 rounded-2xl shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-surface-container transition-colors"
+        >
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-xl bg-surface-container-high flex items-center justify-center text-primary shrink-0">
+              <span class="material-symbols-outlined text-[26px]">flutter_dash</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="font-display font-bold">{{ d.species.commonName }}</h3>
+                <app-confidence-badge [value]="d.confidence" />
+              </div>
+              <p class="text-sm italic text-on-surface-variant">{{ d.species.scientificName }}</p>
+            </div>
+          </div>
+          <span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+        </a>
+      </div>
+    }
+
+    <!-- Recent activity -->
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center justify-between">
+        <h2 class="font-display text-lg font-semibold">{{ 'dashboard.recentActivity' | translate }}</h2>
+        <a routerLink="/history" class="text-sm font-semibold text-primary hover:underline">{{ 'dashboard.viewAll' | translate }}</a>
+      </div>
+      <div class="flex flex-col gap-2">
+        @for (d of recent(); track d.id) {
+          <a
+            [routerLink]="['/result', d.id]"
+            class="flex items-center justify-between gap-4 p-4 bg-surface-container-low hover:bg-surface-container rounded-xl shadow-sm transition-colors"
+          >
+            <div class="flex items-center gap-4 min-w-0">
+              <div class="w-11 h-11 rounded-lg bg-surface-container-high flex items-center justify-center text-primary shrink-0">
+                <span class="material-symbols-outlined text-[20px]">graphic_eq</span>
+              </div>
+              <div class="min-w-0">
+                <p class="font-display font-semibold truncate">{{ d.species.commonName }}</p>
+                <p class="text-xs text-on-surface-variant truncate">{{ d.location.placeName }}</p>
+              </div>
+            </div>
+            <app-confidence-badge [value]="d.confidence" />
+          </a>
+        }
+      </div>
+    </div>
+  </div>
+</div>

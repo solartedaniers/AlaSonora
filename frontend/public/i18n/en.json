@@ -1,0 +1,225 @@
+{
+  "app": {
+    "name": "AlaSonora",
+    "tagline": "Bioacoustics & AI"
+  },
+  "nav": {
+    "landing": "Home",
+    "dashboard": "Dashboard",
+    "record": "Record / Upload",
+    "history": "My History",
+    "map": "Public Map",
+    "profile": "My Profile",
+    "login": "Log In",
+    "logout": "Log Out",
+    "register": "Create Account"
+  },
+  "theme": {
+    "light": "Light Mode",
+    "dark": "Dark Mode",
+    "system": "Automatic"
+  },
+  "common": {
+    "loading": "Loading…",
+    "save": "Save",
+    "cancel": "Cancel",
+    "discard": "Discard",
+    "confidence": "AI Confidence",
+    "seeMore": "See more",
+    "seeDetail": "View detail",
+    "listen": "Listen",
+    "play": "Play",
+    "pause": "Pause",
+    "download": "Download",
+    "search": "Search",
+    "filter": "Filter",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "iucn": {
+    "lc": "Least Concern",
+    "nt": "Near Threatened",
+    "vu": "Vulnerable",
+    "en": "Endangered",
+    "cr": "Critically Endangered"
+  },
+  "landing": {
+    "badge": "Bioacoustic Model Active",
+    "title": "Discover which bird is singing near you in seconds with Artificial Intelligence",
+    "subtitle": "A citizen-science and ecological monitoring tool for biologists, park rangers, and nature enthusiasts. Instant acoustic identification from songs, calls, and trills in the open field.",
+    "ctaPrimary": "Start Identifying for Free",
+    "ctaSecondary": "View Sightings Map",
+    "alreadyHaveAccount": "Already have an account?",
+    "stats": {
+      "recordingsToday": "Recordings today",
+      "species": "Cataloged species",
+      "observers": "Observers in the field",
+      "accuracy": "Validated accuracy"
+    },
+    "how": {
+      "eyebrow": "Identification Process",
+      "title": "From a murmur in the foliage to taxonomic certainty",
+      "step1Title": "Record or upload the song",
+      "step1Body": "Capture directly with your phone's microphone, or upload WAV and MP3 files. Works even without mobile data.",
+      "step2Title": "AI bioacoustic analysis",
+      "step2Body": "The model decomposes harmonics, center frequencies, and vocal cadence in under a second.",
+      "step3Title": "Record and citizen science",
+      "step3Body": "Save your findings, explore distribution maps, and feed the collective biodiversity atlas."
+    },
+    "offline": {
+      "badge": "Zero Network Dependency",
+      "title": "Built for the rigor of fieldwork",
+      "body": "Works fully offline in the rainforest, ravines, or high mountains. Your recordings are stored securely on your device and sync as soon as you regain coverage.",
+      "cta": "Install Field PWA"
+    }
+  },
+  "auth": {
+    "register": {
+      "eyebrow": "Global Registration Station",
+      "title": "Join the Bioacoustics & Conservation Network",
+      "subtitle": "Monitor bioindicators, sync field recordings with taxonomic AI, and collaborate on the planetary acoustic map.",
+      "orQuick": "Quick access with",
+      "orManual": "or manual field registration",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "Dr. Elena Valenzuela",
+      "role": "Observer Profile",
+      "email": "Email Address",
+      "emailPlaceholder": "researcher@institute.org",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "passwordStrength": "Password strength",
+      "consentScience": "Share anonymized bioacoustic data with the global biodiversity network (GBIF/eBird).",
+      "consentTerms": "I accept the Ethical Conservation Terms and the Bioacoustic Data Policy.",
+      "submit": "Create Field Account",
+      "haveAccount": "Already have an active account?",
+      "goToLogin": "Log In to the Field"
+    },
+    "login": {
+      "title": "Welcome back to the field",
+      "subtitle": "Sign in to sync your recordings and access your bioacoustic notebook.",
+      "email": "Email or Observer ID",
+      "emailPlaceholder": "observer@biota.org",
+      "password": "Password",
+      "forgotPassword": "Forgot your password?",
+      "remember": "Keep session active on this device",
+      "submit": "Log In",
+      "orGateway": "Or sign in with a scientific gateway",
+      "noAccount": "First time on AlaSonora?",
+      "goToRegister": "Create a free account",
+      "errorTitle": "Credentials not recognized",
+      "errorBody": "Incorrect email or password. Please check your access details."
+    },
+    "roles": {
+      "ornithologist": "Ornithologist / Researcher",
+      "ranger": "Park Ranger",
+      "biologist": "Field Biologist",
+      "hobbyist": "Amateur Birdwatcher",
+      "student": "Student / Junior Researcher"
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome to the field",
+    "subtitle": "Real-time bioacoustics for the preservation of neotropical birdlife.",
+    "recordCta": "+ New Field Recording",
+    "recordCtaBody": "Continuous passive capture with vocal frequency isolation",
+    "uploadCta": "Upload Audio File",
+    "uploadCtaBody": "WAV, FLAC, MP3 up to 500MB",
+    "metrics": {
+      "species": "Species Detected",
+      "recordings": "Total Recordings",
+      "streak": "Field Streak",
+      "hours": "Listening Hours"
+    },
+    "lastDetection": "Latest Algorithmic Detection",
+    "recentActivity": "Recent Activity in the Reserve",
+    "viewAll": "View All"
+  },
+  "recording": {
+    "tabLive": "Record Live",
+    "tabUpload": "Upload File",
+    "micPermissionTitle": "Local Audio Capture Enabled",
+    "micPermissionBody": "Microphone permission is required. If the browser blocks it, check the lock icon in the address bar.",
+    "fieldTipTitle": "Field Tip",
+    "fieldTipBody": "Aim toward the mid-to-upper canopy layer and avoid crosswind gusts to keep harmonics above the noise floor.",
+    "samplingTime": "Sampling Time",
+    "listening": "AI Listening…",
+    "gain": "Preamp Gain",
+    "highPassFilter": "High-Pass (Anti-Wind) Filter",
+    "candidates": "Candidates Being Heard",
+    "pause": "Pause Capture",
+    "stopAndClassify": "Stop & Classify Sample",
+    "dropzoneTitle": "Drag your audio here or browse files",
+    "dropzoneBody": "Supports WAV, MP3, and FLAC up to 500MB.",
+    "browseFiles": "Browse Local Files"
+  },
+  "result": {
+    "completedTitle": "Bioacoustic Identification Complete",
+    "spectrogramTitle": "Thermal Spectrogram & Harmonic Window",
+    "confidenceBreakdown": "AI Confidence Breakdown",
+    "alternatives": "Alternative Species",
+    "fieldNotes": "Ecological Field Notes",
+    "fieldNotesPlaceholder": "Describe the specimen's observed behavior…",
+    "confirmSave": "Confirm & Save to my Notebook",
+    "reRecord": "Record Another Sample",
+    "viewHistory": "View in My History",
+    "reportIncorrect": "Not correct? Report for community review",
+    "peakFrequency": "Peak Frequency",
+    "duration": "Duration",
+    "snr": "Signal-to-Noise Ratio"
+  },
+  "history": {
+    "title": "Bioacoustic Field Notebook",
+    "subtitle": "Archived recordings, processed with the bioacoustic model.",
+    "searchPlaceholder": "Search by species, scientific name, or location…",
+    "viewGallery": "Cards",
+    "viewList": "List",
+    "statusAll": "All",
+    "statusValidated": "Validated",
+    "statusPending": "Pending Offline",
+    "statusReview": "Needs Review",
+    "export": "Export to eBird / Darwin Core",
+    "syncNow": "Sync now",
+    "emptyTitle": "No recordings yet",
+    "emptyBody": "Record or upload your first audio to start your field notebook."
+  },
+  "map": {
+    "title": "Live Sightings & Biophony Map",
+    "subtitle": "Explore recent recordings identified by the network in real time.",
+    "searchPlaceholder": "Search by species, family, or natural park…",
+    "filterFamily": "Filter by Family",
+    "contribute": "Contribute Record",
+    "liveFeed": "Live Detections",
+    "threatenedOnly": "Threatened species only (IUCN)",
+    "heatmapLayer": "Heatmap layer"
+  },
+  "profile": {
+    "editProfile": "Edit Profile Details",
+    "credential": "Scientific Credential",
+    "impactTitle": "Scientific Impact & eBird/GBIF Network",
+    "recordingsUploaded": "Recordings Uploaded",
+    "speciesConfirmed": "Confirmed Species",
+    "communityValidation": "Community Validation",
+    "openScienceContributions": "Open Science Contributions",
+    "systemSettings": "System Settings",
+    "appearance": "Interface Theme",
+    "languageTaxonomy": "Language & Primary Taxonomy",
+    "offlineManagement": "Offline Recording Management",
+    "micHardware": "Microphone & Field Gain",
+    "logout": "Log Out Securely",
+    "logoutConfirm": "Do you want to end the active session? Offline records will remain safe on your device."
+  },
+  "workers": {
+    "offlineBannerTitle": "Offline Field Mode Active",
+    "offlineBannerBody": "Recordings are stored locally and sync when connectivity is restored.",
+    "syncPending": "recordings queued",
+    "forceSync": "Force Sync"
+  },
+  "footer": {
+    "rights": "Open Bioacoustics & Conservation Platform",
+    "privacy": "Ecological Data Privacy",
+    "protocol": "Recording Protocol",
+    "api": "API for Researchers",
+    "contact": "Scientific Contact"
+  }
+}
