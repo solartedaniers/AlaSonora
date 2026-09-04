@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
@@ -14,6 +14,7 @@ type StatusFilter = 'all' | SyncStatus;
   selector: 'app-history',
   standalone: true,
   imports: [RouterLink, DatePipe, NavHeaderComponent, ConfidenceBadgeComponent, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './history.component.html',
 })
 export class HistoryComponent implements OnInit {

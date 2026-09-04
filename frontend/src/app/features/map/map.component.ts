@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
@@ -11,6 +11,7 @@ import { Detection } from '../../core/models';
   selector: 'app-map',
   standalone: true,
   imports: [DatePipe, NavHeaderComponent, ConfidenceBadgeComponent, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './map.component.html',
 })
 export class MapComponent implements OnInit {

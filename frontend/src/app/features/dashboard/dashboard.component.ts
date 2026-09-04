@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { OfflineBannerComponent } from '../../shared/components/offline-banner/offline-banner.component';
@@ -12,6 +12,7 @@ import { Detection, UserStats } from '../../core/models';
   selector: 'app-dashboard',
   standalone: true,
   imports: [RouterLink, NavHeaderComponent, OfflineBannerComponent, ConfidenceBadgeComponent, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit {

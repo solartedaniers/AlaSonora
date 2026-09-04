@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
@@ -11,6 +11,7 @@ import { NetworkStats } from '../../core/models';
   selector: 'app-landing',
   standalone: true,
   imports: [RouterLink, DecimalPipe, TranslatePipe, ThemeToggleComponent, LangToggleComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './landing.component.html',
 })
 export class LandingComponent implements OnInit {

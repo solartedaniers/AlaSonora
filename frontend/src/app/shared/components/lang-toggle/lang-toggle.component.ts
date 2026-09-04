@@ -1,9 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { I18nService, AppLang } from '../../../core/services/i18n.service';
 
 @Component({
   selector: 'app-lang-toggle',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="flex items-center bg-surface-container-lowest p-1 rounded-full" role="group" aria-label="Language switcher">
       @for (option of options; track option) {

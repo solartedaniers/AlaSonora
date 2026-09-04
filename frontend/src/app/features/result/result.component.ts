@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
@@ -12,6 +12,7 @@ import { Detection } from '../../core/models';
   selector: 'app-result',
   standalone: true,
   imports: [RouterLink, DecimalPipe, NavHeaderComponent, ConfidenceBadgeComponent, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './result.component.html',
 })
 export class ResultComponent implements OnInit {

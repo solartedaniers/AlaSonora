@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { OfflineStorageService } from '../../../core/services/offline-storage.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 
@@ -6,6 +6,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
   selector: 'app-offline-banner',
   standalone: true,
   imports: [TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (offline.pendingCount() > 0) {
       <div class="w-full bg-secondary-container/40 px-4 sm:px-8 py-2.5 flex flex-wrap items-center justify-between gap-2">

@@ -6,6 +6,7 @@ import {
   OnDestroy,
   ViewChild,
   input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { SpectrogramFrame } from '../../../core/services/audio-capture.service';
 
@@ -32,6 +33,7 @@ import { SpectrogramFrame } from '../../../core/services/audio-capture.service';
 @Component({
   selector: 'app-spectrogram-view',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <canvas #canvas class="w-full h-full block" [attr.aria-label]="ariaLabel()"></canvas>
   `,

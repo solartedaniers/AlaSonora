@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
@@ -14,6 +14,7 @@ type RecordingTab = 'live' | 'upload';
   selector: 'app-recording',
   standalone: true,
   imports: [DecimalPipe, NavHeaderComponent, OfflineBannerComponent, SpectrogramViewComponent, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './recording.component.html',
 })
 export class RecordingComponent {

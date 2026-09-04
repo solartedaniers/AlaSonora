@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
@@ -12,6 +12,7 @@ import { UserStats } from '../../core/models';
   selector: 'app-profile',
   standalone: true,
   imports: [NavHeaderComponent, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent implements OnInit {

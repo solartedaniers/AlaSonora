@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
@@ -13,6 +13,7 @@ type PasswordTier = 'empty' | 'weak' | 'medium' | 'strong' | 'excellent';
   selector: 'app-register',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink, TranslatePipe, ThemeToggleComponent, LangToggleComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './register.component.html',
 })
 export class RegisterComponent {

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
 import { LangToggleComponent } from '../lang-toggle/lang-toggle.component';
@@ -9,6 +9,7 @@ import { UserService } from '../../../core/services/user.service';
   selector: 'app-nav-header',
   standalone: true,
   imports: [RouterLink, RouterLinkActive, ThemeToggleComponent, LangToggleComponent, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <header class="w-full bg-surface-container-low/90 backdrop-blur-md sticky top-0 z-40 px-4 sm:px-8 py-3 flex items-center justify-between shadow-sm">
       <a routerLink="/" class="flex items-center gap-2.5 shrink-0">

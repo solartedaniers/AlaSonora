@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ThemeService, ThemeMode } from '../../../core/services/theme.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 
@@ -6,6 +6,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
   selector: 'app-theme-toggle',
   standalone: true,
   imports: [TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="flex items-center bg-surface-container-lowest p-1 rounded-full" role="group" aria-label="Selector de tema">
       @for (option of options; track option.mode) {
