@@ -2,6 +2,7 @@ package com.alasonora.backend.dto;
 
 import com.alasonora.backend.entity.IucnStatus;
 import com.alasonora.backend.entity.Species;
+import com.alasonora.backend.entity.VocalizationType;
 
 public record SpeciesDto(
     String id,
@@ -11,7 +12,9 @@ public record SpeciesDto(
     String family,
     String order,
     IucnStatus iucnStatus,
-    String imageUrl
+    String imageUrl,
+    VocalizationType vocalizationType,
+    String behaviorNotes
 ) {
 
     public static SpeciesDto fromEntity(Species species) {
@@ -23,7 +26,9 @@ public record SpeciesDto(
             species.getFamily(),
             species.getOrder(),
             species.getIucnStatus(),
-            species.getImageUrl()
+            species.getImageUrl(),
+            species.getVocalizationType(),
+            species.getBehaviorNotes()
         );
     }
 }

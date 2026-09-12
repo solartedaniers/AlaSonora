@@ -47,7 +47,14 @@
     "nt": "Near Threatened",
     "vu": "Vulnerable",
     "en": "Endangered",
-    "cr": "Critically Endangered"
+    "cr": "Critically Endangered",
+    "ne": "Not Evaluated"
+  },
+  "vocalization": {
+    "song": "Territorial Song",
+    "call": "Contact Call",
+    "drumming": "Drumming",
+    "unknown": "Undocumented Vocalization"
   },
   "landing": {
     "badge": "Bioacoustic Model Active",
@@ -148,6 +155,7 @@
     "fieldTipBody": "Aim toward the mid-to-upper canopy layer and avoid crosswind gusts to keep harmonics above the noise floor.",
     "samplingTime": "Sampling Time",
     "listening": "AI Listening…",
+    "classifying": "AI Analyzing Sample…",
     "gain": "Preamp Gain",
     "highPassFilter": "High-Pass (Anti-Wind) Filter",
     "candidates": "Candidates Being Heard",
@@ -159,6 +167,7 @@
   },
   "result": {
     "completedTitle": "Bioacoustic Identification Complete",
+    "behaviorContext": "Bioacoustic Context",
     "spectrogramTitle": "Thermal Spectrogram & Harmonic Window",
     "confidenceBreakdown": "AI Confidence Breakdown",
     "alternatives": "Alternative Species",

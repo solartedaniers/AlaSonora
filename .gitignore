@@ -24,6 +24,14 @@ backend/*.egg-info/
 backend/.pytest_cache/
 backend/.mypy_cache/
 
+# ---- AI engine (FastAPI + BirdNET) ----
+ai-engine/__pycache__/
+ai-engine/**/__pycache__/
+ai-engine/.venv/
+ai-engine/venv/
+ai-engine/*.egg-info/
+ai-engine/.pytest_cache/
+
 # ---- Modelos BirdNET descargados (pesados, no van al repo) ----
 backend/models/*.tflite
 backend/models/*.pb

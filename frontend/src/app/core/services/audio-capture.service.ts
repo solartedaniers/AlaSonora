@@ -78,18 +78,38 @@ export class AudioCaptureService {
     }, 100);
   }
 
-  stop(): void {
+  /**
+   * Detiene la captura y pide al worker que empaquete todo el audio
+   * acumulado como un WAV antes de terminarlo, para poder subirlo a
+   * Supabase Storage sin haber bloqueado el hilo principal con esa
+   * codificación.
+   */
+  async stop(): Promise<Blob> {
     this.processorNode?.disconnect();
     this.audioContext?.close();
     this.mediaStream?.getTracks().forEach((track) => track.stop());
-    this.worker?.terminate();
     if (this.elapsedIntervalId) clearInterval(this.elapsedIntervalId);
+
+    const worker = this.worker;
+    const wavBlob = await new Promise<Blob>((resolve, reject) => {
+      if (!worker) {
+        reject(new Error('No active recording worker.'));
+        return;
+      }
+      worker.onmessage = ({ data }: MessageEvent<AudioWorkerOutboundMessage>) => {
+        if (data.type !== 'recording-encoded') return;
+        resolve(new Blob([data.wavBuffer], { type: 'audio/wav' }));
+      };
+      worker.postMessage({ type: 'finalize-recording' });
+    });
+    worker?.terminate();
 
     this.isRecording.set(false);
     this.processorNode = undefined;
     this.audioContext = undefined;
     this.mediaStream = undefined;
     this.worker = undefined;
+    return wavBlob;
   }
 
   private onAudioProcess(event: AudioProcessingEvent): void {

@@ -75,13 +75,16 @@
             <button
               type="button"
               (click)="toggleRecording()"
-              class="group relative flex items-center justify-center gap-3 px-10 py-4 rounded-full transition-all shadow-xl hover:scale-105 active:scale-95"
+              [disabled]="isClassifying()"
+              class="group relative flex items-center justify-center gap-3 px-10 py-4 rounded-full transition-all shadow-xl hover:scale-105 active:scale-95 disabled:opacity-60 disabled:pointer-events-none"
               [class.bg-error-container]="!capture.isRecording()"
               [class.text-on-error-container]="!capture.isRecording()"
               [class.bg-surface-container-highest]="capture.isRecording()"
               [class.text-on-surface]="capture.isRecording()"
             >
-              @if (capture.isRecording()) {
+              @if (isClassifying()) {
+                <span class="font-display font-bold">{{ 'recording.classifying' | translate }}</span>
+              } @else if (capture.isRecording()) {
                 <span class="w-4 h-4 rounded-sm bg-current"></span>
                 <span class="font-display font-bold">{{ 'recording.stopAndClassify' | translate }}</span>
               } @else {
@@ -137,9 +140,12 @@
       </div>
     } @else {
       <div
-        class="bg-surface-container-low p-10 rounded-2xl flex flex-col items-center justify-center text-center gap-4 border-2 border-dashed transition-colors cursor-pointer"
+        class="bg-surface-container-low p-10 rounded-2xl flex flex-col items-center justify-center text-center gap-4 border-2 border-dashed transition-colors"
         [class.border-primary]="isDragOver()"
         [class.border-outline-variant]="!isDragOver()"
+        [class.opacity-60]="isClassifying()"
+        [class.pointer-events-none]="isClassifying()"
+        [class.cursor-pointer]="!isClassifying()"
         (dragover)="$event.preventDefault(); isDragOver.set(true)"
         (dragleave)="isDragOver.set(false)"
         (drop)="onFileDropped($event)"
@@ -149,7 +155,9 @@
           <span class="material-symbols-outlined text-5xl">cloud_upload</span>
         </div>
         <div class="flex flex-col gap-1 max-w-md">
-          <h3 class="font-display text-lg font-semibold">{{ 'recording.dropzoneTitle' | translate }}</h3>
+          <h3 class="font-display text-lg font-semibold">
+            {{ (isClassifying() ? 'recording.classifying' : 'recording.dropzoneTitle') | translate }}
+          </h3>
           <p class="text-sm text-on-surface-variant">{{ 'recording.dropzoneBody' | translate }}</p>
         </div>
         <button type="button" class="px-6 py-2.5 rounded-full bg-primary text-on-primary font-display font-semibold shadow-md">

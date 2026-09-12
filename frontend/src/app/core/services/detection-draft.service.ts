@@ -7,11 +7,14 @@ export const DRAFT_DETECTION_ID = 'draft';
 export interface DetectionDraft {
   species: Species;
   recordedAt: string;
+  audioUrl?: string;
   durationSeconds: number;
   confidence: number;
   peakFrequencyHz: number;
   alternatives: { species: Species; confidence: number }[];
   location: GeoLocation;
+  /** Scientific disclaimer returned by the classifier: AI output is a probabilistic reference, not ground truth. */
+  disclaimer?: string;
 }
 
 /**

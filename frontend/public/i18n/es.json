@@ -47,7 +47,14 @@
     "nt": "Casi Amenazada",
     "vu": "Vulnerable",
     "en": "En Peligro",
-    "cr": "En Peligro Crítico"
+    "cr": "En Peligro Crítico",
+    "ne": "No Evaluada"
+  },
+  "vocalization": {
+    "song": "Canto Territorial",
+    "call": "Llamada de Contacto",
+    "drumming": "Tamborileo",
+    "unknown": "Vocalización sin Documentar"
   },
   "landing": {
     "badge": "Modelo Bioacústico Activo",
@@ -148,6 +155,7 @@
     "fieldTipBody": "Apunta hacia el estrato medio-alto del dosel y evita ráfagas de viento cruzado para conservar la claridad de los armónicos.",
     "samplingTime": "Tiempo de Muestreo",
     "listening": "IA Escuchando…",
+    "classifying": "IA Analizando la Muestra…",
     "gain": "Ganancia Preamplificador",
     "highPassFilter": "Filtro Pasa-Altos (Anti-Viento)",
     "candidates": "Candidatos en Escucha",
@@ -159,6 +167,7 @@
   },
   "result": {
     "completedTitle": "Identificación Bioacústica Completada",
+    "behaviorContext": "Contexto Bioacústico",
     "spectrogramTitle": "Espectrograma Térmico & Ventana Armónica",
     "confidenceBreakdown": "Barra de Certeza de IA",
     "alternatives": "Especies Alternativas",

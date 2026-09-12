@@ -7,7 +7,8 @@ import { SpectrogramViewComponent } from '../../shared/components/spectrogram-vi
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { AudioCaptureService } from '../../core/services/audio-capture.service';
 import { OfflineStorageService } from '../../core/services/offline-storage.service';
-import { SpeciesCatalogService } from '../../core/services/species-catalog.service';
+import { ClassificationService } from '../../core/services/classification.service';
+import { UserService } from '../../core/services/user.service';
 import { DetectionDraftService, DRAFT_DETECTION_ID } from '../../core/services/detection-draft.service';
 import { GeoLocation } from '../../core/models';
 
@@ -27,7 +28,8 @@ const FALLBACK_LOCATION: GeoLocation = { latitude: 4.6097, longitude: -74.0817 }
 export class RecordingComponent {
   readonly capture = inject(AudioCaptureService);
   private readonly offlineStorage = inject(OfflineStorageService);
-  private readonly speciesCatalog = inject(SpeciesCatalogService);
+  private readonly classificationService = inject(ClassificationService);
+  private readonly userService = inject(UserService);
   private readonly draftService = inject(DetectionDraftService);
   private readonly router = inject(Router);
 
@@ -45,10 +47,14 @@ export class RecordingComponent {
     this.activeTab.set(tab);
   }
 
+  readonly isClassifying = signal(false);
+
   async toggleRecording(): Promise<void> {
     if (this.capture.isRecording()) {
-      this.capture.stop();
-      await this.classifyAndNavigate();
+      const durationSeconds = Math.round(this.capture.elapsedSeconds());
+      const peakFrequencyHz = this.capture.latestFrame()?.peakFrequencyHz ?? 0;
+      const wavBlob = await this.capture.stop();
+      await this.classifyAndNavigate(wavBlob, durationSeconds, peakFrequencyHz);
     } else {
       try {
         await this.capture.start();
@@ -63,38 +69,52 @@ export class RecordingComponent {
     event.preventDefault();
     this.isDragOver.set(false);
     const file = event.dataTransfer?.files?.[0];
-    if (file) await this.classifyAndNavigate();
+    if (file) await this.classifyAndNavigate(file, await this.audioDurationSeconds(file), 0);
   }
 
   async onFileSelected(event: Event): Promise<void> {
     const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) await this.classifyAndNavigate();
+    if (file) await this.classifyAndNavigate(file, await this.audioDurationSeconds(file), 0);
   }
 
-  private async classifyAndNavigate(): Promise<void> {
-    // La IA real (FastAPI) llega en una fase futura; mientras tanto
-    // simulamos una clasificación plausible sobre el catálogo real de
-    // especies, y el usuario confirma/guarda contra el backend real.
-    const species = await this.speciesCatalog.getAll();
-    if (species.length === 0) return;
+  private async classifyAndNavigate(audio: Blob, durationSeconds: number, peakFrequencyHz: number): Promise<void> {
+    const userId = this.userService.currentUser()?.id;
+    if (!userId) return;
 
-    const [primary, ...rest] = [...species].sort(() => Math.random() - 0.5);
-    const alternatives = rest.slice(0, 2).map((s, i) => ({
-      species: s,
-      confidence: Math.round((65 - i * 15 + Math.random() * 10) * 10) / 10,
-    }));
+    this.isClassifying.set(true);
+    try {
+      const recordedAt = new Date().toISOString();
+      const location = await this.currentLocation();
+      const audioUrl = await this.classificationService.uploadRecording(userId, audio);
+      const result = await this.classificationService.classify(audioUrl, recordedAt, location);
 
-    this.draftService.set({
-      species: primary,
-      recordedAt: new Date().toISOString(),
-      durationSeconds: Math.round(this.capture.elapsedSeconds() || 8),
-      confidence: Math.round((88 + Math.random() * 11) * 10) / 10,
-      peakFrequencyHz: Math.round(2000 + Math.random() * 4000),
-      alternatives,
-      location: await this.currentLocation(),
-    });
+      this.draftService.set({
+        species: result.species,
+        recordedAt,
+        audioUrl,
+        durationSeconds,
+        confidence: result.confidence,
+        peakFrequencyHz,
+        alternatives: result.alternatives,
+        location,
+        disclaimer: result.disclaimer,
+      });
 
-    await this.router.navigate(['/result', DRAFT_DETECTION_ID]);
+      await this.router.navigate(['/result', DRAFT_DETECTION_ID]);
+    } finally {
+      this.isClassifying.set(false);
+    }
+  }
+
+  /** Only decoded for uploaded files: live recordings already track their own elapsed time. */
+  private async audioDurationSeconds(file: File): Promise<number> {
+    const audioContext = new AudioContext();
+    try {
+      const buffer = await audioContext.decodeAudioData(await file.arrayBuffer());
+      return Math.round(buffer.duration);
+    } finally {
+      await audioContext.close();
+    }
   }
 
   private currentLocation(): Promise<GeoLocation> {

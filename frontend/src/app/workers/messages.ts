@@ -28,8 +28,24 @@ export interface AudioProcessingResponse {
   rmsDb: number;
 }
 
-export type AudioWorkerInboundMessage = AudioProcessingRequest;
-export type AudioWorkerOutboundMessage = AudioProcessingResponse;
+/**
+ * Pide al worker cerrar la sesión de grabación actual: concatenar todas las
+ * muestras PCM acumuladas desde el primer `process-audio-chunk` y
+ * empaquetarlas como un WAV, sin bloquear el hilo principal con ese trabajo
+ * de fragmentación/codificación.
+ */
+export interface FinalizeRecordingRequest {
+  type: 'finalize-recording';
+}
+
+export interface RecordingEncodedResponse {
+  type: 'recording-encoded';
+  /** Buffer WAV completo (PCM 16-bit), transferido al hilo principal. */
+  wavBuffer: ArrayBuffer;
+}
+
+export type AudioWorkerInboundMessage = AudioProcessingRequest | FinalizeRecordingRequest;
+export type AudioWorkerOutboundMessage = AudioProcessingResponse | RecordingEncodedResponse;
 
 // ---------------------------------------------------------------------------
 // 2. Shared Worker: sync.worker.ts (estado compartido entre pestañas)

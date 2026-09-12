@@ -20,7 +20,11 @@
       <div class="bg-surface-container-low rounded-2xl p-6 md:p-8 shadow-xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         <div class="lg:col-span-4 flex flex-col gap-3">
           <div class="relative w-full aspect-square rounded-xl overflow-hidden shadow-lg bg-surface-container-high flex items-center justify-center">
-            <span class="material-symbols-outlined text-6xl text-primary">flutter_dash</span>
+            @if (d.species.imageUrl) {
+              <img [src]="d.species.imageUrl" [alt]="d.species.commonName" class="w-full h-full object-cover" />
+            } @else {
+              <span class="material-symbols-outlined text-6xl text-primary">flutter_dash</span>
+            }
           </div>
         </div>
 
@@ -29,6 +33,9 @@
             <span class="px-2 py-1 rounded-md bg-surface-container-high text-primary font-mono text-xs">{{ d.species.family }}</span>
             <span class="px-2 py-1 rounded-md bg-surface-container-high text-on-surface-variant font-mono text-xs">
               {{ ('iucn.' + d.species.iucnStatus.toLowerCase()) | translate }}
+            </span>
+            <span class="px-2 py-1 rounded-md bg-surface-container-high text-secondary font-mono text-xs">
+              {{ ('vocalization.' + d.species.vocalizationType.toLowerCase()) | translate }}
             </span>
           </div>
           <div>
@@ -51,6 +58,27 @@
           </div>
         </div>
       </div>
+
+      <!-- Bioacoustic behavior context + AI disclaimer -->
+      @if (d.species.behaviorNotes || d.disclaimer) {
+        <div class="bg-surface-container-low rounded-2xl p-6 shadow-md flex flex-col gap-3">
+          @if (d.species.behaviorNotes) {
+            <div class="flex items-start gap-3">
+              <span class="material-symbols-outlined text-secondary shrink-0">nature_people</span>
+              <div>
+                <h3 class="font-display font-semibold">{{ 'result.behaviorContext' | translate }}</h3>
+                <p class="text-sm text-on-surface-variant mt-1">{{ d.species.behaviorNotes }}</p>
+              </div>
+            </div>
+          }
+          @if (d.disclaimer) {
+            <div class="flex items-start gap-3 pt-2 border-t border-outline-variant/30">
+              <span class="material-symbols-outlined text-tertiary shrink-0">info</span>
+              <p class="text-xs text-on-surface-variant italic">{{ d.disclaimer }}</p>
+            </div>
+          }
+        </div>
+      }
 
       <!-- Spectrogram + audio player -->
       <div class="bg-surface-container-low rounded-2xl p-6 shadow-lg flex flex-col gap-4">

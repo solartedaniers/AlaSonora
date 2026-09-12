@@ -38,6 +38,8 @@ export interface Detection {
   fieldNotes?: string;
   visibility: Visibility;
   syncStatus: SyncStatus;
+  /** Scientific disclaimer from the classifier (AI output is a probabilistic reference, not ground truth); only set right after classification, not persisted by the backend. */
+  disclaimer?: string;
 }
 
 /** Payload for POST /api/detections; mirrors the backend's CreateDetectionRequest. */

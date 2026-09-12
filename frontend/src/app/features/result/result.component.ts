@@ -77,6 +77,7 @@ export class ResultComponent implements OnInit {
       const created = await this.detectionsService.create({
         speciesId: draft.species.id,
         recordedAt: draft.recordedAt,
+        audioUrl: draft.audioUrl,
         durationSeconds: draft.durationSeconds,
         confidence: draft.confidence,
         peakFrequencyHz: draft.peakFrequencyHz,

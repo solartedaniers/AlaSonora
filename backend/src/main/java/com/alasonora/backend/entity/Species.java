@@ -41,4 +41,14 @@ public class Species {
     private IucnStatus iucnStatus;
 
     private String imageUrl;
+
+    // Bioacoustic enrichment: populated for curated species, defaults to
+    // UNKNOWN for species that were auto-registered from an AI classification
+    // (BirdNET itself never reports vocalization type, only the species).
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private VocalizationType vocalizationType = VocalizationType.UNKNOWN;
+
+    @Column(columnDefinition = "text")
+    private String behaviorNotes;
 }
