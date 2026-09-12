@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Detection } from '../models';
+import { CreateDetectionRequest, Detection } from '../models';
 
 /** Detección tal como la devuelve el backend, sin el estado de sincronización offline. */
 type DetectionApiResponse = Omit<Detection, 'syncStatus'>;
@@ -23,6 +23,13 @@ export class DetectionsService {
       this.http.get<DetectionApiResponse[]>(this.baseUrl, { params })
     );
     return detections.map((d) => this.withSyncStatus(d));
+  }
+
+  async create(request: CreateDetectionRequest): Promise<Detection> {
+    const created = await firstValueFrom(
+      this.http.post<DetectionApiResponse>(this.baseUrl, request)
+    );
+    return this.withSyncStatus(created);
   }
 
   async getMine(): Promise<Detection[]> {

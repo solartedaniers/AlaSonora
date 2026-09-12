@@ -2,6 +2,10 @@ import { Species } from './species.model';
 
 export type SyncStatus = 'synced' | 'pending-sync' | 'needs-review';
 
+// Backend's Visibility enum is uppercase; kept as-is here (same convention as
+// Species.iucnStatus) instead of adding a casing-mapping layer for one field.
+export type Visibility = 'PRIVATE' | 'PUBLIC';
+
 export interface GeoLocation {
   latitude: number;
   longitude: number;
@@ -32,5 +36,21 @@ export interface Detection {
   location: GeoLocation;
   observerName: string;
   fieldNotes?: string;
+  visibility: Visibility;
   syncStatus: SyncStatus;
+}
+
+/** Payload for POST /api/detections; mirrors the backend's CreateDetectionRequest. */
+export interface CreateDetectionRequest {
+  speciesId: string;
+  recordedAt: string;
+  audioUrl?: string;
+  durationSeconds: number;
+  confidence: number;
+  peakFrequencyHz: number;
+  alternatives?: { speciesId: string; confidence: number }[];
+  location: GeoLocation;
+  observerName?: string;
+  fieldNotes?: string;
+  visibility: Visibility;
 }

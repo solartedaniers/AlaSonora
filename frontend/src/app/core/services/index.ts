@@ -5,6 +5,7 @@ export * from './detections.service';
 export * from './network-stats.service';
 export * from './user.service';
 export * from './profile.service';
+export * from './detection-draft.service';
 export * from './audio-capture.service';
 export * from './live-sync.service';
 export * from './offline-storage.service';
