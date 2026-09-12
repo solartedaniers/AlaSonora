@@ -1,16 +1,26 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme-toggle.component';
 import { LangToggleComponent } from '../../shared/components/lang-toggle/lang-toggle.component';
+import { SoftAuroraComponent } from '../../shared/components/soft-aurora/soft-aurora.component';
+import { CountUpComponent } from '../../shared/components/count-up/count-up.component';
+import { PointerGlowDirective } from '../../shared/directives/pointer-glow.directive';
 import { NetworkStatsService } from '../../core/services/network-stats.service';
 import { NetworkStats } from '../../core/models';
 
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [RouterLink, DecimalPipe, TranslatePipe, ThemeToggleComponent, LangToggleComponent],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    ThemeToggleComponent,
+    LangToggleComponent,
+    SoftAuroraComponent,
+    CountUpComponent,
+    PointerGlowDirective,
+  ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './landing.component.html',
 })

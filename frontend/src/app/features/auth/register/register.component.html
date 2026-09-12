@@ -30,6 +30,13 @@
         </p>
       </div>
 
+      @if (submitError()) {
+        <div class="bg-error-container/40 rounded-lg p-3 flex items-start gap-2">
+          <span class="material-symbols-outlined text-error shrink-0">warning</span>
+          <p class="text-sm text-on-surface-variant">{{ 'auth.register.errorBody' | translate }}</p>
+        </div>
+      }
+
       <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="flex flex-col gap-1.5">
@@ -40,9 +47,13 @@
               id="fullName"
               type="text"
               formControlName="fullName"
+              appLettersOnly
               [placeholder]="'auth.register.fullNamePlaceholder' | translate"
               class="w-full h-12 px-4 bg-surface-container-lowest text-on-surface placeholder:text-outline rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
             />
+            @if (form.controls.fullName.errors?.['pattern'] && form.controls.fullName.touched) {
+              <span class="text-xs text-error">{{ 'auth.register.fullNameError' | translate }}</span>
+            }
           </div>
           <div class="flex flex-col gap-1.5">
             <label for="role" class="text-sm font-semibold text-on-surface">

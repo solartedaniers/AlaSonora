@@ -54,21 +54,21 @@
     <!-- Metrics -->
     @if (stats(); as s) {
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-surface-container-low p-5 rounded-xl shadow-sm flex flex-col gap-2">
+        <div appBorderGlow class="bg-surface-container-low p-5 rounded-xl shadow-sm flex flex-col gap-2">
           <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.species' | translate }}</span>
-          <span class="font-display text-3xl font-bold">{{ s.distinctSpecies }}</span>
+          <span class="font-display text-3xl font-bold"><app-count-up [value]="s.distinctSpecies" /></span>
         </div>
-        <div class="bg-surface-container-low p-5 rounded-xl shadow-sm flex flex-col gap-2">
+        <div appBorderGlow class="bg-surface-container-low p-5 rounded-xl shadow-sm flex flex-col gap-2">
           <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.recordings' | translate }}</span>
-          <span class="font-display text-3xl font-bold">{{ s.totalRecordings }}</span>
+          <span class="font-display text-3xl font-bold"><app-count-up [value]="s.totalRecordings" /></span>
         </div>
-        <div class="bg-surface-container-low p-5 rounded-xl shadow-sm flex flex-col gap-2">
+        <div appBorderGlow class="bg-surface-container-low p-5 rounded-xl shadow-sm flex flex-col gap-2">
           <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.streak' | translate }}</span>
-          <span class="font-display text-3xl font-bold text-secondary">{{ s.activeStreakDays }}</span>
+          <span class="font-display text-3xl font-bold text-secondary"><app-count-up [value]="s.activeStreakDays" /></span>
         </div>
-        <div class="bg-surface-container-low p-5 rounded-xl shadow-sm flex flex-col gap-2">
+        <div appBorderGlow class="bg-surface-container-low p-5 rounded-xl shadow-sm flex flex-col gap-2">
           <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.hours' | translate }}</span>
-          <span class="font-display text-3xl font-bold">{{ s.averageConfidence }}%</span>
+          <span class="font-display text-3xl font-bold"><app-count-up [value]="s.averageConfidence" suffix="%" /></span>
         </div>
       </div>
     }
@@ -98,6 +98,17 @@
           </div>
           <span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
         </a>
+      </div>
+    }
+
+    <!-- Species spotlight -->
+    @if (spiralItems().length > 0) {
+      <div class="flex flex-col gap-3">
+        <h2 class="font-display text-lg font-semibold flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">flutter_dash</span>
+          {{ 'dashboard.speciesSpotlight' | translate }}
+        </h2>
+        <app-infinite-spiral [items]="spiralItems()" />
       </div>
     }
 

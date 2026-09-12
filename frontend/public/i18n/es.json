@@ -71,12 +71,6 @@
       "step2Body": "El modelo descompone armónicos, frecuencias centrales y cadencias vocales en menos de un segundo.",
       "step3Title": "Registro y ciencia ciudadana",
       "step3Body": "Guarda tus hallazgos, explora mapas de distribución y nutre el atlas colectivo de biodiversidad."
-    },
-    "offline": {
-      "badge": "Cero Dependencia de Red",
-      "title": "Diseñado para el rigor del trabajo en campo",
-      "body": "Funciona sin conexión en la selva, quebradas o alta montaña. Tus grabaciones se guardan en tu dispositivo y sincronizan tan pronto recuperes cobertura.",
-      "cta": "Instalar PWA de Campo"
     }
   },
   "auth": {
@@ -88,6 +82,7 @@
       "orManual": "o registro manual de campo",
       "fullName": "Nombre y Apellido",
       "fullNamePlaceholder": "Dra. Elena Valenzuela",
+      "fullNameError": "El nombre solo puede contener letras y espacios.",
       "role": "Perfil de Observador",
       "email": "Correo Electrónico",
       "emailPlaceholder": "investigador@instituto.org",
@@ -98,7 +93,8 @@
       "consentTerms": "Acepto los Términos de Conservación Ética y la Política de Tratamiento Bioacústico.",
       "submit": "Crear Cuenta de Campo",
       "haveAccount": "¿Ya tienes una cuenta activa?",
-      "goToLogin": "Iniciar Sesión en Campo"
+      "goToLogin": "Iniciar Sesión en Campo",
+      "errorBody": "No se pudo crear la cuenta. Es posible que el correo ya esté registrado; verifica tus datos."
     },
     "login": {
       "title": "Bienvenido de vuelta al campo",
@@ -113,7 +109,9 @@
       "noAccount": "¿Primera vez en AlaSonora?",
       "goToRegister": "Crear cuenta gratuita",
       "errorTitle": "Credenciales no reconocidas",
-      "errorBody": "Correo o contraseña incorrectos. Verifica tus datos de acceso."
+      "errorBody": "Correo o contraseña incorrectos. Verifica tus datos de acceso.",
+      "errorEmailNotConfirmedTitle": "Confirma tu correo electrónico",
+      "errorEmailNotConfirmedBody": "Ya casi estás. Revisa tu bandeja de entrada y confirma tu correo antes de iniciar sesión."
     },
     "roles": {
       "ornithologist": "Ornitólogo / Investigador",
@@ -137,6 +135,7 @@
       "hours": "Horas de Escucha"
     },
     "lastDetection": "Última Detección Algorítmica",
+    "speciesSpotlight": "Especies Destacadas",
     "recentActivity": "Actividad Reciente en la Reserva",
     "viewAll": "Ver Todo"
   },

@@ -19,12 +19,17 @@
     <h1 class="font-display text-2xl font-bold text-on-surface mb-2">{{ 'auth.login.title' | translate }}</h1>
     <p class="text-sm text-on-surface-variant mb-6">{{ 'auth.login.subtitle' | translate }}</p>
 
-    @if (submitError()) {
+    @if (submitError(); as error) {
       <div class="mb-4 bg-error-container/40 rounded-lg p-3 flex items-start gap-2">
         <span class="material-symbols-outlined text-error shrink-0">warning</span>
         <div>
-          <p class="text-sm font-semibold text-on-surface">{{ 'auth.login.errorTitle' | translate }}</p>
-          <p class="text-sm text-on-surface-variant">{{ 'auth.login.errorBody' | translate }}</p>
+          @if (error === 'email-not-confirmed') {
+            <p class="text-sm font-semibold text-on-surface">{{ 'auth.login.errorEmailNotConfirmedTitle' | translate }}</p>
+            <p class="text-sm text-on-surface-variant">{{ 'auth.login.errorEmailNotConfirmedBody' | translate }}</p>
+          } @else {
+            <p class="text-sm font-semibold text-on-surface">{{ 'auth.login.errorTitle' | translate }}</p>
+            <p class="text-sm text-on-surface-variant">{{ 'auth.login.errorBody' | translate }}</p>
+          }
         </div>
       </div>
     }

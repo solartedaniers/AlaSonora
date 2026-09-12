@@ -73,8 +73,12 @@
                 id="displayName"
                 type="text"
                 formControlName="displayName"
+                appLettersOnly
                 class="w-full h-12 px-4 bg-surface-container-lowest text-on-surface rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
               />
+              @if (form.controls.displayName.errors?.['pattern'] && form.controls.displayName.touched) {
+                <span class="text-xs text-error">{{ 'auth.register.fullNameError' | translate }}</span>
+              }
             </div>
 
             <div class="flex flex-col gap-1.5">
@@ -138,21 +142,21 @@
       <div class="space-y-4">
         <h2 class="font-display text-lg font-semibold">{{ 'profile.impactTitle' | translate }}</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-surface-container-low rounded-xl p-5 shadow-sm">
+          <div appBorderGlow class="bg-surface-container-low rounded-xl p-5 shadow-sm">
             <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'profile.recordingsUploaded' | translate }}</span>
-            <div class="font-display text-3xl font-bold mt-2">{{ s.totalRecordings }}</div>
+            <div class="font-display text-3xl font-bold mt-2"><app-count-up [value]="s.totalRecordings" /></div>
           </div>
-          <div class="bg-surface-container-low rounded-xl p-5 shadow-sm">
+          <div appBorderGlow class="bg-surface-container-low rounded-xl p-5 shadow-sm">
             <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'profile.speciesConfirmed' | translate }}</span>
-            <div class="font-display text-3xl font-bold mt-2">{{ s.distinctSpecies }}</div>
+            <div class="font-display text-3xl font-bold mt-2"><app-count-up [value]="s.distinctSpecies" /></div>
           </div>
-          <div class="bg-surface-container-low rounded-xl p-5 shadow-sm">
+          <div appBorderGlow class="bg-surface-container-low rounded-xl p-5 shadow-sm">
             <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'profile.communityValidation' | translate }}</span>
-            <div class="font-display text-3xl font-bold mt-2 text-primary">{{ s.averageConfidence }}%</div>
+            <div class="font-display text-3xl font-bold mt-2 text-primary"><app-count-up [value]="s.averageConfidence" suffix="%" /></div>
           </div>
-          <div class="bg-surface-container-low rounded-xl p-5 shadow-sm">
+          <div appBorderGlow class="bg-surface-container-low rounded-xl p-5 shadow-sm">
             <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'profile.openScienceContributions' | translate }}</span>
-            <div class="font-display text-3xl font-bold mt-2">{{ s.validatedRecordings }}</div>
+            <div class="font-display text-3xl font-bold mt-2"><app-count-up [value]="s.validatedRecordings" /></div>
           </div>
         </div>
       </div>

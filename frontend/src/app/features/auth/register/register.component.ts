@@ -4,7 +4,9 @@ import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { ThemeToggleComponent } from '../../../shared/components/theme-toggle/theme-toggle.component';
 import { LangToggleComponent } from '../../../shared/components/lang-toggle/lang-toggle.component';
+import { LettersOnlyDirective } from '../../../shared/directives/letters-only.directive';
 import { UserService } from '../../../core/services/user.service';
+import { nameValidator } from '../../../core/validators/name.validator';
 import { ObserverRole } from '../../../core/models';
 
 type PasswordTier = 'empty' | 'weak' | 'medium' | 'strong' | 'excellent';
@@ -12,7 +14,14 @@ type PasswordTier = 'empty' | 'weak' | 'medium' | 'strong' | 'excellent';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, TranslatePipe, ThemeToggleComponent, LangToggleComponent],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    TranslatePipe,
+    ThemeToggleComponent,
+    LangToggleComponent,
+    LettersOnlyDirective,
+  ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './register.component.html',
 })
@@ -23,12 +32,13 @@ export class RegisterComponent {
 
   readonly showPassword = signal(false);
   readonly submitting = signal(false);
+  readonly submitError = signal(false);
   readonly passwordValue = signal('');
 
   readonly roles: ObserverRole[] = ['ornithologist', 'ranger', 'biologist', 'hobbyist', 'student'];
 
   readonly form = this.fb.nonNullable.group({
-    fullName: ['', Validators.required],
+    fullName: ['', [Validators.required, nameValidator]],
     role: ['hobbyist' as ObserverRole, Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
@@ -71,10 +81,13 @@ export class RegisterComponent {
       return;
     }
     this.submitting.set(true);
+    this.submitError.set(false);
     try {
       const { fullName, email, password, role } = this.form.getRawValue();
       await this.userService.register(fullName, email, password, role);
       await this.router.navigateByUrl('/dashboard');
+    } catch {
+      this.submitError.set(true);
     } finally {
       this.submitting.set(false);
     }

@@ -71,12 +71,6 @@
       "step2Body": "The model decomposes harmonics, center frequencies, and vocal cadence in under a second.",
       "step3Title": "Record and citizen science",
       "step3Body": "Save your findings, explore distribution maps, and feed the collective biodiversity atlas."
-    },
-    "offline": {
-      "badge": "Zero Network Dependency",
-      "title": "Built for the rigor of fieldwork",
-      "body": "Works fully offline in the rainforest, ravines, or high mountains. Your recordings are stored securely on your device and sync as soon as you regain coverage.",
-      "cta": "Install Field PWA"
     }
   },
   "auth": {
@@ -88,6 +82,7 @@
       "orManual": "or manual field registration",
       "fullName": "Full Name",
       "fullNamePlaceholder": "Dr. Elena Valenzuela",
+      "fullNameError": "Name can only contain letters and spaces.",
       "role": "Observer Profile",
       "email": "Email Address",
       "emailPlaceholder": "researcher@institute.org",
@@ -98,7 +93,8 @@
       "consentTerms": "I accept the Ethical Conservation Terms and the Bioacoustic Data Policy.",
       "submit": "Create Field Account",
       "haveAccount": "Already have an active account?",
-      "goToLogin": "Log In to the Field"
+      "goToLogin": "Log In to the Field",
+      "errorBody": "We couldn't create your account. This email may already be registered; please check your details."
     },
     "login": {
       "title": "Welcome back to the field",
@@ -113,7 +109,9 @@
       "noAccount": "First time on AlaSonora?",
       "goToRegister": "Create a free account",
       "errorTitle": "Credentials not recognized",
-      "errorBody": "Incorrect email or password. Please check your access details."
+      "errorBody": "Incorrect email or password. Please check your access details.",
+      "errorEmailNotConfirmedTitle": "Confirm your email address",
+      "errorEmailNotConfirmedBody": "Almost there. Check your inbox and confirm your email before signing in."
     },
     "roles": {
       "ornithologist": "Ornithologist / Researcher",
@@ -137,6 +135,7 @@
       "hours": "Listening Hours"
     },
     "lastDetection": "Latest Algorithmic Detection",
+    "speciesSpotlight": "Species Spotlight",
     "recentActivity": "Recent Activity in the Reserve",
     "viewAll": "View All"
   },

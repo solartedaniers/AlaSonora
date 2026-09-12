@@ -67,59 +67,60 @@
   --color-surface-tint: #95d4b3;
 }
 
-// Modo claro — mismo esquema semántico, valores tomados de las variantes
-// "field-light" de landing / login / registro / resultado.
+// Modo claro — esmeralda vibrante, contrastes limpios (evita el verde apagado
+// y los grises turbios de la paleta anterior; mismo esquema semántico que el
+// modo oscuro para que ningún componente necesite lógica condicional).
 .theme-light {
-  --color-primary: #2d6a4f;
+  --color-primary: #059669;
   --color-on-primary: #ffffff;
-  --color-primary-container: #b1f0ce;
-  --color-on-primary-container: #0e5138;
-  --color-primary-fixed: #b1f0ce;
-  --color-primary-fixed-dim: #95d4b3;
-  --color-on-primary-fixed: #002114;
-  --color-on-primary-fixed-variant: #0e5138;
+  --color-primary-container: #a7f3d0;
+  --color-on-primary-container: #065f46;
+  --color-primary-fixed: #a7f3d0;
+  --color-primary-fixed-dim: #6ee7b7;
+  --color-on-primary-fixed: #022c22;
+  --color-on-primary-fixed-variant: #047857;
 
-  --color-secondary: #74512f;
+  --color-secondary: #b45309;
   --color-on-secondary: #ffffff;
-  --color-secondary-container: #ffdcc1;
-  --color-on-secondary-container: #5a3c1c;
-  --color-secondary-fixed: #ffdcc1;
-  --color-secondary-fixed-dim: #eabe9a;
-  --color-on-secondary-fixed: #2d1601;
-  --color-on-secondary-fixed-variant: #5f4025;
+  --color-secondary-container: #fde68a;
+  --color-on-secondary-container: #78350f;
+  --color-secondary-fixed: #fde68a;
+  --color-secondary-fixed-dim: #fcd34d;
+  --color-on-secondary-fixed: #451a03;
+  --color-on-secondary-fixed-variant: #92400e;
 
-  --color-tertiary: #006499;
+  --color-tertiary: #0284c7;
   --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #cce5ff;
-  --color-on-tertiary-container: #004b73;
-  --color-tertiary-fixed: #cce5ff;
-  --color-tertiary-fixed-dim: #93ccff;
-  --color-on-tertiary-fixed: #001d31;
-  --color-on-tertiary-fixed-variant: #004b73;
+  --color-tertiary-container: #bae6fd;
+  --color-on-tertiary-container: #075985;
+  --color-tertiary-fixed: #bae6fd;
+  --color-tertiary-fixed-dim: #7dd3fc;
+  --color-on-tertiary-fixed: #082f49;
+  --color-on-tertiary-fixed-variant: #0369a1;
 
   --color-error: #ba1a1a;
   --color-on-error: #ffffff;
   --color-error-container: #ffdad6;
   --color-on-error-container: #410002;
 
-  --color-background: #f7faf8;
-  --color-on-background: #1b4332;
-  --color-surface: #f7faf8;
-  --color-on-surface: #1b2b22;
-  --color-surface-variant: #dde5e0;
-  --color-on-surface-variant: #404943;
-  --color-surface-dim: #d7dbd5;
-  --color-surface-bright: #f7faf8;
+  --color-background: #f6fdf9;
+  --color-on-background: #0b2e22;
+  --color-surface: #f6fdf9;
+  --color-on-surface: #0b2e22;
+  --color-surface-variant: #d7f3e3;
+  --color-on-surface-variant: #35574a;
+  --color-surface-dim: #dcefe4;
+  --color-surface-bright: #ffffff;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f1f4ef;
-  --color-surface-container: #ebeee9;
-  --color-surface-container-high: #e5e8e3;
-  --color-surface-container-highest: #dfe2dd;
+  --color-surface-container-low: #eefaf3;
+  --color-surface-container: #e6f6ee;
+  --color-surface-container-high: #daf0e5;
+  --color-surface-container-highest: #cde8db;
 
-  --color-outline: #72796f;
-  --color-outline-variant: #c1c9be;
-  --color-inverse-surface: #1b2b22;
-  --color-inverse-on-surface: #edf3ea;
-  --color-inverse-primary: #95d4b3;
-  --color-surface-tint: #2d6a4f;
+  --color-outline: #5f7a6d;
+  --color-outline-variant: #b7d9c6;
+  --color-inverse-surface: #0b2e22;
+  --color-inverse-on-surface: #eafaf1;
+  --color-inverse-primary: #6ee7b7;
+  --color-surface-tint: #059669;
 }

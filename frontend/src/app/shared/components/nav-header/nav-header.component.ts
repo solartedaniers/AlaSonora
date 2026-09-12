@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
 import { LangToggleComponent } from '../lang-toggle/lang-toggle.component';
@@ -21,7 +21,7 @@ import { NotificationsService } from '../../../core/services/notifications.servi
       </a>
 
       <nav class="hidden md:flex items-center gap-1">
-        @for (item of navItems; track item.path) {
+        @for (item of navItems(); track item.path) {
           <a
             [routerLink]="item.path"
             routerLinkActive="bg-surface-container-high text-primary shadow-inner"
@@ -95,7 +95,7 @@ import { NotificationsService } from '../../../core/services/notifications.servi
 
     @if (mobileMenuOpen()) {
       <nav class="md:hidden w-full bg-surface-container-low border-t border-outline-variant/20 px-4 py-2 sticky top-[60px] z-30 shadow-sm">
-        @for (item of navItems; track item.path) {
+        @for (item of navItems(); track item.path) {
           <a
             [routerLink]="item.path"
             routerLinkActive="bg-surface-container-high text-primary"
@@ -117,13 +117,17 @@ export class NavHeaderComponent {
   readonly notificationsOpen = signal(false);
   readonly mobileMenuOpen = signal(false);
 
-  readonly navItems = [
-    { path: '/dashboard', icon: 'dashboard', labelKey: 'nav.dashboard' },
-    { path: '/record', icon: 'graphic_eq', labelKey: 'nav.record' },
-    { path: '/history', icon: 'library_music', labelKey: 'nav.history' },
-    { path: '/map', icon: 'map', labelKey: 'nav.map' },
-    { path: '/profile', icon: 'person', labelKey: 'nav.profile' },
+  private readonly allNavItems = [
+    { path: '/dashboard', icon: 'dashboard', labelKey: 'nav.dashboard', protected: true },
+    { path: '/record', icon: 'graphic_eq', labelKey: 'nav.record', protected: true },
+    { path: '/history', icon: 'library_music', labelKey: 'nav.history', protected: true },
+    { path: '/map', icon: 'map', labelKey: 'nav.map', protected: false },
+    { path: '/profile', icon: 'person', labelKey: 'nav.profile', protected: true },
   ];
+
+  readonly navItems = computed(() =>
+    this.user.currentUser() ? this.allNavItems : this.allNavItems.filter((item) => !item.protected),
+  );
 
   toggleNotifications(): void {
     this.notificationsOpen.update((open) => !open);

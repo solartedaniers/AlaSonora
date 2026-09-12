@@ -34,3 +34,48 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+// Halo que sigue al puntero — aplicado vía [appGlowCursor] (PointerGlowDirective).
+.glow-cursor {
+  position: relative;
+  isolation: isolate;
+}
+.glow-cursor::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    280px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    color-mix(in srgb, var(--color-primary) 22%, transparent),
+    transparent 70%
+  );
+}
+.glow-cursor:hover::after {
+  opacity: 1;
+}
+
+// Borde que sigue al puntero — aplicado vía [appBorderGlow] (PointerGlowDirective).
+.border-glow {
+  position: relative;
+  isolation: isolate;
+}
+.border-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(180px circle at var(--glow-x, 50%) var(--glow-y, 50%), var(--color-primary), transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+.border-glow:hover::before {
+  opacity: 1;
+}

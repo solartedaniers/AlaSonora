@@ -8,12 +8,23 @@ import { ProfileService } from '../../core/services/profile.service';
 import { ThemeService, ThemeMode } from '../../core/services/theme.service';
 import { I18nService, AppLang } from '../../core/services/i18n.service';
 import { OfflineStorageService } from '../../core/services/offline-storage.service';
+import { LettersOnlyDirective } from '../../shared/directives/letters-only.directive';
+import { PointerGlowDirective } from '../../shared/directives/pointer-glow.directive';
+import { CountUpComponent } from '../../shared/components/count-up/count-up.component';
+import { nameValidator } from '../../core/validators/name.validator';
 import { ObserverRole, Profile, UserStats } from '../../core/models';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [NavHeaderComponent, TranslatePipe, ReactiveFormsModule],
+  imports: [
+    NavHeaderComponent,
+    TranslatePipe,
+    ReactiveFormsModule,
+    LettersOnlyDirective,
+    PointerGlowDirective,
+    CountUpComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './profile.component.html',
 })
@@ -37,7 +48,7 @@ export class ProfileComponent implements OnInit {
   readonly roles: ObserverRole[] = ['ornithologist', 'ranger', 'biologist', 'hobbyist', 'student'];
 
   readonly form = this.fb.nonNullable.group({
-    displayName: ['', Validators.required],
+    displayName: ['', [Validators.required, nameValidator]],
     role: ['hobbyist' as ObserverRole, Validators.required],
     institution: [''],
     orcidId: [''],
