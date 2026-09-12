@@ -11,5 +11,11 @@ class Settings(BaseSettings):
     default_max_results: int = 3
     max_inference_workers: int = 2
 
+    # Preprocesamiento y control de calidad de audio (ver AudioPreprocessor
+    # y AudioQualityAnalyzer) — configurables para poder recalibrar sin tocar código.
+    audio_highpass_cutoff_hz: float = 300.0
+    audio_noise_flatness_threshold: float = 0.3
+    audio_bird_band_energy_ratio_threshold: float = 0.15
+
 
 settings = Settings()

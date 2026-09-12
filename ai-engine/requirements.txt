@@ -5,6 +5,9 @@ pydantic-settings
 birdnetlib
 librosa
 audioread
+numpy
+scipy
+soundfile
 # tflite-runtime has no Windows wheels; tensorflow is birdnetlib's own
 # fallback interpreter (see birdnetlib/analyzer.py) and works everywhere.
 tensorflow

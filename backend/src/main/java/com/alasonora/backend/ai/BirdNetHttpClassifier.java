@@ -6,12 +6,15 @@ import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
 
 import com.alasonora.backend.config.AiProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Adapter that talks to the decoupled Python/FastAPI BirdNET microservice
@@ -25,9 +28,11 @@ public class BirdNetHttpClassifier implements BirdSoundClassifier {
     private final RestClient engineClient;
     private final RestClient audioFetchClient;
     private final AiProperties.Engine engineProperties;
+    private final ObjectMapper objectMapper;
 
-    public BirdNetHttpClassifier(AiProperties aiProperties) {
+    public BirdNetHttpClassifier(AiProperties aiProperties, ObjectMapper objectMapper) {
         this.engineProperties = aiProperties.engine();
+        this.objectMapper = objectMapper;
 
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(Duration.ofMillis(engineProperties.timeoutMs()));
@@ -68,8 +73,23 @@ public class BirdNetHttpClassifier implements BirdSoundClassifier {
             return response.candidates().stream()
                 .map(c -> new RawClassificationCandidate(c.scientificName(), c.commonName(), c.confidence() * 100))
                 .toList();
+        } catch (RestClientResponseException ex) {
+            if (ex.getStatusCode() == HttpStatusCode.valueOf(422)) {
+                throw new AudioQualityException(extractDetailMessage(ex));
+            }
+            throw new AudioClassificationException("Bioacoustic engine call failed", ex);
         } catch (RestClientException ex) {
             throw new AudioClassificationException("Bioacoustic engine call failed", ex);
+        }
+    }
+
+    // El motor Python devuelve {"detail": "<mensaje en español>"} en un 422
+    // cuando el audio no pasa el control de calidad; se propaga tal cual.
+    private String extractDetailMessage(RestClientResponseException ex) {
+        try {
+            return objectMapper.readTree(ex.getResponseBodyAsByteArray()).path("detail").asString(ex.getMessage());
+        } catch (Exception parseError) {
+            return ex.getMessage();
         }
     }
 

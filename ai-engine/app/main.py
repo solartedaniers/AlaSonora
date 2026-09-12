@@ -8,9 +8,15 @@ from datetime import datetime
 from fastapi import Depends, FastAPI, Form, HTTPException, UploadFile, status
 from fastapi.security import APIKeyHeader
 
+from app.audio_quality import NoBirdSignalDetectedError, TooNoisyAudioError
 from app.classifier import BirdNetClassifier
 from app.config import settings
 from app.schemas import ClassificationResponse
+
+# Mensajes exactos que debe ver el usuario final en el frontend (vía el
+# backend de Spring Boot, que reenvía este "detail" sin modificarlo).
+TOO_NOISY_MESSAGE = "Demasiada interferencia de ruido, por favor grabe de nuevo o cargue un audio más limpio"
+NO_BIRD_SIGNAL_MESSAGE = "No se detecta sonido de aves en la grabación, por favor intente nuevamente"
 
 api_key_header = APIKeyHeader(name="X-Internal-Api-Key")
 
@@ -67,6 +73,10 @@ async def analyze(
             min_confidence,
             max_results,
         )
+    except TooNoisyAudioError as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=TOO_NOISY_MESSAGE) from exc
+    except NoBirdSignalDetectedError as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=NO_BIRD_SIGNAL_MESSAGE) from exc
     finally:
         os.remove(tmp_path)
 

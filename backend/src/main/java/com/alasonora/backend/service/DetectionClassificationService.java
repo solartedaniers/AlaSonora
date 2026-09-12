@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.alasonora.backend.ai.AudioClassificationException;
+import com.alasonora.backend.ai.AudioQualityException;
 import com.alasonora.backend.ai.BirdSoundClassifier;
 import com.alasonora.backend.ai.ClassificationRequest;
 import com.alasonora.backend.ai.RawClassificationCandidate;
@@ -59,6 +60,8 @@ public class DetectionClassificationService {
                 request.location().longitude(),
                 request.recordedAt()
             ));
+        } catch (AudioQualityException ex) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage(), ex);
         } catch (AudioClassificationException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "The bioacoustic engine is unavailable", ex);
         }

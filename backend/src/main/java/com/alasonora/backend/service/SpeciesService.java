@@ -13,15 +13,22 @@ import com.alasonora.backend.entity.IucnStatus;
 import com.alasonora.backend.entity.Species;
 import com.alasonora.backend.entity.VocalizationType;
 import com.alasonora.backend.repository.SpeciesRepository;
+import com.alasonora.backend.translation.SpeciesCommonNameTranslator;
 
 @Service
 public class SpeciesService {
 
     private final SpeciesRepository speciesRepository;
+    private final SpeciesCommonNameTranslator nameTranslator;
     private final AiProperties.Catalog catalogProperties;
 
-    public SpeciesService(SpeciesRepository speciesRepository, AiProperties aiProperties) {
+    public SpeciesService(
+        SpeciesRepository speciesRepository,
+        SpeciesCommonNameTranslator nameTranslator,
+        AiProperties aiProperties
+    ) {
         this.speciesRepository = speciesRepository;
+        this.nameTranslator = nameTranslator;
         this.catalogProperties = aiProperties.catalog();
     }
 
@@ -56,10 +63,9 @@ public class SpeciesService {
         Species species = new Species();
         species.setScientificName(scientificName);
         species.setCommonNameEn(commonNameEn);
-        // No hay traducción automática al español disponible desde el motor de
-        // IA; se usa el nombre en inglés como valor provisional hasta que un
-        // curador humano lo revise.
-        species.setCommonName(commonNameEn);
+        // Traducción dinámica vía Wikidata (sin diccionario local); si no hay
+        // entrada en español, se usa el nombre en inglés como respaldo.
+        species.setCommonName(nameTranslator.translateToSpanish(scientificName).orElse(commonNameEn));
         species.setIucnStatus(IucnStatus.NE);
         species.setVocalizationType(VocalizationType.UNKNOWN);
         species.setImageUrl(catalogProperties.defaultSpeciesImageUrl());
