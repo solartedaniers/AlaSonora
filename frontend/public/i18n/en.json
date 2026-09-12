@@ -52,7 +52,7 @@
     "ctaSecondary": "View Sightings Map",
     "alreadyHaveAccount": "Already have an account?",
     "stats": {
-      "recordingsToday": "Recordings today",
+      "totalDetections": "Public detections",
       "species": "Cataloged species",
       "observers": "Observers in the field",
       "accuracy": "Validated accuracy"

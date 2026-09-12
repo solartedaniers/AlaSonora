@@ -36,6 +36,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/species/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/network-stats").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/detections/mine").authenticated()
                 .requestMatchers(HttpMethod.GET, "/api/detections").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/detections").authenticated()

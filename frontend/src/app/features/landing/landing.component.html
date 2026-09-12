@@ -140,23 +140,19 @@
     <section class="w-full bg-surface-container-low py-10 shadow-sm">
       <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-2 md:grid-cols-4 gap-8">
         <div class="flex flex-col items-center text-center">
-          <span class="font-display text-3xl font-bold text-primary">{{ s.recordingsToday | number }}+</span>
-          <span class="text-sm text-on-surface-variant mt-1">{{ 'landing.stats.recordingsToday' | translate }}</span>
-          <span class="text-xs text-primary font-semibold mt-1 flex items-center gap-1">
-            <span class="material-symbols-outlined text-[14px]">trending_up</span> +{{ s.recordingsTodayDeltaPct }}%
-          </span>
+          <span class="font-display text-3xl font-bold text-primary">{{ s.totalPublicDetections | number }}</span>
+          <span class="text-sm text-on-surface-variant mt-1">{{ 'landing.stats.totalDetections' | translate }}</span>
         </div>
         <div class="flex flex-col items-center text-center">
-          <span class="font-display text-3xl font-bold text-primary">{{ s.catalogedSpecies }}</span>
+          <span class="font-display text-3xl font-bold text-primary">{{ s.totalSpecies }}</span>
           <span class="text-sm text-on-surface-variant mt-1">{{ 'landing.stats.species' | translate }}</span>
         </div>
         <div class="flex flex-col items-center text-center">
-          <span class="font-display text-3xl font-bold text-primary">{{ s.activeObservers | number }}</span>
+          <span class="font-display text-3xl font-bold text-primary">{{ s.distinctObservers | number }}</span>
           <span class="text-sm text-on-surface-variant mt-1">{{ 'landing.stats.observers' | translate }}</span>
-          <span class="text-xs text-on-surface-variant mt-1">{{ s.countriesCount }} países</span>
         </div>
         <div class="flex flex-col items-center text-center">
-          <span class="font-display text-3xl font-bold text-primary">{{ s.validatedAccuracyPct }}%</span>
+          <span class="font-display text-3xl font-bold text-primary">{{ s.averageConfidencePct }}%</span>
           <span class="text-sm text-on-surface-variant mt-1">{{ 'landing.stats.accuracy' | translate }}</span>
         </div>
       </div>

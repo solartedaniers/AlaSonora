@@ -1,19 +1,15 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { NetworkStats } from '../models';
 
-/** Estadísticas globales mock para el landing y el mapa público. */
+/** Estadísticas globales contra GET /api/network-stats del backend (público, sin auth). */
 @Injectable({ providedIn: 'root' })
 export class NetworkStatsService {
+  private readonly http = inject(HttpClient);
+
   async get(): Promise<NetworkStats> {
-    return {
-      recordingsToday: 18450,
-      recordingsTodayDeltaPct: 14,
-      catalogedSpecies: 482,
-      activeObservers: 1240,
-      countriesCount: 14,
-      validatedAccuracyPct: 99.1,
-      activeNodes: 92,
-      threatenedSpeciesFlags: 34,
-    };
+    return firstValueFrom(this.http.get<NetworkStats>(`${environment.apiBaseUrl}/network-stats`));
   }
 }

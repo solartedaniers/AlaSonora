@@ -52,7 +52,7 @@
     "ctaSecondary": "Ver Mapa de Avistamientos",
     "alreadyHaveAccount": "¿Ya tienes cuenta activa?",
     "stats": {
-      "recordingsToday": "Grabaciones hoy",
+      "totalDetections": "Detecciones públicas",
       "species": "Especies catalogadas",
       "observers": "Observadores en campo",
       "accuracy": "Precisión validada"
