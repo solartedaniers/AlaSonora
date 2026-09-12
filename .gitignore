@@ -54,3 +54,7 @@ graph.json
 # Claude Code (config local)
 .claude/
 .claudeignore
+
+# IDE / Editor configurations
+.vscode/
+.idea/
