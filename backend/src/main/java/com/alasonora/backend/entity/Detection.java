@@ -42,6 +42,7 @@ public class Detection {
     @Column(nullable = false)
     private Instant recordedAt;
 
+    @Column(columnDefinition = "TEXT")
     private String audioUrl;
 
     @Column(nullable = false)
@@ -63,8 +64,10 @@ public class Detection {
     @Embedded
     private GeoLocation location;
 
+    @Column(columnDefinition = "TEXT")
     private String observerName;
 
+    @Column(columnDefinition = "TEXT")
     private String fieldNotes;
 
     @Enumerated(EnumType.STRING)

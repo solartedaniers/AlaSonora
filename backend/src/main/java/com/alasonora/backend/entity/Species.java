@@ -21,25 +21,27 @@ public class Species {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String commonName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String commonNameEn;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, columnDefinition = "TEXT")
     private String scientificName;
 
+    @Column(columnDefinition = "TEXT")
     private String family;
 
     // "order" is a reserved word in Postgres, so the column is renamed.
-    @Column(name = "taxon_order")
+    @Column(name = "taxon_order", columnDefinition = "TEXT")
     private String order;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private IucnStatus iucnStatus;
 
+    @Column(columnDefinition = "TEXT")
     private String imageUrl;
 
     // Bioacoustic enrichment: populated for curated species, defaults to
@@ -49,6 +51,6 @@ public class Species {
     @Column(nullable = false)
     private VocalizationType vocalizationType = VocalizationType.UNKNOWN;
 
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "TEXT")
     private String behaviorNotes;
 }
