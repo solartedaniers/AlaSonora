@@ -14,6 +14,10 @@
     "logout": "Log Out",
     "register": "Create Account"
   },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No new public detections"
+  },
   "theme": {
     "light": "Light Mode",
     "dark": "Dark Mode",

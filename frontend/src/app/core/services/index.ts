@@ -8,4 +8,5 @@ export * from './profile.service';
 export * from './detection-draft.service';
 export * from './audio-capture.service';
 export * from './live-sync.service';
+export * from './notifications.service';
 export * from './offline-storage.service';
