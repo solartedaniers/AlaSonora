@@ -1,25 +1,30 @@
-import { Injectable, signal } from '@angular/core';
-import { AppUser, UserStats } from '../models';
+import { Injectable, inject, signal } from '@angular/core';
+import type { User } from '@supabase/supabase-js';
+import { AppUser, ObserverRole, UserStats } from '../models';
+import { SupabaseClientService } from './supabase-client.service';
+
+const DEFAULT_ROLE: ObserverRole = 'hobbyist';
 
 /**
- * Sesión del usuario actual. Mock: mantiene un usuario "logueado" en memoria
- * con un signal, para que dashboard/perfil/nav puedan reaccionar a cambios
- * (ej. tras un login simulado) sin acoplarse a cómo se obtiene ese dato.
- * En la fase de backend, este servicio pasará a delegar en un AuthService
- * real basado en Supabase Auth + interceptor de token.
+ * Session state backed by Supabase Auth directly (sign in/up/out, password
+ * reset, session refresh all handled by the SDK). Profile fields beyond
+ * what Supabase Auth stores in user_metadata (institution, avatarUrl, etc.)
+ * are filled in from our backend's Profile once that integration lands.
  */
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  readonly currentUser = signal<AppUser>({
-    id: 'user-001',
-    fullName: 'Dra. Elena Valenzuela',
-    email: 'elena.valenzuela@biota.org',
-    role: 'biologist',
-    institution: 'Instituto de Investigaciones Neotropicales',
-    avatarUrl: 'assets/avatars/elena-valenzuela.jpg',
-    orcidId: '0000-0002-1825-0097',
-    stationName: 'Reserva Biológica Chocó · Estación 4B',
-  });
+  private readonly supabase = inject(SupabaseClientService).client;
+
+  readonly currentUser = signal<AppUser | null>(null);
+
+  constructor() {
+    this.supabase.auth.getSession().then(({ data }) => {
+      this.currentUser.set(this.toAppUser(data.session?.user ?? null));
+    });
+    this.supabase.auth.onAuthStateChange((_event, session) => {
+      this.currentUser.set(this.toAppUser(session?.user ?? null));
+    });
+  }
 
   async getStats(): Promise<UserStats> {
     return {
@@ -32,14 +37,47 @@ export class UserService {
     };
   }
 
-  login(email: string, _password: string): Promise<AppUser> {
-    // Simulación: en la fase de backend esto llamará a Supabase Auth.
-    return Promise.resolve({ ...this.currentUser(), email });
+  async login(email: string, password: string): Promise<void> {
+    const { error } = await this.supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
   }
 
-  register(fullName: string, email: string, role: AppUser['role']): Promise<AppUser> {
-    const user: AppUser = { ...this.currentUser(), fullName, email, role };
-    this.currentUser.set(user);
-    return Promise.resolve(user);
+  async register(fullName: string, email: string, password: string, role: ObserverRole): Promise<void> {
+    const { error } = await this.supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: fullName, role } },
+    });
+    if (error) throw error;
+  }
+
+  async logout(): Promise<void> {
+    const { error } = await this.supabase.auth.signOut();
+    if (error) throw error;
+  }
+
+  async sendPasswordResetEmail(email: string): Promise<void> {
+    const { error } = await this.supabase.auth.resetPasswordForEmail(email);
+    if (error) throw error;
+  }
+
+  async updatePassword(newPassword: string): Promise<void> {
+    const { error } = await this.supabase.auth.updateUser({ password: newPassword });
+    if (error) throw error;
+  }
+
+  private toAppUser(user: User | null): AppUser | null {
+    if (!user) return null;
+    const metadata = user.user_metadata ?? {};
+    return {
+      id: user.id,
+      fullName: metadata['full_name'] ?? user.email ?? '',
+      email: user.email ?? '',
+      role: (metadata['role'] as ObserverRole) ?? DEFAULT_ROLE,
+      institution: metadata['institution'],
+      avatarUrl: metadata['avatar_url'],
+      orcidId: metadata['orcid_id'],
+      stationName: metadata['station_name'],
+    };
   }
 }

@@ -20,14 +20,14 @@
               <span class="material-symbols-outlined text-xs">hub</span>
               <span>Red GBIF & eBird</span>
             </div>
-            <h1 class="font-display text-2xl font-bold tracking-tight">{{ user.currentUser().fullName }}</h1>
+            <h1 class="font-display text-2xl font-bold tracking-tight">{{ user.currentUser()?.fullName }}</h1>
             <p class="text-sm text-on-surface-variant flex items-center gap-1.5">
               <span class="material-symbols-outlined text-sm text-primary">account_balance</span>
-              {{ user.currentUser().institution }}
+              {{ user.currentUser()?.institution }}
             </p>
-            @if (user.currentUser().orcidId) {
+            @if (user.currentUser()?.orcidId; as orcidId) {
               <span class="font-mono text-xs bg-surface-container px-2 py-0.5 rounded text-on-surface-variant">
-                ORCID: {{ user.currentUser().orcidId }}
+                ORCID: {{ orcidId }}
               </span>
             }
           </div>

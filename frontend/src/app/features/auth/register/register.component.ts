@@ -72,8 +72,8 @@ export class RegisterComponent {
     }
     this.submitting.set(true);
     try {
-      const { fullName, email, role } = this.form.getRawValue();
-      await this.userService.register(fullName, email, role);
+      const { fullName, email, password, role } = this.form.getRawValue();
+      await this.userService.register(fullName, email, password, role);
       await this.router.navigateByUrl('/dashboard');
     } finally {
       this.submitting.set(false);

@@ -36,8 +36,8 @@ import { UserService } from '../../../core/services/user.service';
         <app-lang-toggle />
         <app-theme-toggle />
         <img
-          [src]="user.currentUser().avatarUrl || 'assets/avatars/default.jpg'"
-          [alt]="user.currentUser().fullName"
+          [src]="user.currentUser()?.avatarUrl || 'assets/avatars/default.jpg'"
+          [alt]="user.currentUser()?.fullName ?? ''"
           class="w-9 h-9 rounded-full object-cover shadow-sm ring-2 ring-primary/30 hidden sm:block"
           onerror="this.style.display='none'"
         />

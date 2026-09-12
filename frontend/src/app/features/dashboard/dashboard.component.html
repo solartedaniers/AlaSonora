@@ -7,14 +7,14 @@
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-surface-container-low p-6 rounded-xl shadow-sm">
       <div class="flex flex-col gap-1">
         <h1 class="font-display text-2xl font-bold tracking-tight">
-          {{ 'dashboard.welcome' | translate }}, {{ user.currentUser().fullName }}
+          {{ 'dashboard.welcome' | translate }}, {{ user.currentUser()?.fullName }}
         </h1>
         <p class="text-sm text-on-surface-variant">{{ 'dashboard.subtitle' | translate }}</p>
       </div>
       <div class="flex items-center gap-3 bg-surface-container p-3 rounded-xl">
         <span class="material-symbols-outlined text-secondary text-xl">location_on</span>
         <div class="flex flex-col">
-          <span class="text-xs text-on-surface-variant">{{ user.currentUser().stationName }}</span>
+          <span class="text-xs text-on-surface-variant">{{ user.currentUser()?.stationName }}</span>
         </div>
       </div>
     </div>
