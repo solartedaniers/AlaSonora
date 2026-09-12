@@ -26,6 +26,17 @@ export class UserService {
     });
   }
 
+  /**
+   * Reads Supabase's local session directly instead of the `currentUser`
+   * signal, which is only populated once the initial getSession() promise
+   * resolves — route guards run before that, so relying on the signal here
+   * would bounce a logged-in user on a hard refresh.
+   */
+  async isAuthenticated(): Promise<boolean> {
+    const { data } = await this.supabase.auth.getSession();
+    return data.session !== null;
+  }
+
   async getStats(): Promise<UserStats> {
     return {
       totalRecordings: 412,

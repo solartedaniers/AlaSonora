@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -23,24 +24,28 @@ export const routes: Routes = [
     path: 'dashboard',
     loadComponent: () =>
       import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+    canActivate: [authGuard],
     title: 'AlaSonora — Dashboard',
   },
   {
     path: 'record',
     loadComponent: () =>
       import('./features/recording/recording.component').then((m) => m.RecordingComponent),
+    canActivate: [authGuard],
     title: 'AlaSonora — Grabar',
   },
   {
     path: 'result/:id',
     loadComponent: () =>
       import('./features/result/result.component').then((m) => m.ResultComponent),
+    canActivate: [authGuard],
     title: 'AlaSonora — Resultado',
   },
   {
     path: 'history',
     loadComponent: () =>
       import('./features/history/history.component').then((m) => m.HistoryComponent),
+    canActivate: [authGuard],
     title: 'AlaSonora — Mi Historial',
   },
   {
@@ -52,6 +57,7 @@ export const routes: Routes = [
     path: 'profile',
     loadComponent: () =>
       import('./features/profile/profile.component').then((m) => m.ProfileComponent),
+    canActivate: [authGuard],
     title: 'AlaSonora — Mi Perfil',
   },
   { path: '**', redirectTo: '' },
