@@ -61,13 +61,13 @@ public class DetectionClassificationService {
                 request.recordedAt()
             ));
         } catch (AudioQualityException ex) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage(), ex);
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage(), ex);
         } catch (AudioClassificationException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "The bioacoustic engine is unavailable", ex);
         }
 
         if (raw.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "No bird species were identified in this recording");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT, "No bird species were identified in this recording");
         }
 
         List<DetectionCandidateDto> ranked = raw.stream()
