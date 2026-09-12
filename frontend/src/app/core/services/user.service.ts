@@ -83,6 +83,22 @@ export class UserService {
     if (error) throw error;
   }
 
+  /**
+   * Mirrors a backend Profile edit into Supabase Auth's user_metadata, so
+   * `currentUser` (and anything reading it, like nav-header's avatar) stays
+   * in sync without a second data source for the same display fields.
+   */
+  async syncMetadata(patch: {
+    full_name?: string;
+    avatar_url?: string;
+    institution?: string;
+    orcid_id?: string;
+    station_name?: string;
+  }): Promise<void> {
+    const { error } = await this.supabase.auth.updateUser({ data: patch });
+    if (error) throw error;
+  }
+
   private toAppUser(user: User | null): AppUser | null {
     if (!user) return null;
     const metadata = user.user_metadata ?? {};

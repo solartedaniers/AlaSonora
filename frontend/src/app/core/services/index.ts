@@ -4,6 +4,7 @@ export * from './species-catalog.service';
 export * from './detections.service';
 export * from './network-stats.service';
 export * from './user.service';
+export * from './profile.service';
 export * from './audio-capture.service';
 export * from './live-sync.service';
 export * from './offline-storage.service';

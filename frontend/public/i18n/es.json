@@ -196,6 +196,10 @@
   "profile": {
     "editProfile": "Editar Datos de Perfil",
     "credential": "Credencial Científica",
+    "institution": "Institución / Organización",
+    "orcidId": "ID ORCID",
+    "stationName": "Estación de Campo",
+    "changeAvatar": "Cambiar Foto",
     "impactTitle": "Impacto Científico & Red eBird/GBIF",
     "recordingsUploaded": "Grabaciones Subidas",
     "speciesConfirmed": "Especies Confirmadas",
