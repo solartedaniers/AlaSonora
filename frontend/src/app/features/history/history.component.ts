@@ -40,7 +40,7 @@ export class HistoryComponent implements OnInit {
   });
 
   async ngOnInit(): Promise<void> {
-    this.all.set(await this.detectionsService.getAll());
+    this.all.set(await this.detectionsService.getMine());
   }
 
   setView(view: HistoryView): void {

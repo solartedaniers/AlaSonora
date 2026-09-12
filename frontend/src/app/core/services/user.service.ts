@@ -37,6 +37,12 @@ export class UserService {
     return data.session !== null;
   }
 
+  /** Supabase access token (JWT) for the current session, if any — used by authInterceptor. */
+  async getAccessToken(): Promise<string | null> {
+    const { data } = await this.supabase.auth.getSession();
+    return data.session?.access_token ?? null;
+  }
+
   async getStats(): Promise<UserStats> {
     return {
       totalRecordings: 412,

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alasonora.backend.dto.CreateDetectionRequest;
 import com.alasonora.backend.dto.DetectionDto;
@@ -24,10 +25,14 @@ public class DetectionService {
         this.speciesService = speciesService;
     }
 
+    // readOnly: keeps the Hibernate session open while mapping to DTOs, since
+    // species/alternatives are lazy and open-in-view is disabled.
+    @Transactional(readOnly = true)
     public List<DetectionDto> getPublicDetections() {
         return detectionRepository.findByVisibility(Visibility.PUBLIC).stream().map(DetectionDto::fromEntity).toList();
     }
 
+    @Transactional(readOnly = true)
     public List<DetectionDto> getMyDetections(UUID ownerId) {
         return detectionRepository.findByOwnerId(ownerId).stream().map(DetectionDto::fromEntity).toList();
     }
