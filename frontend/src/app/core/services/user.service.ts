@@ -43,6 +43,12 @@ export class UserService {
     return data.session?.access_token ?? null;
   }
 
+  /** Same rationale as {@link isAuthenticated}: reads the session directly instead of the `currentUser` signal. */
+  async getUserId(): Promise<string | null> {
+    const { data } = await this.supabase.auth.getSession();
+    return data.session?.user.id ?? null;
+  }
+
   async getStats(): Promise<UserStats> {
     return {
       totalRecordings: 412,

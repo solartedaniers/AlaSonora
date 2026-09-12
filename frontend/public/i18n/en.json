@@ -163,7 +163,9 @@
     "stopAndClassify": "Stop & Classify Sample",
     "dropzoneTitle": "Drag your audio here or browse files",
     "dropzoneBody": "Supports WAV, MP3, and FLAC up to 500MB.",
-    "browseFiles": "Browse Local Files"
+    "browseFiles": "Browse Local Files",
+    "notSignedIn": "Your session is still loading. Wait a moment and try again.",
+    "classifyError": "Could not classify the audio. Check your connection and try again."
   },
   "result": {
     "completedTitle": "Bioacoustic Identification Complete",

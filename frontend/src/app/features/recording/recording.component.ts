@@ -48,6 +48,7 @@ export class RecordingComponent {
   }
 
   readonly isClassifying = signal(false);
+  readonly classifyError = signal<string | null>(null);
 
   async toggleRecording(): Promise<void> {
     if (this.capture.isRecording()) {
@@ -78,8 +79,16 @@ export class RecordingComponent {
   }
 
   private async classifyAndNavigate(audio: Blob, durationSeconds: number, peakFrequencyHz: number): Promise<void> {
-    const userId = this.userService.currentUser()?.id;
-    if (!userId) return;
+    this.classifyError.set(null);
+
+    // Reads the session directly rather than the `currentUser` signal, which
+    // only resolves after its initial getSession() promise settles — see
+    // UserService.isAuthenticated for the same rationale.
+    const userId = await this.userService.getUserId();
+    if (!userId) {
+      this.classifyError.set('recording.notSignedIn');
+      return;
+    }
 
     this.isClassifying.set(true);
     try {
@@ -101,6 +110,9 @@ export class RecordingComponent {
       });
 
       await this.router.navigate(['/result', DRAFT_DETECTION_ID]);
+    } catch (error) {
+      console.error('Classification failed', error);
+      this.classifyError.set('recording.classifyError');
     } finally {
       this.isClassifying.set(false);
     }

@@ -163,7 +163,9 @@
     "stopAndClassify": "Detener y Clasificar Muestra",
     "dropzoneTitle": "Arrastra tu audio aquí o examina archivos",
     "dropzoneBody": "Soporta WAV, MP3 y FLAC de hasta 500MB.",
-    "browseFiles": "Explorar Archivos Locales"
+    "browseFiles": "Explorar Archivos Locales",
+    "notSignedIn": "Tu sesión aún se está cargando. Espera un momento e inténtalo de nuevo.",
+    "classifyError": "No se pudo clasificar el audio. Revisa tu conexión e inténtalo de nuevo."
   },
   "result": {
     "completedTitle": "Identificación Bioacústica Completada",
