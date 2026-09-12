@@ -7,9 +7,11 @@ import { CountUpComponent } from '../../shared/components/count-up/count-up.comp
 import { InfiniteSpiralComponent, SpiralItem } from '../../shared/components/infinite-spiral/infinite-spiral.component';
 import { PointerGlowDirective } from '../../shared/directives/pointer-glow.directive';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
 import { UserService } from '../../core/services/user.service';
 import { DetectionsService } from '../../core/services/detections.service';
-import { Detection, UserStats } from '../../core/models';
+import { I18nService } from '../../core/services/i18n.service';
+import { Detection, UserStats, speciesDisplayName } from '../../core/models';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,6 +25,7 @@ import { Detection, UserStats } from '../../core/models';
     InfiniteSpiralComponent,
     PointerGlowDirective,
     TranslatePipe,
+    SpeciesNamePipe,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './dashboard.component.html',
@@ -30,16 +33,18 @@ import { Detection, UserStats } from '../../core/models';
 export class DashboardComponent implements OnInit {
   readonly user = inject(UserService);
   private readonly detectionsService = inject(DetectionsService);
+  private readonly i18n = inject(I18nService);
 
   readonly stats = signal<UserStats | null>(null);
   readonly latest = signal<Detection | null>(null);
   readonly recent = signal<Detection[]>([]);
 
-  readonly spiralItems = computed<SpiralItem[]>(() =>
-    this.recent()
+  readonly spiralItems = computed<SpiralItem[]>(() => {
+    const lang = this.i18n.lang();
+    return this.recent()
       .filter((d) => d.species.imageUrl)
-      .map((d) => ({ imageUrl: d.species.imageUrl!, caption: d.species.commonName })),
-  );
+      .map((d) => ({ imageUrl: d.species.imageUrl!, caption: speciesDisplayName(d.species, lang) }));
+  });
 
   async ngOnInit(): Promise<void> {
     this.stats.set(await this.user.getStats());

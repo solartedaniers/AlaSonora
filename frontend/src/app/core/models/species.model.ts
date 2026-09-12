@@ -16,6 +16,17 @@ export interface Species {
   behaviorNotes?: string;
 }
 
+/**
+ * Nombre común a mostrar según el idioma activo, con fallback en cadena
+ * (idioma activo → el otro idioma → nombre científico) para que nunca se
+ * muestre un campo vacío si el catálogo tiene datos incompletos.
+ */
+export function speciesDisplayName(species: Species, lang: 'es' | 'en'): string {
+  const localized = lang === 'en' ? species.commonNameEn : species.commonName;
+  const other = lang === 'en' ? species.commonName : species.commonNameEn;
+  return localized || other || species.scientificName;
+}
+
 export type IucnStatus = 'LC' | 'NT' | 'VU' | 'EN' | 'CR' | 'NE';
 
 export const IUCN_LABELS: Record<IucnStatus, string> = {

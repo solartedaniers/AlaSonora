@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
 import { DetectionsService } from '../../core/services/detections.service';
 import { LiveSyncService } from '../../core/services/live-sync.service';
 import { UserService } from '../../core/services/user.service';
@@ -13,7 +14,7 @@ import { Detection, Visibility } from '../../core/models';
 @Component({
   selector: 'app-result',
   standalone: true,
-  imports: [RouterLink, DecimalPipe, NavHeaderComponent, ConfidenceBadgeComponent, TranslatePipe],
+  imports: [RouterLink, DecimalPipe, NavHeaderComponent, ConfidenceBadgeComponent, TranslatePipe, SpeciesNamePipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './result.component.html',
 })

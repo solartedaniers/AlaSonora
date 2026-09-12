@@ -32,6 +32,7 @@ export class SpeciesCatalogService {
     return all.filter(
       (s) =>
         s.commonName.toLowerCase().includes(q) ||
+        s.commonNameEn.toLowerCase().includes(q) ||
         s.scientificName.toLowerCase().includes(q) ||
         s.family.toLowerCase().includes(q)
     );

@@ -3,6 +3,7 @@ import { DatePipe } from '@angular/common';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
 import { DetectionsService } from '../../core/services/detections.service';
 import { LiveSyncService } from '../../core/services/live-sync.service';
 import { Detection } from '../../core/models';
@@ -10,7 +11,7 @@ import { Detection } from '../../core/models';
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [DatePipe, NavHeaderComponent, ConfidenceBadgeComponent, TranslatePipe],
+  imports: [DatePipe, NavHeaderComponent, ConfidenceBadgeComponent, TranslatePipe, SpeciesNamePipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './map.component.html',
 })

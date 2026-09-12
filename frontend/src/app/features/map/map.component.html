@@ -65,7 +65,7 @@
         <div class="flex items-center gap-2 mb-3">
           <app-confidence-badge [value]="d.confidence" />
         </div>
-        <h3 class="font-display text-lg font-semibold">{{ d.species.commonName }}</h3>
+        <h3 class="font-display text-lg font-semibold">{{ d.species | speciesName }}</h3>
         <p class="text-sm italic text-primary">{{ d.species.scientificName }}</p>
         <div class="mt-3 flex items-center gap-2 py-2 px-3 bg-surface-container-lowest/80 rounded-xl text-xs text-on-surface-variant">
           <span class="material-symbols-outlined text-[16px] text-primary">location_on</span>
@@ -91,7 +91,7 @@
               <span class="text-xs text-on-surface-variant">{{ d.recordedAt | date: 'shortTime' }}</span>
               <span class="text-xs text-on-surface-variant">{{ d.confidence }}% IA</span>
             </div>
-            <div class="font-display text-sm truncate">{{ d.species.commonName }}</div>
+            <div class="font-display text-sm truncate">{{ d.species | speciesName }}</div>
             <div class="text-[11px] text-on-surface-variant truncate">{{ d.observerName }}</div>
           </button>
         }

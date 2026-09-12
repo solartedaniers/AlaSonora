@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
 import { DetectionsService } from '../../core/services/detections.service';
 import { Detection, SyncStatus } from '../../core/models';
 
@@ -13,7 +14,7 @@ type StatusFilter = 'all' | SyncStatus;
 @Component({
   selector: 'app-history',
   standalone: true,
-  imports: [RouterLink, DatePipe, NavHeaderComponent, ConfidenceBadgeComponent, TranslatePipe],
+  imports: [RouterLink, DatePipe, NavHeaderComponent, ConfidenceBadgeComponent, TranslatePipe, SpeciesNamePipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './history.component.html',
 })
@@ -33,6 +34,7 @@ export class HistoryComponent implements OnInit {
       const matchesTerm =
         !term ||
         d.species.commonName.toLowerCase().includes(term) ||
+        d.species.commonNameEn.toLowerCase().includes(term) ||
         d.species.scientificName.toLowerCase().includes(term) ||
         (d.location.placeName ?? '').toLowerCase().includes(term);
       return matchesStatus && matchesTerm;

@@ -3,13 +3,14 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
 import { LangToggleComponent } from '../lang-toggle/lang-toggle.component';
 import { TranslatePipe } from '../../pipes/translate.pipe';
+import { SpeciesNamePipe } from '../../pipes/species-name.pipe';
 import { UserService } from '../../../core/services/user.service';
 import { NotificationsService } from '../../../core/services/notifications.service';
 
 @Component({
   selector: 'app-nav-header',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, ThemeToggleComponent, LangToggleComponent, TranslatePipe],
+  imports: [RouterLink, RouterLinkActive, ThemeToggleComponent, LangToggleComponent, TranslatePipe, SpeciesNamePipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <header class="w-full bg-surface-container-low/90 backdrop-blur-md sticky top-0 z-40 px-4 sm:px-8 py-3 flex items-center justify-between shadow-sm">
@@ -75,7 +76,7 @@ import { NotificationsService } from '../../../core/services/notifications.servi
               } @else {
                 @for (item of notifications.notifications(); track item.id) {
                   <div class="px-4 py-2.5 border-b border-outline-variant/10 last:border-0">
-                    <p class="text-sm font-medium">{{ item.species.commonName }}</p>
+                    <p class="text-sm font-medium">{{ item.species | speciesName }}</p>
                     <p class="text-xs text-on-surface-variant">{{ item.observerName }} · {{ item.location.placeName }}</p>
                   </div>
                 }
