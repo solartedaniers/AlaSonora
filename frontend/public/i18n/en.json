@@ -12,7 +12,8 @@
     "profile": "My Profile",
     "login": "Log In",
     "logout": "Log Out",
-    "register": "Create Account"
+    "register": "Create Account",
+    "menu": "Menu"
   },
   "notifications": {
     "title": "Notifications",

@@ -37,6 +37,17 @@ import { NotificationsService } from '../../../core/services/notifications.servi
         <app-lang-toggle />
         <app-theme-toggle />
 
+        <button
+          type="button"
+          class="md:hidden w-9 h-9 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors"
+          [attr.aria-label]="'nav.menu' | translate"
+          (click)="mobileMenuOpen.update((open) => !open)"
+        >
+          <span class="material-symbols-outlined text-on-surface-variant text-[22px]">
+            {{ mobileMenuOpen() ? 'close' : 'menu' }}
+          </span>
+        </button>
+
         <div class="relative">
           <button
             type="button"
@@ -81,6 +92,22 @@ import { NotificationsService } from '../../../core/services/notifications.servi
         />
       </div>
     </header>
+
+    @if (mobileMenuOpen()) {
+      <nav class="md:hidden w-full bg-surface-container-low border-t border-outline-variant/20 px-4 py-2 sticky top-[60px] z-30 shadow-sm">
+        @for (item of navItems; track item.path) {
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="bg-surface-container-high text-primary"
+            class="px-3 py-2.5 rounded-lg font-display text-sm text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-2.5"
+            (click)="mobileMenuOpen.set(false)"
+          >
+            <span class="material-symbols-outlined text-[18px]">{{ item.icon }}</span>
+            <span>{{ item.labelKey | translate }}</span>
+          </a>
+        }
+      </nav>
+    }
   `,
 })
 export class NavHeaderComponent {
@@ -88,6 +115,7 @@ export class NavHeaderComponent {
   readonly notifications = inject(NotificationsService);
 
   readonly notificationsOpen = signal(false);
+  readonly mobileMenuOpen = signal(false);
 
   readonly navItems = [
     { path: '/dashboard', icon: 'dashboard', labelKey: 'nav.dashboard' },
