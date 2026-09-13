@@ -14,18 +14,9 @@ import { ThemeService } from '../../../core/services/theme.service';
 
 type BlendMode = 'screen' | 'normal' | 'lighten';
 
-interface CursorPalette {
-  colorA: string;
-  colorB: string;
-}
-
-// Vivid defaults per theme: dark mode stays bright cyan/violet so the trail
-// pops against dark surfaces; light mode drops to a deeper emerald/teal so
-// it stays visible without looking neon on light surfaces.
-const THEME_PALETTES: Record<'dark' | 'light', CursorPalette> = {
-  dark: { colorA: '#67E8F9', colorB: '#A78BFA' },
-  light: { colorA: '#334155', colorB: '#64748b' },
-};
+// Lightness of the rainbow trail per theme: darker on light backgrounds so the
+// hues stay saturated and visible instead of washing out against white.
+const THEME_LIGHTNESS: Record<'dark' | 'light', number> = { dark: 0.62, light: 0.42 };
 
 const VERTEX_SHADER = `
   attribute vec2 uv;
@@ -45,20 +36,29 @@ function buildFragmentShader(trailLength: number): string {
     uniform vec2 uTrail[TRAIL_LENGTH];
     uniform float uIntensity;
     uniform float uWidth;
-    uniform vec3 uColorA;
-    uniform vec3 uColorB;
+    uniform float uTime;
+    uniform float uLightness;
     varying vec2 vUv;
+
+    vec3 hsl2rgb(vec3 hsl) {
+      vec3 rgb = clamp(abs(mod(hsl.x * 6.0 + vec3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0);
+      return hsl.z + hsl.y * (rgb - 0.5) * (1.0 - abs(2.0 * hsl.z - 1.0));
+    }
 
     void main() {
       vec2 fragCoord = vUv * uResolution;
-      float glow = 0.0;
+      float totalGlow = 0.0;
+      vec3 colorSum = vec3(0.0);
       for (int i = 0; i < TRAIL_LENGTH; i++) {
         float weight = 1.0 - float(i) / float(TRAIL_LENGTH);
         float dist = distance(fragCoord, uTrail[i]);
-        glow += weight * weight * exp(-(dist * dist) / (uWidth * uWidth));
+        float falloff = weight * weight * exp(-(dist * dist) / (uWidth * uWidth));
+        float hue = fract(float(i) / float(TRAIL_LENGTH) - uTime * 0.15);
+        colorSum += falloff * hsl2rgb(vec3(hue, 1.0, uLightness));
+        totalGlow += falloff;
       }
-      glow *= uIntensity;
-      vec3 color = mix(uColorB, uColorA, clamp(glow, 0.0, 1.0));
+      float glow = totalGlow * uIntensity;
+      vec3 color = totalGlow > 0.0001 ? colorSum / totalGlow : vec3(0.0);
       gl_FragColor = vec4(color * glow, glow);
     }
   `;
@@ -66,8 +66,8 @@ function buildFragmentShader(trailLength: number): string {
 
 /**
  * Global bioluminescent cursor trail rendered on a fullscreen WebGL canvas (OGL).
- * Mounted once at the app root; follows the pointer with a short glowing trail
- * and switches its palette reactively based on the active theme.
+ * Mounted once at the app root; follows the pointer with a short rainbow glow
+ * trail whose lightness adapts to the active theme so it never washes out.
  */
 @Component({
   selector: 'app-glow-cursor',
@@ -117,8 +117,8 @@ export class GlowCursorComponent implements AfterViewInit, OnDestroy {
 
   constructor() {
     effect(() => {
-      this.theme.resolvedTheme();
-      this.applyThemeColors();
+      const theme = this.theme.resolvedTheme();
+      if (this.program) this.program.uniforms['uLightness'].value = THEME_LIGHTNESS[theme];
     });
   }
 
@@ -144,13 +144,12 @@ export class GlowCursorComponent implements AfterViewInit, OnDestroy {
         uTrail: { value: this.trail },
         uIntensity: { value: 0 },
         uWidth: { value: this.trailWidth },
-        uColorA: { value: [1, 1, 1] },
-        uColorB: { value: [1, 1, 1] },
+        uTime: { value: 0 },
+        uLightness: { value: THEME_LIGHTNESS[this.theme.resolvedTheme()] },
       },
     });
     this.mesh = new Mesh(gl, { geometry: new Triangle(gl), program: this.program });
 
-    this.applyThemeColors();
     this.resize();
     window.addEventListener('resize', this.onResize);
     window.addEventListener('pointermove', this.onPointerMove, { passive: true });
@@ -173,6 +172,7 @@ export class GlowCursorComponent implements AfterViewInit, OnDestroy {
   private readonly tick = (): void => {
     this.advanceTrail();
     this.applyIntensity();
+    this.program!.uniforms['uTime'].value = performance.now() * 0.001;
     this.renderer!.render({ scene: this.mesh! });
     this.frameId = requestAnimationFrame(this.tick);
   };
@@ -192,19 +192,5 @@ export class GlowCursorComponent implements AfterViewInit, OnDestroy {
     const fadeProgress = Math.max(0, Math.min(1, (idleFor - this.idleFadeDelayMs) / this.idleFadeDurationMs));
     const pulse = 1 + 0.15 * Math.sin(performance.now() * 0.001 * this.pulseSpeed);
     this.program!.uniforms['uIntensity'].value = this.glowIntensity * pulse * (1 - fadeProgress);
-  }
-
-  private applyThemeColors(): void {
-    if (!this.program) return;
-    const palette = THEME_PALETTES[this.theme.resolvedTheme()];
-    this.program.uniforms['uColorA'].value = this.hexToRgb(palette.colorA);
-    this.program.uniforms['uColorB'].value = this.hexToRgb(palette.colorB);
-  }
-
-  private hexToRgb(hex: string): [number, number, number] {
-    const match = /^#([0-9a-f]{6})$/i.exec(hex);
-    if (!match) return [1, 1, 1];
-    const int = parseInt(match[1], 16);
-    return [((int >> 16) & 255) / 255, ((int >> 8) & 255) / 255, (int & 255) / 255];
   }
 }
