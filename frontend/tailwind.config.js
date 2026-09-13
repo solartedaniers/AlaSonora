@@ -80,6 +80,20 @@ module.exports = {
         xl: '0.75rem',
         '2xl': '1rem',
       },
+      animation: {
+        float: 'float 5s ease-in-out infinite',
+        scan: 'scan 3s linear infinite',
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-8px)' },
+        },
+        scan: {
+          '0%': { left: '8%' },
+          '100%': { left: '92%' },
+        },
+      },
     },
   },
   plugins: [],

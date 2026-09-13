@@ -62,7 +62,6 @@
     "subtitle": "A citizen-science and ecological monitoring tool for biologists, park rangers, and nature enthusiasts. Instant acoustic identification from songs, calls, and trills in the open field.",
     "ctaPrimary": "Start Identifying for Free",
     "ctaSecondary": "View Sightings Map",
-    "alreadyHaveAccount": "Already have an account?",
     "stats": {
       "totalDetections": "Public detections",
       "species": "Cataloged species",
@@ -73,9 +72,9 @@
       "eyebrow": "Identification Process",
       "title": "From a murmur in the foliage to taxonomic certainty",
       "step1Title": "Record or upload the song",
-      "step1Body": "Capture directly with your phone's microphone, or upload WAV and MP3 files. Works even without mobile data.",
+      "step1Body": "Capture directly with your phone's microphone, or upload WAV and MP3 files with real-time sync.",
       "step2Title": "AI bioacoustic analysis",
-      "step2Body": "The model decomposes harmonics, center frequencies, and vocal cadence in under a second.",
+      "step2Body": "The model decomposes harmonics, center frequencies, and vocal cadence quickly and accurately.",
       "step3Title": "Record and citizen science",
       "step3Body": "Save your findings, explore distribution maps, and feed the collective biodiversity atlas."
     }

@@ -79,3 +79,38 @@ body {
 .border-glow:hover::before {
   opacity: 1;
 }
+
+// Titulares con profundidad 3D — usados en la hero de landing.
+// Se apoyan en los mismos tokens de color que el resto de la app (tokens.scss)
+// para que la sombra/gradiente se adapte igual en modo claro y oscuro.
+.hero-title-3d {
+  text-shadow:
+    0 1px 0 color-mix(in srgb, var(--color-on-surface) 55%, transparent),
+    0 2px 0 color-mix(in srgb, var(--color-on-surface) 35%, transparent),
+    0 10px 24px color-mix(in srgb, var(--color-primary) 35%, transparent);
+  letter-spacing: -0.03em;
+}
+
+.gradient-3d-text {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-tertiary) 65%, var(--color-primary-fixed) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 4px 12px color-mix(in srgb, var(--color-primary) 35%, transparent));
+}
+
+// Tarjeta translúcida glassmorphic (monitor bioacústico de la hero).
+.glass-card {
+  background: color-mix(in srgb, var(--color-surface-container-lowest) 82%, transparent);
+  backdrop-filter: blur(20px);
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 60%, transparent);
+}
+
+// Elevación al pasar el cursor sobre las tarjetas de "cómo funciona".
+.feature-card {
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+}
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 35px -8px color-mix(in srgb, var(--color-primary) 30%, transparent);
+}

@@ -62,7 +62,6 @@
     "subtitle": "Una herramienta de ciencia ciudadana y monitoreo ecológico para biólogos, guardaparques y entusiastas de la naturaleza. Identificación acústica instantánea a partir de cantos, reclamos y trinos en campo abierto.",
     "ctaPrimary": "Comenzar a Identificar Gratis",
     "ctaSecondary": "Ver Mapa de Avistamientos",
-    "alreadyHaveAccount": "¿Ya tienes cuenta activa?",
     "stats": {
       "totalDetections": "Detecciones públicas",
       "species": "Especies catalogadas",
@@ -73,9 +72,9 @@
       "eyebrow": "Proceso de Identificación",
       "title": "De un murmullo entre el follaje a una certeza taxonómica",
       "step1Title": "Graba o sube el canto",
-      "step1Body": "Captura directa con el micrófono de tu teléfono o subida de audios WAV y MP3. Funciona incluso sin datos móviles.",
+      "step1Body": "Captura directa con el micrófono de tu teléfono o subida de audios WAV y MP3 con sincronización en tiempo real.",
       "step2Title": "Análisis bioacústico con IA",
-      "step2Body": "El modelo descompone armónicos, frecuencias centrales y cadencias vocales en menos de un segundo.",
+      "step2Body": "El modelo descompone armónicos, frecuencias centrales y cadencias vocales de forma rápida y precisa.",
       "step3Title": "Registro y ciencia ciudadana",
       "step3Body": "Guarda tus hallazgos, explora mapas de distribución y nutre el atlas colectivo de biodiversidad."
     }
