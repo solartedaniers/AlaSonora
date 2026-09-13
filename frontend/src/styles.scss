@@ -99,6 +99,25 @@ body {
   filter: drop-shadow(0 4px 12px color-mix(in srgb, var(--color-primary) 35%, transparent));
 }
 
+// Halo bioacústico permanente + elevación al hover — usado en el botón
+// principal del login (a diferencia de .border-glow, no depende del cursor).
+.bio-glow-btn {
+  box-shadow:
+    0 10px 25px -4px color-mix(in srgb, var(--color-primary) 45%, transparent),
+    0 0 20px color-mix(in srgb, var(--color-primary-fixed) 35%, transparent);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.bio-glow-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 14px 30px -3px color-mix(in srgb, var(--color-primary) 55%, transparent),
+    0 0 28px color-mix(in srgb, var(--color-primary-fixed) 55%, transparent);
+}
+.bio-glow-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 16px -2px color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+
 // Tarjeta translúcida glassmorphic (monitor bioacústico de la hero).
 .glass-card {
   background: color-mix(in srgb, var(--color-surface-container-lowest) 82%, transparent);

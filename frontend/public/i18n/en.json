@@ -80,6 +80,7 @@
     }
   },
   "auth": {
+    "togglePassword": "Show or hide password",
     "register": {
       "eyebrow": "Global Registration Station",
       "title": "Join the Bioacoustics & Conservation Network",

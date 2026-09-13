@@ -5,6 +5,8 @@ import { isAuthApiError } from '@supabase/supabase-js';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { ThemeToggleComponent } from '../../../shared/components/theme-toggle/theme-toggle.component';
 import { LangToggleComponent } from '../../../shared/components/lang-toggle/lang-toggle.component';
+import { SoftAuroraComponent } from '../../../shared/components/soft-aurora/soft-aurora.component';
+import { PointerGlowDirective } from '../../../shared/directives/pointer-glow.directive';
 import { UserService } from '../../../core/services/user.service';
 
 type LoginError = 'invalid-credentials' | 'email-not-confirmed';
@@ -12,7 +14,15 @@ type LoginError = 'invalid-credentials' | 'email-not-confirmed';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, TranslatePipe, ThemeToggleComponent, LangToggleComponent],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    TranslatePipe,
+    ThemeToggleComponent,
+    LangToggleComponent,
+    SoftAuroraComponent,
+    PointerGlowDirective,
+  ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './login.component.html',
 })

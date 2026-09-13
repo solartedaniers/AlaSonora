@@ -80,6 +80,7 @@
     }
   },
   "auth": {
+    "togglePassword": "Mostrar u ocultar contraseña",
     "register": {
       "eyebrow": "Estación de Registro Global",
       "title": "Únete a la Red de Bioacústica y Conservación",
