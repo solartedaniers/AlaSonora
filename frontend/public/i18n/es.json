@@ -211,7 +211,8 @@
     "contribute": "Aportar Registro",
     "liveFeed": "Detecciones en Vivo",
     "threatenedOnly": "Solo especies amenazadas (UICN)",
-    "heatmapLayer": "Capa de puntos calientes"
+    "heatmapLayer": "Capa de puntos calientes",
+    "syncedTabs": "pestañas sincronizadas"
   },
   "profile": {
     "editProfile": "Editar Datos de Perfil",
@@ -230,6 +231,8 @@
     "languageTaxonomy": "Idioma & Taxonomía Primaria",
     "offlineManagement": "Gestión de Grabaciones Offline",
     "micHardware": "Micrófono & Ganancia de Campo",
+    "activeSession": "Sesión Activa",
+    "pendingLabel": "pendientes",
     "logout": "Cerrar Sesión Segura",
     "logoutConfirm": "¿Deseas cerrar la sesión activa? Los registros offline permanecerán seguros en tu dispositivo."
   },

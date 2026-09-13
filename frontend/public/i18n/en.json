@@ -211,7 +211,8 @@
     "contribute": "Contribute Record",
     "liveFeed": "Live Detections",
     "threatenedOnly": "Threatened species only (IUCN)",
-    "heatmapLayer": "Heatmap layer"
+    "heatmapLayer": "Heatmap layer",
+    "syncedTabs": "tabs synced"
   },
   "profile": {
     "editProfile": "Edit Profile Details",
@@ -230,6 +231,8 @@
     "languageTaxonomy": "Language & Primary Taxonomy",
     "offlineManagement": "Offline Recording Management",
     "micHardware": "Microphone & Field Gain",
+    "activeSession": "Active Session",
+    "pendingLabel": "pending",
     "logout": "Log Out Securely",
     "logoutConfirm": "Do you want to end the active session? Offline records will remain safe on your device."
   },

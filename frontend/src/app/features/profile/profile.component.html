@@ -221,7 +221,7 @@
               {{ 'profile.offlineManagement' | translate }}
             </h3>
             <span class="font-mono text-xs text-secondary bg-secondary-container/40 px-2.5 py-0.5 rounded-full">
-              {{ offline.pendingCount() }} pendientes
+              {{ offline.pendingCount() }} {{ 'profile.pendingLabel' | translate }}
             </span>
           </div>
           <div class="flex flex-col sm:flex-row gap-3">
@@ -261,7 +261,7 @@
       <div>
         <h4 class="font-display font-semibold flex items-center gap-2">
           <span class="material-symbols-outlined text-on-surface-variant text-[20px]">security</span>
-          Sesión Activa
+          {{ 'profile.activeSession' | translate }}
         </h4>
         <p class="text-sm text-on-surface-variant mt-1">{{ 'profile.logoutConfirm' | translate }}</p>
       </div>
