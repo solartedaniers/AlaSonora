@@ -11,6 +11,7 @@ import { OfflineStorageService } from '../../core/services/offline-storage.servi
 import { LettersOnlyDirective } from '../../shared/directives/letters-only.directive';
 import { PointerGlowDirective } from '../../shared/directives/pointer-glow.directive';
 import { CountUpComponent } from '../../shared/components/count-up/count-up.component';
+import { SoftAuroraComponent } from '../../shared/components/soft-aurora/soft-aurora.component';
 import { nameValidator } from '../../core/validators/name.validator';
 import { ObserverRole, Profile, UserStats } from '../../core/models';
 
@@ -24,6 +25,7 @@ import { ObserverRole, Profile, UserStats } from '../../core/models';
     LettersOnlyDirective,
     PointerGlowDirective,
     CountUpComponent,
+    SoftAuroraComponent,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './profile.component.html',
