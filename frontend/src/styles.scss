@@ -107,10 +107,84 @@ body {
 }
 
 // Elevación al pasar el cursor sobre las tarjetas de "cómo funciona".
+// La sombra vive en una custom property para que el ciclo automático de abajo
+// pueda reproducir exactamente el mismo realce sin duplicar el valor.
 .feature-card {
+  --feature-card-lift-shadow: 0 20px 35px -8px color-mix(in srgb, var(--color-primary) 30%, transparent);
   transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
 }
 .feature-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 35px -8px color-mix(in srgb, var(--color-primary) 30%, transparent);
+  box-shadow: var(--feature-card-lift-shadow);
+}
+
+// Carrusel automático de atención — recorre las tarjetas hermanas realzando
+// una por turno exactamente como el hover manual (elevación + sombra + borde
+// luminoso). Dos @keyframes comparten el mismo animation-delay escalonado a
+// un tercio del total, así que a cada instante solo una tarjeta está "activa"
+// (SpotlightCarouselDirective pausa/reinicia el grupo desde el host
+// .spotlight-group al entrar/salir el cursor, dejando el :hover manual al mando).
+.spotlight-cycle {
+  position: relative;
+  isolation: isolate;
+  animation: spotlight-lift 9s ease-in-out infinite;
+}
+.spotlight-cycle::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(120% 120% at 50% 50%, var(--color-primary), transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: spotlight-glow 9s ease-in-out infinite;
+}
+.spotlight-cycle:nth-child(2),
+.spotlight-cycle:nth-child(2)::after {
+  animation-delay: 3s;
+}
+.spotlight-cycle:nth-child(3),
+.spotlight-cycle:nth-child(3)::after {
+  animation-delay: 6s;
+}
+// El grupo pausado (cursor dentro) apaga el ciclo automático por completo y
+// deja que el :hover manual de .feature-card/.border-glow tome el control.
+.spotlight-group.is-paused .spotlight-cycle,
+.spotlight-group.is-paused .spotlight-cycle::after {
+  animation: none;
+}
+@keyframes spotlight-lift {
+  0%,
+  100% {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+  8%,
+  25% {
+    transform: translateY(-8px);
+    box-shadow: var(--feature-card-lift-shadow);
+  }
+  33% {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+}
+@keyframes spotlight-glow {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 1;
+  }
+  33% {
+    opacity: 0;
+  }
 }

@@ -6,6 +6,7 @@ import { LangToggleComponent } from '../../shared/components/lang-toggle/lang-to
 import { SoftAuroraComponent } from '../../shared/components/soft-aurora/soft-aurora.component';
 import { CountUpComponent } from '../../shared/components/count-up/count-up.component';
 import { PointerGlowDirective } from '../../shared/directives/pointer-glow.directive';
+import { SpotlightCarouselDirective } from '../../shared/directives/spotlight-carousel.directive';
 import { NetworkStatsService } from '../../core/services/network-stats.service';
 import { NetworkStats } from '../../core/models';
 
@@ -20,6 +21,7 @@ import { NetworkStats } from '../../core/models';
     SoftAuroraComponent,
     CountUpComponent,
     PointerGlowDirective,
+    SpotlightCarouselDirective,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './landing.component.html',
