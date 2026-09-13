@@ -3,6 +3,7 @@ import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
+import { SoftAuroraComponent } from '../../shared/components/soft-aurora/soft-aurora.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
 import { DetectionsService } from '../../core/services/detections.service';
@@ -14,7 +15,7 @@ type StatusFilter = 'all' | SyncStatus;
 @Component({
   selector: 'app-history',
   standalone: true,
-  imports: [RouterLink, DatePipe, NavHeaderComponent, ConfidenceBadgeComponent, TranslatePipe, SpeciesNamePipe],
+  imports: [RouterLink, DatePipe, NavHeaderComponent, ConfidenceBadgeComponent, SoftAuroraComponent, TranslatePipe, SpeciesNamePipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './history.component.html',
 })

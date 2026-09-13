@@ -89,6 +89,14 @@ body {
     0 2px 0 color-mix(in srgb, var(--color-on-surface) 35%, transparent),
     0 10px 24px color-mix(in srgb, var(--color-primary) 35%, transparent);
   letter-spacing: -0.03em;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), text-shadow 0.3s ease;
+}
+.hero-title-3d:hover {
+  transform: translateY(-3px);
+  text-shadow:
+    0 1px 0 color-mix(in srgb, var(--color-on-surface) 55%, transparent),
+    0 2px 0 color-mix(in srgb, var(--color-on-surface) 35%, transparent),
+    0 16px 32px color-mix(in srgb, var(--color-primary) 55%, transparent);
 }
 
 .gradient-3d-text {

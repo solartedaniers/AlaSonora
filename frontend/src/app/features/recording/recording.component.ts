@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { OfflineBannerComponent } from '../../shared/components/offline-banner/offline-banner.component';
 import { SpectrogramViewComponent } from '../../shared/components/spectrogram-view/spectrogram-view.component';
+import { SoftAuroraComponent } from '../../shared/components/soft-aurora/soft-aurora.component';
+import { PointerGlowDirective } from '../../shared/directives/pointer-glow.directive';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { AudioCaptureService } from '../../core/services/audio-capture.service';
 import { OfflineStorageService } from '../../core/services/offline-storage.service';
@@ -21,7 +23,15 @@ const FALLBACK_LOCATION: GeoLocation = { latitude: 4.6097, longitude: -74.0817 }
 @Component({
   selector: 'app-recording',
   standalone: true,
-  imports: [DecimalPipe, NavHeaderComponent, OfflineBannerComponent, SpectrogramViewComponent, TranslatePipe],
+  imports: [
+    DecimalPipe,
+    NavHeaderComponent,
+    OfflineBannerComponent,
+    SpectrogramViewComponent,
+    SoftAuroraComponent,
+    PointerGlowDirective,
+    TranslatePipe,
+  ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './recording.component.html',
 })
