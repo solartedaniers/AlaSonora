@@ -5,6 +5,8 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { ThemeToggleComponent } from '../../../shared/components/theme-toggle/theme-toggle.component';
 import { LangToggleComponent } from '../../../shared/components/lang-toggle/lang-toggle.component';
 import { LettersOnlyDirective } from '../../../shared/directives/letters-only.directive';
+import { PointerGlowDirective } from '../../../shared/directives/pointer-glow.directive';
+import { SoftAuroraComponent } from '../../../shared/components/soft-aurora/soft-aurora.component';
 import { UserService } from '../../../core/services/user.service';
 import { nameValidator } from '../../../core/validators/name.validator';
 import { ObserverRole } from '../../../core/models';
@@ -21,6 +23,8 @@ type PasswordTier = 'empty' | 'weak' | 'medium' | 'strong' | 'excellent';
     ThemeToggleComponent,
     LangToggleComponent,
     LettersOnlyDirective,
+    PointerGlowDirective,
+    SoftAuroraComponent,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './register.component.html',

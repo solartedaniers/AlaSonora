@@ -1,6 +1,5 @@
-<div class="min-h-screen w-full flex flex-col items-center justify-center bg-surface px-4 py-10 relative overflow-hidden">
-  <div class="absolute -top-24 -left-20 w-96 h-96 rounded-full bg-primary/10 blur-3xl pointer-events-none"></div>
-  <div class="absolute top-96 right-10 w-[350px] h-[350px] rounded-full bg-secondary/10 blur-2xl pointer-events-none"></div>
+<div class="min-h-screen w-full flex flex-col items-center bg-surface px-4 py-10 relative overflow-hidden">
+  <app-soft-aurora />
 
   <div class="w-full max-w-2xl flex items-center justify-between mb-6 z-10">
     <a routerLink="/" class="flex items-center gap-2 text-on-surface">
@@ -13,19 +12,20 @@
     </div>
   </div>
 
-  <div class="w-full max-w-2xl bg-surface-container-low rounded-2xl shadow-xl overflow-hidden relative z-10">
+  <div class="w-full max-w-2xl flex-1 flex items-center z-10">
+  <div appBorderGlow class="glass-card w-full rounded-2xl shadow-xl overflow-hidden">
     <div class="h-1.5 w-full bg-gradient-to-r from-primary via-primary-container to-secondary"></div>
 
     <div class="p-6 sm:p-10 flex flex-col gap-8">
-      <div class="flex flex-col gap-2 text-center sm:text-left">
-        <div class="flex items-center justify-center sm:justify-start gap-2 text-primary font-mono text-xs uppercase tracking-wider">
+      <div class="flex flex-col items-center gap-2 text-center">
+        <div class="flex items-center justify-center gap-2 text-primary font-mono text-xs uppercase tracking-wider">
           <span class="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
           {{ 'auth.register.eyebrow' | translate }}
         </div>
-        <h1 class="font-display text-2xl font-bold text-on-surface tracking-tight">
-          {{ 'auth.register.title' | translate }}
+        <h1 class="font-display text-2xl sm:text-3xl font-bold tracking-tight hero-title-3d">
+          <span class="gradient-3d-text">{{ 'auth.register.title' | translate }}</span>
         </h1>
-        <p class="text-sm text-on-surface-variant max-w-xl">
+        <p class="text-sm text-on-surface-variant max-w-xl mx-auto">
           {{ 'auth.register.subtitle' | translate }}
         </p>
       </div>
@@ -154,8 +154,9 @@
         <button
           type="submit"
           [disabled]="submitting()"
-          class="w-full h-12 rounded-lg bg-primary-container text-on-primary font-display font-semibold shadow-lg flex items-center justify-center gap-2 hover:opacity-90 transition-all disabled:opacity-60"
+          class="group relative w-full h-12 rounded-lg bg-primary-container text-on-primary font-display font-semibold shadow-lg flex items-center justify-center gap-2 overflow-hidden hover:shadow-xl active:scale-[0.98] transition-all disabled:opacity-60"
         >
+          <span class="absolute inset-0 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-out bg-on-primary/20 skew-x-12 w-1/3"></span>
           <span class="material-symbols-outlined text-xl">nature_people</span>
           <span>{{ 'auth.register.submit' | translate }}</span>
         </button>
@@ -170,4 +171,9 @@
       </div>
     </div>
   </div>
+  </div>
+
+  <footer class="w-full max-w-2xl py-8 text-center z-10">
+    <span class="text-sm text-on-surface-variant">© 2026 AlaSonora — {{ 'footer.rights' | translate }}</span>
+  </footer>
 </div>
