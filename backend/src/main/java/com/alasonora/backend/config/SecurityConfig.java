@@ -6,7 +6,6 @@ import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -24,9 +23,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final CorsProperties corsProperties;
+    private final ProfileRoleJwtAuthenticationConverter jwtAuthenticationConverter;
 
-    public SecurityConfig(CorsProperties corsProperties) {
+    public SecurityConfig(CorsProperties corsProperties, ProfileRoleJwtAuthenticationConverter jwtAuthenticationConverter) {
         this.corsProperties = corsProperties;
+        this.jwtAuthenticationConverter = jwtAuthenticationConverter;
     }
 
     @Bean
@@ -42,9 +43,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/detections/mine").authenticated()
                 .requestMatchers(HttpMethod.GET, "/api/detections").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/detections").authenticated()
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/profile/**").authenticated()
                 .anyRequest().authenticated())
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
 
         return http.build();
     }

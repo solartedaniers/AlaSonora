@@ -6,6 +6,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 import { SpeciesNamePipe } from '../../pipes/species-name.pipe';
 import { UserService } from '../../../core/services/user.service';
 import { NotificationsService } from '../../../core/services/notifications.service';
+import { AdminAccessService } from '../../../core/services/admin-access.service';
 
 @Component({
   selector: 'app-nav-header',
@@ -114,20 +115,25 @@ import { NotificationsService } from '../../../core/services/notifications.servi
 export class NavHeaderComponent {
   readonly user = inject(UserService);
   readonly notifications = inject(NotificationsService);
+  readonly adminAccess = inject(AdminAccessService);
 
   readonly notificationsOpen = signal(false);
   readonly mobileMenuOpen = signal(false);
 
   private readonly allNavItems = [
-    { path: '/dashboard', icon: 'dashboard', labelKey: 'nav.dashboard', protected: true },
-    { path: '/record', icon: 'graphic_eq', labelKey: 'nav.record', protected: true },
-    { path: '/history', icon: 'library_music', labelKey: 'nav.history', protected: true },
-    { path: '/map', icon: 'map', labelKey: 'nav.map', protected: false },
-    { path: '/profile', icon: 'person', labelKey: 'nav.profile', protected: true },
+    { path: '/dashboard', icon: 'dashboard', labelKey: 'nav.dashboard', protected: true, adminOnly: false },
+    { path: '/record', icon: 'graphic_eq', labelKey: 'nav.record', protected: true, adminOnly: false },
+    { path: '/history', icon: 'library_music', labelKey: 'nav.history', protected: true, adminOnly: false },
+    { path: '/map', icon: 'map', labelKey: 'nav.map', protected: false, adminOnly: false },
+    { path: '/profile', icon: 'person', labelKey: 'nav.profile', protected: true, adminOnly: false },
+    { path: '/admin', icon: 'shield_person', labelKey: 'nav.admin', protected: true, adminOnly: true },
   ];
 
   readonly navItems = computed(() =>
-    this.user.currentUser() ? this.allNavItems : this.allNavItems.filter((item) => !item.protected),
+    this.allNavItems.filter((item) => {
+      if (item.adminOnly) return this.adminAccess.isAdmin();
+      return item.protected ? !!this.user.currentUser() : true;
+    }),
   );
 
   toggleNotifications(): void {

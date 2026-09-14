@@ -52,10 +52,7 @@
       </div>
 
       <div class="flex flex-col gap-1.5">
-        <div class="flex justify-between items-center">
-          <label for="password" class="text-sm font-semibold text-on-surface">{{ 'auth.login.password' | translate }}</label>
-          <a routerLink="/forgot-password" class="text-xs text-primary hover:underline">{{ 'auth.login.forgotPassword' | translate }}</a>
-        </div>
+        <label for="password" class="text-sm font-semibold text-on-surface">{{ 'auth.login.password' | translate }}</label>
         <div class="relative flex items-center">
           <span class="material-symbols-outlined absolute left-3.5 text-outline text-xl pointer-events-none">lock</span>
           <input
@@ -74,6 +71,7 @@
             <span class="material-symbols-outlined text-xl">{{ showPassword() ? 'visibility_off' : 'visibility' }}</span>
           </button>
         </div>
+        <a routerLink="/forgot-password" class="self-end text-xs text-primary hover:underline">{{ 'auth.login.forgotPassword' | translate }}</a>
       </div>
 
       <label class="flex items-center gap-2 cursor-pointer select-none pt-1">

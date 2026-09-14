@@ -1,5 +1,8 @@
 import { ObserverRole } from './user.model';
 
+/** Access-control role, independent of `role` (the user's scientific/observer profile). */
+export type SystemRole = 'user' | 'admin';
+
 /** Backend-persisted profile (Postgres `profiles` table), distinct from Supabase Auth's user_metadata. */
 export interface Profile {
   id: string;
@@ -9,4 +12,6 @@ export interface Profile {
   institution?: string;
   orcidId?: string;
   stationName?: string;
+  systemRole: SystemRole;
+  suspended: boolean;
 }

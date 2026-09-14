@@ -78,7 +78,7 @@ cd backend
 ```
 
 En Linux/macOS: `./mvnw spring-boot:run`. El backend queda escuchando en
-`http://localhost:8081` (prefijo de API: `/api`).
+`http://localhost:8083` (prefijo de API: `/api`).
 
 Para solo verificar que compila sin arrancarlo: `./mvnw.cmd compile`.
 
@@ -186,7 +186,7 @@ export const environment = {
   production: false,
   supabaseUrl: 'https://<tu-project-ref>.supabase.co',
   supabasePublishableKey: '<tu-clave-publishable-de-supabase>',
-  apiBaseUrl: 'http://localhost:8081/api',
+  apiBaseUrl: 'http://localhost:8083/api',
 };
 ```
 

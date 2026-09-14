@@ -63,8 +63,7 @@
         @for (status of [
           { key: 'all', labelKey: 'history.statusAll' },
           { key: 'synced', labelKey: 'history.statusValidated' },
-          { key: 'pending-sync', labelKey: 'history.statusPending' },
-          { key: 'needs-review', labelKey: 'history.statusReview' }
+          { key: 'pending-sync', labelKey: 'history.statusPending' }
         ]; track status.key) {
           <button
             type="button"

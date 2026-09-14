@@ -10,6 +10,7 @@
     "history": "My History",
     "map": "Public Map",
     "profile": "My Profile",
+    "admin": "Admin",
     "login": "Log In",
     "logout": "Log Out",
     "register": "Create Account",
@@ -139,6 +140,12 @@
       "mismatchError": "Passwords do not match.",
       "invalidLink": "This recovery link is invalid or has expired. Please request a new one.",
       "errorBody": "We couldn't update your password. Please try again.",
+      "errorSamePassword": "Your new password must be different from your current password.",
+      "errorWeakPassword": "This password doesn't meet the security requirements. Check the list below the field.",
+      "errorPwnedPassword": "This password was found in known data breaches; please choose a different one.",
+      "requirementMinLength": "At least 8 characters",
+      "requirementUppercase": "At least one uppercase letter",
+      "requirementNumber": "At least one number",
       "backToLogin": "Back to Log In"
     },
     "roles": {
@@ -218,7 +225,6 @@
     "statusAll": "All",
     "statusValidated": "Validated",
     "statusPending": "Pending Offline",
-    "statusReview": "Needs Review",
     "export": "Export to eBird / Darwin Core",
     "syncNow": "Sync now",
     "emptyTitle": "No recordings yet",
@@ -256,6 +262,34 @@
     "pendingLabel": "pending",
     "logout": "Log Out Securely",
     "logoutConfirm": "Do you want to end the active session? Offline records will remain safe on your device."
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "subtitle": "Manage users, roles, and records across the bioacoustic network.",
+    "createUser": "Create User",
+    "searchPlaceholder": "Search by name…",
+    "emptyBody": "No users matched that search.",
+    "roleAdmin": "Administrator",
+    "roleUser": "User",
+    "statusSuspended": "Suspended",
+    "actions": {
+      "viewHistory": "View History",
+      "edit": "Edit",
+      "makeAdmin": "Make Administrator",
+      "revokeAdmin": "Revoke Administrator",
+      "suspend": "Suspend",
+      "activate": "Activate",
+      "delete": "Delete"
+    },
+    "createModal": {
+      "title": "Create New User"
+    },
+    "editModal": {
+      "title": "Edit User"
+    },
+    "historyModal": {
+      "title": "User History"
+    }
   },
   "workers": {
     "offlineBannerTitle": "Offline Field Mode Active",

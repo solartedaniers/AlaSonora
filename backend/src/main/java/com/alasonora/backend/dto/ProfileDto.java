@@ -2,6 +2,7 @@ package com.alasonora.backend.dto;
 
 import com.alasonora.backend.entity.ObserverRole;
 import com.alasonora.backend.entity.Profile;
+import com.alasonora.backend.entity.SystemRole;
 
 public record ProfileDto(
     String id,
@@ -10,7 +11,9 @@ public record ProfileDto(
     ObserverRole role,
     String institution,
     String orcidId,
-    String stationName
+    String stationName,
+    SystemRole systemRole,
+    boolean suspended
 ) {
 
     public static ProfileDto fromEntity(Profile profile) {
@@ -21,7 +24,9 @@ public record ProfileDto(
             profile.getRole(),
             profile.getInstitution(),
             profile.getOrcidId(),
-            profile.getStationName()
+            profile.getStationName(),
+            profile.getSystemRole(),
+            profile.isSuspended()
         );
     }
 }

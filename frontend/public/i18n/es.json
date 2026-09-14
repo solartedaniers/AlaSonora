@@ -10,6 +10,7 @@
     "history": "Mi Historial",
     "map": "Mapa Público",
     "profile": "Mi Perfil",
+    "admin": "Administración",
     "login": "Iniciar Sesión",
     "logout": "Cerrar Sesión",
     "register": "Crear Cuenta",
@@ -139,6 +140,12 @@
       "mismatchError": "Las contraseñas no coinciden.",
       "invalidLink": "Este enlace de recuperación no es válido o ha expirado. Solicita uno nuevo.",
       "errorBody": "No se pudo actualizar la contraseña. Inténtalo de nuevo.",
+      "errorSamePassword": "La nueva contraseña debe ser diferente a tu contraseña actual.",
+      "errorWeakPassword": "La contraseña no cumple con los requisitos de seguridad. Revisa la lista debajo del campo.",
+      "errorPwnedPassword": "Esta contraseña fue detectada en filtraciones de datos conocidas; elige una diferente.",
+      "requirementMinLength": "Al menos 8 caracteres",
+      "requirementUppercase": "Al menos una letra mayúscula",
+      "requirementNumber": "Al menos un número",
       "backToLogin": "Volver a Iniciar Sesión"
     },
     "roles": {
@@ -218,7 +225,6 @@
     "statusAll": "Todas",
     "statusValidated": "Validadas",
     "statusPending": "Pendientes Offline",
-    "statusReview": "Requiere Revisión",
     "export": "Exportar a eBird / Darwin Core",
     "syncNow": "Sincronizar ahora",
     "emptyTitle": "Aún no hay grabaciones",
@@ -256,6 +262,34 @@
     "pendingLabel": "pendientes",
     "logout": "Cerrar Sesión Segura",
     "logoutConfirm": "¿Deseas cerrar la sesión activa? Los registros offline permanecerán seguros en tu dispositivo."
+  },
+  "admin": {
+    "title": "Panel de Administración",
+    "subtitle": "Gestiona usuarios, roles y registros de la red bioacústica.",
+    "createUser": "Crear Usuario",
+    "searchPlaceholder": "Buscar por nombre…",
+    "emptyBody": "No se encontraron usuarios con ese criterio.",
+    "roleAdmin": "Administrador",
+    "roleUser": "Usuario",
+    "statusSuspended": "Suspendido",
+    "actions": {
+      "viewHistory": "Ver Historial",
+      "edit": "Editar",
+      "makeAdmin": "Hacer Administrador",
+      "revokeAdmin": "Quitar Administrador",
+      "suspend": "Suspender",
+      "activate": "Activar",
+      "delete": "Eliminar"
+    },
+    "createModal": {
+      "title": "Crear Nuevo Usuario"
+    },
+    "editModal": {
+      "title": "Editar Usuario"
+    },
+    "historyModal": {
+      "title": "Historial del Usuario"
+    }
   },
   "workers": {
     "offlineBannerTitle": "Modo Campo Sin Conexión Activo",

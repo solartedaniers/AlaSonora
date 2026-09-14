@@ -3,8 +3,10 @@ package com.alasonora.backend.service;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.alasonora.backend.dto.CreateDetectionRequest;
 import com.alasonora.backend.dto.DetectionDto;
@@ -29,12 +31,14 @@ public class DetectionService {
     // species/alternatives are lazy and open-in-view is disabled.
     @Transactional(readOnly = true)
     public List<DetectionDto> getPublicDetections() {
-        return detectionRepository.findByVisibility(Visibility.PUBLIC).stream().map(DetectionDto::fromEntity).toList();
+        return detectionRepository.findByVisibilityOrderByRecordedAtDesc(Visibility.PUBLIC).stream()
+            .map(DetectionDto::fromEntity).toList();
     }
 
     @Transactional(readOnly = true)
     public List<DetectionDto> getMyDetections(UUID ownerId) {
-        return detectionRepository.findByOwnerId(ownerId).stream().map(DetectionDto::fromEntity).toList();
+        return detectionRepository.findByOwnerIdOrderByRecordedAtDesc(ownerId).stream()
+            .map(DetectionDto::fromEntity).toList();
     }
 
     public DetectionDto createDetection(UUID ownerId, CreateDetectionRequest request) {
@@ -63,5 +67,15 @@ public class DetectionService {
         }
 
         return DetectionDto.fromEntity(detectionRepository.save(detection));
+    }
+
+    // Borra el registro sin importar su visibilidad: al desaparecer de
+    // detections, deja de aparecer tanto en el mapa público como en el
+    // historial privado del dueño, que son la misma tabla.
+    public void deleteDetection(Long id) {
+        if (!detectionRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Detection not found");
+        }
+        detectionRepository.deleteById(id);
     }
 }

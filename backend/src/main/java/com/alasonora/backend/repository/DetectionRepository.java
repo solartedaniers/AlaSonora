@@ -12,9 +12,9 @@ import com.alasonora.backend.entity.Visibility;
 
 public interface DetectionRepository extends JpaRepository<Detection, Long> {
 
-    List<Detection> findByVisibility(Visibility visibility);
+    List<Detection> findByVisibilityOrderByRecordedAtDesc(Visibility visibility);
 
-    List<Detection> findByOwnerId(UUID ownerId);
+    List<Detection> findByOwnerIdOrderByRecordedAtDesc(UUID ownerId);
 
     long countByVisibility(Visibility visibility);
 

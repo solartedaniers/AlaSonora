@@ -1,6 +1,6 @@
 import { Species } from './species.model';
 
-export type SyncStatus = 'synced' | 'pending-sync' | 'needs-review';
+export type SyncStatus = 'synced' | 'pending-sync';
 
 // Backend's Visibility enum is uppercase; kept as-is here (same convention as
 // Species.iucnStatus) instead of adding a casing-mapping layer for one field.

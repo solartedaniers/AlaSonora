@@ -7,7 +7,7 @@ import { SupabaseClientService } from './supabase-client.service';
 
 const AVATAR_BUCKET = 'avatars';
 
-/** Shape returned/expected by the backend, whose ObserverRole enum is uppercase (ORNITHOLOGIST, ...). */
+/** Shape returned/expected by the backend, whose ObserverRole/SystemRole enums are uppercase. */
 interface BackendProfile {
   id: string;
   displayName: string;
@@ -16,6 +16,8 @@ interface BackendProfile {
   institution: string | null;
   orcidId: string | null;
   stationName: string | null;
+  systemRole: string;
+  suspended: boolean;
 }
 
 export interface ProfileUpdate {
@@ -69,6 +71,8 @@ export class ProfileService {
       institution: dto.institution ?? undefined,
       orcidId: dto.orcidId ?? undefined,
       stationName: dto.stationName ?? undefined,
+      systemRole: dto.systemRole.toLowerCase() as Profile['systemRole'],
+      suspended: dto.suspended,
     };
   }
 }
