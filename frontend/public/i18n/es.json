@@ -120,6 +120,27 @@
       "errorEmailNotConfirmedTitle": "Confirma tu correo electrónico",
       "errorEmailNotConfirmedBody": "Ya casi estás. Revisa tu bandeja de entrada y confirma tu correo antes de iniciar sesión."
     },
+    "forgotPassword": {
+      "title": "Recupera tu acceso de campo",
+      "subtitle": "Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
+      "email": "Correo electrónico",
+      "emailPlaceholder": "observador@biota.org",
+      "submit": "Enviar enlace de recuperación",
+      "successBody": "Enlace enviado. Revisa tu bandeja de entrada para continuar con el restablecimiento.",
+      "errorBody": "No se pudo enviar el correo de recuperación. Verifica la dirección e inténtalo de nuevo.",
+      "backToLogin": "Volver a Iniciar Sesión"
+    },
+    "resetPassword": {
+      "title": "Establece tu nueva contraseña",
+      "subtitle": "Crea una clave segura para tu cuaderno bioacústico.",
+      "password": "Nueva contraseña",
+      "confirmPassword": "Confirmar nueva contraseña",
+      "submit": "Actualizar contraseña",
+      "mismatchError": "Las contraseñas no coinciden.",
+      "invalidLink": "Este enlace de recuperación no es válido o ha expirado. Solicita uno nuevo.",
+      "errorBody": "No se pudo actualizar la contraseña. Inténtalo de nuevo.",
+      "backToLogin": "Volver a Iniciar Sesión"
+    },
     "roles": {
       "ornithologist": "Ornitólogo / Investigador",
       "ranger": "Guardaparques",

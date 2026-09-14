@@ -120,6 +120,27 @@
       "errorEmailNotConfirmedTitle": "Confirm your email address",
       "errorEmailNotConfirmedBody": "Almost there. Check your inbox and confirm your email before signing in."
     },
+    "forgotPassword": {
+      "title": "Recover your field access",
+      "subtitle": "Enter your email address and we'll send you a link to reset your password.",
+      "email": "Email address",
+      "emailPlaceholder": "observer@biota.org",
+      "submit": "Send recovery link",
+      "successBody": "Link sent. Check your inbox to continue resetting your password.",
+      "errorBody": "We couldn't send the recovery email. Check the address and try again.",
+      "backToLogin": "Back to Log In"
+    },
+    "resetPassword": {
+      "title": "Set your new password",
+      "subtitle": "Create a secure key for your bioacoustic notebook.",
+      "password": "New password",
+      "confirmPassword": "Confirm new password",
+      "submit": "Update password",
+      "mismatchError": "Passwords do not match.",
+      "invalidLink": "This recovery link is invalid or has expired. Please request a new one.",
+      "errorBody": "We couldn't update your password. Please try again.",
+      "backToLogin": "Back to Log In"
+    },
     "roles": {
       "ornithologist": "Ornithologist / Researcher",
       "ranger": "Park Ranger",

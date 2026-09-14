@@ -80,7 +80,9 @@ export class UserService {
   }
 
   async sendPasswordResetEmail(email: string): Promise<void> {
-    const { error } = await this.supabase.auth.resetPasswordForEmail(email);
+    const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
     if (error) throw error;
   }
 
