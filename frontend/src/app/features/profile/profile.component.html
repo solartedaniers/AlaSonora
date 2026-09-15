@@ -23,7 +23,7 @@
           <div class="space-y-2">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-container/30 text-on-primary-container font-mono text-xs">
               <span class="material-symbols-outlined text-xs">hub</span>
-              <span>Red GBIF & eBird</span>
+              <span>{{ 'profile.observerTitle' | translate }}</span>
             </div>
             <h1 class="font-display text-2xl font-bold tracking-tight hero-title-3d">{{ user.currentUser()?.fullName }}</h1>
             <p class="text-sm text-on-surface-variant flex items-center gap-1.5">
@@ -138,31 +138,6 @@
       }
     </div>
 
-    <!-- Impact metrics -->
-    @if (stats(); as s) {
-      <div class="space-y-4">
-        <h2 class="font-display text-lg font-semibold">{{ 'profile.impactTitle' | translate }}</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div appBorderGlow class="feature-card glass-card rounded-xl p-5 shadow-sm">
-            <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'profile.recordingsUploaded' | translate }}</span>
-            <div class="font-display text-3xl font-bold mt-2"><app-count-up [value]="s.totalRecordings" /></div>
-          </div>
-          <div appBorderGlow class="feature-card glass-card rounded-xl p-5 shadow-sm">
-            <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'profile.speciesConfirmed' | translate }}</span>
-            <div class="font-display text-3xl font-bold mt-2"><app-count-up [value]="s.distinctSpecies" /></div>
-          </div>
-          <div appBorderGlow class="feature-card glass-card rounded-xl p-5 shadow-sm">
-            <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'profile.communityValidation' | translate }}</span>
-            <div class="font-display text-3xl font-bold mt-2 text-primary"><app-count-up [value]="s.averageConfidence" suffix="%" /></div>
-          </div>
-          <div appBorderGlow class="feature-card glass-card rounded-xl p-5 shadow-sm">
-            <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'profile.openScienceContributions' | translate }}</span>
-            <div class="font-display text-3xl font-bold mt-2"><app-count-up [value]="s.validatedRecordings" /></div>
-          </div>
-        </div>
-      </div>
-    }
-
     <!-- Settings -->
     <div class="space-y-6">
       <h2 class="font-display text-lg font-semibold">{{ 'profile.systemSettings' | translate }}</h2>
@@ -210,25 +185,6 @@
                 <span class="font-display text-sm font-semibold block">{{ lang === 'es' ? 'Español' : 'English' }}</span>
               </button>
             }
-          </div>
-        </div>
-
-        <!-- Offline storage -->
-        <div class="feature-card glass-card rounded-xl p-6 shadow-sm space-y-4 lg:col-span-2">
-          <div class="flex items-center justify-between flex-wrap gap-2">
-            <h3 class="font-display font-semibold flex items-center gap-2">
-              <span class="material-symbols-outlined text-secondary">cloud_sync</span>
-              {{ 'profile.offlineManagement' | translate }}
-            </h3>
-            <span class="font-mono text-xs text-secondary bg-secondary-container/40 px-2.5 py-0.5 rounded-full">
-              {{ offline.pendingCount() }} {{ 'profile.pendingLabel' | translate }}
-            </span>
-          </div>
-          <div class="flex flex-col sm:flex-row gap-3">
-            <button type="button" class="bio-glow-btn flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-primary text-on-primary font-display text-sm font-semibold">
-              <span class="material-symbols-outlined text-[18px]">sync</span>
-              {{ 'workers.forceSync' | translate }}
-            </button>
           </div>
         </div>
 

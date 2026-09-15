@@ -90,7 +90,7 @@
           >
             <div class="flex items-center justify-between mb-1">
               <span class="text-xs text-on-surface-variant">{{ d.recordedAt | date: 'shortTime' }}</span>
-              <span class="text-xs text-on-surface-variant">{{ d.confidence }}% IA</span>
+              <span class="text-xs text-on-surface-variant">{{ d.confidence | number: '1.0-0' }}% IA</span>
             </div>
             <div class="font-display text-sm truncate">{{ d.species | speciesName }}</div>
             <div class="text-[11px] text-on-surface-variant truncate">{{ d.observerName }}</div>

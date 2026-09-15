@@ -5,7 +5,7 @@
   },
   "nav": {
     "landing": "Inicio",
-    "dashboard": "Dashboard",
+    "dashboard": "Inicio",
     "record": "Grabar / Subir",
     "history": "Mi Historial",
     "map": "Mapa Público",
@@ -163,6 +163,7 @@
     "recordCtaBody": "Captura pasiva continua con aislamiento de frecuencia vocal",
     "uploadCta": "Subir Archivo de Audio",
     "uploadCtaBody": "WAV, FLAC, MP3 hasta 500MB",
+    "personalStatsTitle": "Estadísticas Personales",
     "metrics": {
       "species": "Especies Detectadas",
       "recordings": "Grabaciones Totales",
@@ -170,9 +171,7 @@
       "hours": "Horas de Escucha"
     },
     "lastDetection": "Última Detección Algorítmica",
-    "speciesSpotlight": "Especies Destacadas",
-    "recentActivity": "Actividad Reciente en la Reserva",
-    "viewAll": "Ver Todo"
+    "speciesSpotlight": "Especies Destacadas"
   },
   "recording": {
     "tabLive": "Grabar en Vivo",
@@ -242,24 +241,18 @@
     "syncedTabs": "pestañas sincronizadas"
   },
   "profile": {
+    "observerTitle": "Perfil del Observador",
     "editProfile": "Editar Datos de Perfil",
     "credential": "Credencial Científica",
     "institution": "Institución / Organización",
     "orcidId": "ID ORCID",
     "stationName": "Estación de Campo",
     "changeAvatar": "Cambiar Foto",
-    "impactTitle": "Impacto Científico & Red eBird/GBIF",
-    "recordingsUploaded": "Grabaciones Subidas",
-    "speciesConfirmed": "Especies Confirmadas",
-    "communityValidation": "Validación de Comunidad",
-    "openScienceContributions": "Aportes Ciencia Abierta",
     "systemSettings": "Configuración del Sistema",
     "appearance": "Tema de Interfaz",
     "languageTaxonomy": "Idioma & Taxonomía Primaria",
-    "offlineManagement": "Gestión de Grabaciones Offline",
     "micHardware": "Micrófono & Ganancia de Campo",
     "activeSession": "Sesión Activa",
-    "pendingLabel": "pendientes",
     "logout": "Cerrar Sesión Segura",
     "logoutConfirm": "¿Deseas cerrar la sesión activa? Los registros offline permanecerán seguros en tu dispositivo."
   },

@@ -7,13 +7,11 @@ import { UserService } from '../../core/services/user.service';
 import { ProfileService } from '../../core/services/profile.service';
 import { ThemeService, ThemeMode } from '../../core/services/theme.service';
 import { I18nService, AppLang } from '../../core/services/i18n.service';
-import { OfflineStorageService } from '../../core/services/offline-storage.service';
 import { LettersOnlyDirective } from '../../shared/directives/letters-only.directive';
 import { PointerGlowDirective } from '../../shared/directives/pointer-glow.directive';
-import { CountUpComponent } from '../../shared/components/count-up/count-up.component';
 import { SoftAuroraComponent } from '../../shared/components/soft-aurora/soft-aurora.component';
 import { nameValidator } from '../../core/validators/name.validator';
-import { ObserverRole, Profile, UserStats } from '../../core/models';
+import { ObserverRole, Profile } from '../../core/models';
 
 @Component({
   selector: 'app-profile',
@@ -24,7 +22,6 @@ import { ObserverRole, Profile, UserStats } from '../../core/models';
     ReactiveFormsModule,
     LettersOnlyDirective,
     PointerGlowDirective,
-    CountUpComponent,
     SoftAuroraComponent,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -34,12 +31,10 @@ export class ProfileComponent implements OnInit {
   readonly user = inject(UserService);
   readonly theme = inject(ThemeService);
   readonly i18n = inject(I18nService);
-  readonly offline = inject(OfflineStorageService);
   private readonly profileService = inject(ProfileService);
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
 
-  readonly stats = signal<UserStats | null>(null);
   readonly gainDb = signal(18);
 
   readonly editing = signal(false);
@@ -66,7 +61,6 @@ export class ProfileComponent implements OnInit {
   readonly langOptions: AppLang[] = ['es', 'en'];
 
   async ngOnInit(): Promise<void> {
-    this.stats.set(await this.user.getStats());
     this.applyProfile(await this.profileService.getMine());
   }
 

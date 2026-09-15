@@ -100,10 +100,19 @@
           </svg>
         </div>
         <div class="flex items-center gap-4">
+          <audio
+            #audioPlayer
+            [src]="d.audioUrl"
+            (play)="isPlaying.set(true)"
+            (pause)="isPlaying.set(false)"
+            (ended)="isPlaying.set(false)"
+            class="hidden"
+          ></audio>
           <button
             type="button"
             (click)="togglePlayback()"
-            class="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-md"
+            [disabled]="!d.audioUrl"
+            class="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-md disabled:opacity-50"
           >
             <span class="material-symbols-outlined text-2xl">{{ isPlaying() ? 'pause' : 'play_arrow' }}</span>
           </button>
@@ -149,7 +158,7 @@
                 <p class="text-sm font-semibold">{{ alt.species | speciesName }}</p>
                 <p class="text-xs italic text-on-surface-variant">{{ alt.species.scientificName }}</p>
               </div>
-              <span class="font-mono text-xs text-on-surface-variant">{{ alt.confidence }}%</span>
+              <span class="font-mono text-xs text-on-surface-variant">{{ alt.confidence | number: '1.0-0' }}%</span>
             </div>
           } @empty {
             <p class="text-sm text-on-surface-variant">—</p>

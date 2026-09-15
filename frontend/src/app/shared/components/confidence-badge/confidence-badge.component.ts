@@ -12,12 +12,16 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
       [class]="tierClasses()"
     >
       <span class="w-1.5 h-1.5 rounded-full" [class]="dotClasses()"></span>
-      {{ value() }}% {{ 'common.confidence' | translate }}
+      {{ roundedValue() }}% {{ 'common.confidence' | translate }}
     </span>
   `,
 })
 export class ConfidenceBadgeComponent {
   readonly value = input.required<number>();
+
+  // El backend puede devolver la certeza como double sin redondear
+  // (p. ej. 98.7579524517059); se muestra siempre como entero.
+  readonly roundedValue = computed(() => Math.round(this.value()));
 
   readonly tier = computed<'high' | 'medium' | 'low'>(() => {
     const v = this.value();

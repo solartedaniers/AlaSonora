@@ -8,6 +8,7 @@ import { LangToggleComponent } from '../../../shared/components/lang-toggle/lang
 import { SoftAuroraComponent } from '../../../shared/components/soft-aurora/soft-aurora.component';
 import { PointerGlowDirective } from '../../../shared/directives/pointer-glow.directive';
 import { UserService } from '../../../core/services/user.service';
+import { ProfileService } from '../../../core/services/profile.service';
 
 type LoginError = 'invalid-credentials' | 'email-not-confirmed';
 
@@ -29,6 +30,7 @@ type LoginError = 'invalid-credentials' | 'email-not-confirmed';
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
   private readonly userService = inject(UserService);
+  private readonly profileService = inject(ProfileService);
   private readonly router = inject(Router);
 
   readonly showPassword = signal(false);
@@ -55,12 +57,22 @@ export class LoginComponent {
     try {
       const { email, password } = this.form.getRawValue();
       await this.userService.login(email, password);
-      await this.router.navigateByUrl('/dashboard');
+      await this.router.navigateByUrl(await this.resolveLandingRoute());
     } catch (error) {
       const isEmailNotConfirmed = isAuthApiError(error) && error.code === 'email_not_confirmed';
       this.submitError.set(isEmailNotConfirmed ? 'email-not-confirmed' : 'invalid-credentials');
     } finally {
       this.submitting.set(false);
+    }
+  }
+
+  /** Los administradores aterrizan en /admin; el resto, en /dashboard. */
+  private async resolveLandingRoute(): Promise<string> {
+    try {
+      const profile = await this.profileService.getMine();
+      return profile.systemRole === 'admin' ? '/admin' : '/dashboard';
+    } catch {
+      return '/dashboard';
     }
   }
 }

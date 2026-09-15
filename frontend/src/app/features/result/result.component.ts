@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
@@ -25,6 +25,8 @@ export class ResultComponent implements OnInit {
   private readonly liveSync = inject(LiveSyncService);
   private readonly user = inject(UserService);
   private readonly draftService = inject(DetectionDraftService);
+
+  @ViewChild('audioPlayer') private readonly audioPlayerRef?: ElementRef<HTMLAudioElement>;
 
   private readonly detection = signal<Detection | null>(null);
   private readonly draft = signal<DetectionDraft | null>(null);
@@ -61,8 +63,18 @@ export class ResultComponent implements OnInit {
     }
   }
 
+  /**
+   * El botón solo alternaba un signal booleano sin tocar ningún elemento
+   * <audio> real, por lo que nunca sonaba nada; ahora controla directamente
+   * el <audio> enlazado a `d.audioUrl` y `isPlaying` se sincroniza con sus
+   * eventos nativos (play/pause/ended) en vez de asumir el estado.
+   */
   togglePlayback(): void {
-    this.isPlaying.update((v) => !v);
+    const audio = this.audioPlayerRef?.nativeElement;
+    const audioUrl = this.view()?.audioUrl;
+    if (!audio || !audioUrl) return;
+    if (audio.paused) audio.play();
+    else audio.pause();
   }
 
   setVisibility(value: Visibility): void {

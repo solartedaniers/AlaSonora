@@ -121,7 +121,7 @@ export class NavHeaderComponent {
   readonly mobileMenuOpen = signal(false);
 
   private readonly allNavItems = [
-    { path: '/dashboard', icon: 'dashboard', labelKey: 'nav.dashboard', protected: true, adminOnly: false },
+    { path: '/dashboard', icon: 'home', labelKey: 'nav.dashboard', protected: true, adminOnly: false },
     { path: '/record', icon: 'graphic_eq', labelKey: 'nav.record', protected: true, adminOnly: false },
     { path: '/history', icon: 'library_music', labelKey: 'nav.history', protected: true, adminOnly: false },
     { path: '/map', icon: 'map', labelKey: 'nav.map', protected: false, adminOnly: false },

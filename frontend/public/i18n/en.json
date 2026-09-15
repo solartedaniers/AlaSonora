@@ -5,7 +5,7 @@
   },
   "nav": {
     "landing": "Home",
-    "dashboard": "Dashboard",
+    "dashboard": "Home",
     "record": "Record / Upload",
     "history": "My History",
     "map": "Public Map",
@@ -163,6 +163,7 @@
     "recordCtaBody": "Continuous passive capture with vocal frequency isolation",
     "uploadCta": "Upload Audio File",
     "uploadCtaBody": "WAV, FLAC, MP3 up to 500MB",
+    "personalStatsTitle": "Personal Statistics",
     "metrics": {
       "species": "Species Detected",
       "recordings": "Total Recordings",
@@ -170,9 +171,7 @@
       "hours": "Listening Hours"
     },
     "lastDetection": "Latest Algorithmic Detection",
-    "speciesSpotlight": "Species Spotlight",
-    "recentActivity": "Recent Activity in the Reserve",
-    "viewAll": "View All"
+    "speciesSpotlight": "Species Spotlight"
   },
   "recording": {
     "tabLive": "Record Live",
@@ -242,24 +241,18 @@
     "syncedTabs": "tabs synced"
   },
   "profile": {
+    "observerTitle": "Observer Profile",
     "editProfile": "Edit Profile Details",
     "credential": "Scientific Credential",
     "institution": "Institution / Organization",
     "orcidId": "ORCID ID",
     "stationName": "Field Station",
     "changeAvatar": "Change Photo",
-    "impactTitle": "Scientific Impact & eBird/GBIF Network",
-    "recordingsUploaded": "Recordings Uploaded",
-    "speciesConfirmed": "Confirmed Species",
-    "communityValidation": "Community Validation",
-    "openScienceContributions": "Open Science Contributions",
     "systemSettings": "System Settings",
     "appearance": "Interface Theme",
     "languageTaxonomy": "Language & Primary Taxonomy",
-    "offlineManagement": "Offline Recording Management",
     "micHardware": "Microphone & Field Gain",
     "activeSession": "Active Session",
-    "pendingLabel": "pending",
     "logout": "Log Out Securely",
     "logoutConfirm": "Do you want to end the active session? Offline records will remain safe on your device."
   },
