@@ -1,5 +1,6 @@
 import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { OfflineBannerComponent } from '../../shared/components/offline-banner/offline-banner.component';
@@ -11,6 +12,7 @@ import { AudioCaptureService } from '../../core/services/audio-capture.service';
 import { OfflineStorageService } from '../../core/services/offline-storage.service';
 import { ClassificationService } from '../../core/services/classification.service';
 import { UserService } from '../../core/services/user.service';
+import { I18nService } from '../../core/services/i18n.service';
 import { DetectionDraftService, DRAFT_DETECTION_ID } from '../../core/services/detection-draft.service';
 import { GeoLocation } from '../../core/models';
 
@@ -19,6 +21,13 @@ type RecordingTab = 'live' | 'upload';
 // Bogotá's Eastern Hills as a stand-in field location when geolocation is
 // denied/unavailable, until the real AI phase adds actual GPS tagging.
 const FALLBACK_LOCATION: GeoLocation = { latitude: 4.6097, longitude: -74.0817 };
+
+// Texto exacto que DetectionClassificationService.runClassification lanza
+// cuando BirdNET no encuentra ninguna especie con confianza suficiente (422
+// legítimo, nada que ver con la red). No hay un código de error dedicado en
+// la API todavía, así que se distingue por este texto — si el backend lo
+// cambia, hay que actualizarlo aquí también.
+const NO_SPECIES_IDENTIFIED_DETAIL = 'No bird species were identified in this recording';
 
 @Component({
   selector: 'app-recording',
@@ -40,6 +49,7 @@ export class RecordingComponent {
   private readonly offlineStorage = inject(OfflineStorageService);
   private readonly classificationService = inject(ClassificationService);
   private readonly userService = inject(UserService);
+  private readonly i18n = inject(I18nService);
   private readonly draftService = inject(DetectionDraftService);
   private readonly router = inject(Router);
 
@@ -96,7 +106,7 @@ export class RecordingComponent {
     // UserService.isAuthenticated for the same rationale.
     const userId = await this.userService.getUserId();
     if (!userId) {
-      this.classifyError.set('recording.notSignedIn');
+      this.classifyError.set(this.i18n.translate('recording.notSignedIn'));
       return;
     }
 
@@ -126,10 +136,31 @@ export class RecordingComponent {
       await this.router.navigate(['/result', DRAFT_DETECTION_ID]);
     } catch (error) {
       console.error('Classification failed', error);
-      this.classifyError.set('recording.classifyError');
+      this.classifyError.set(this.resolveClassifyErrorMessage(error));
     } finally {
       this.isClassifying.set(false);
     }
+  }
+
+  /**
+   * El backend ya distingue estas causas con status codes y mensajes
+   * distintos (502 = motor de IA caído, 422 con el detail de calidad de
+   * audio rechazada, 422 "sin especie identificada"); antes se mostraba el
+   * mismo "revisa tu conexión" para las tres, sugiriendo un problema de red
+   * que no existía en los casos 422.
+   */
+  private resolveClassifyErrorMessage(error: unknown): string {
+    if (error instanceof HttpErrorResponse && error.status === 422) {
+      const detail = (error.error as { message?: string } | null)?.message;
+      if (detail === NO_SPECIES_IDENTIFIED_DETAIL) {
+        return this.i18n.translate('recording.noSpeciesIdentified');
+      }
+      // Cualquier otro 422 (audio rechazado por AudioQualityAnalyzer) ya
+      // trae un mensaje final en español desde el ai-engine — se muestra
+      // tal cual en vez de reemplazarlo por un texto genérico de conexión.
+      if (detail) return detail;
+    }
+    return this.i18n.translate('recording.classifyError');
   }
 
   /** Only decoded for uploaded files: live recordings already track their own elapsed time. */

@@ -41,11 +41,14 @@ public class WikidataSpeciesCommonNameTranslator implements SpeciesCommonNameTra
     @Override
     public Optional<String> translateToSpanish(String scientificName) {
         try {
+            // La query SPARQL trae { }, ?, comillas: con el builder por
+            // lambda (queryParam + build() sin argumentos), UriBuilder trata
+            // esas llaves como variables de plantilla sin resolver y lanza
+            // IllegalArgumentException. Pasando el valor como variable
+            // posicional ({query}) en vez de texto ya insertado en el
+            // template, Spring lo codifica como un valor literal.
             JsonNode response = restClient.get()
-                .uri(uriBuilder -> uriBuilder
-                    .queryParam("query", sparqlQuery(scientificName))
-                    .queryParam("format", "json")
-                    .build())
+                .uri("?query={query}&format=json", sparqlQuery(scientificName))
                 .retrieve()
                 .body(JsonNode.class);
             return extractLabel(response);
@@ -58,10 +61,16 @@ public class WikidataSpeciesCommonNameTranslator implements SpeciesCommonNameTra
 
     private String sparqlQuery(String scientificName) {
         String escaped = scientificName.replace("\"", "\\\"");
+        // P1843 ("taxon common name") es la propiedad real para nombres
+        // vernáculos. rdfs:label de un ítem de taxón casi siempre ES el
+        // nombre científico (así lo etiqueta Wikidata por defecto en
+        // cualquier idioma sin nombre común curado), así que consultar
+        // rdfs:label con FILTER(LANG = "es") "funcionaba" sin error pero
+        // devolvía el nombre científico como si fuera la traducción.
         return """
             SELECT ?commonNameEs WHERE {
               ?taxon wdt:P225 "%s".
-              ?taxon rdfs:label ?commonNameEs.
+              ?taxon wdt:P1843 ?commonNameEs.
               FILTER(LANG(?commonNameEs) = "es")
             }
             LIMIT 1

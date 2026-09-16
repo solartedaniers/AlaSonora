@@ -32,8 +32,6 @@ class BirdNetClassifier:
     def classify(
         self,
         audio_path: str,
-        latitude: float | None,
-        longitude: float | None,
         recorded_at: datetime | None,
         min_confidence: float,
         max_results: int,
@@ -51,11 +49,17 @@ class BirdNetClassifier:
 
         cleaned_path = self._write_temp_wav(cleaned_samples, sample_rate)
         try:
+            # Sin lat/lon a propósito (requisito de producto): el usuario
+            # puede subir audio grabado en cualquier región, o un archivo ya
+            # existente de otra procedencia, así que BirdNET debe evaluar
+            # contra su catálogo global completo en vez de restringirse a las
+            # ~465 especies "esperables" según una ubicación que puede no
+            # tener nada que ver con dónde se grabó el audio. Pasar lat/lon
+            # aquí activa birdnetlib's set_predicted_species_list_from_position,
+            # que excluye de entrada cualquier especie fuera de esa lista.
             recording = Recording(
                 self._analyzer,
                 cleaned_path,
-                lat=latitude,
-                lon=longitude,
                 date=recorded_at,
                 min_conf=min_confidence,
             )

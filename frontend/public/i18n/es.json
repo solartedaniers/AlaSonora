@@ -196,7 +196,8 @@
     "dropzoneBody": "Soporta WAV, MP3 y FLAC de hasta 500MB.",
     "browseFiles": "Explorar Archivos Locales",
     "notSignedIn": "Tu sesión aún se está cargando. Espera un momento e inténtalo de nuevo.",
-    "classifyError": "No se pudo clasificar el audio. Revisa tu conexión e inténtalo de nuevo."
+    "classifyError": "No se pudo clasificar el audio. Revisa tu conexión e inténtalo de nuevo.",
+    "noSpeciesIdentified": "No se pudo identificar ninguna especie en esta grabación — intenta con un audio más claro o más cercano al canto del ave."
   },
   "result": {
     "completedTitle": "Identificación Bioacústica Completada",

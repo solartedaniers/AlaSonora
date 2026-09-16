@@ -33,7 +33,7 @@
     @if (classifyError()) {
       <div class="flex items-center gap-3 p-4 rounded-xl bg-error-container text-on-error-container shadow-sm">
         <span class="material-symbols-outlined shrink-0">error</span>
-        <p class="text-sm font-medium">{{ classifyError()! | translate }}</p>
+        <p class="text-sm font-medium">{{ classifyError() }}</p>
       </div>
     }
 

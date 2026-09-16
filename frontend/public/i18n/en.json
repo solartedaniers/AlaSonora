@@ -196,7 +196,8 @@
     "dropzoneBody": "Supports WAV, MP3, and FLAC up to 500MB.",
     "browseFiles": "Browse Local Files",
     "notSignedIn": "Your session is still loading. Wait a moment and try again.",
-    "classifyError": "Could not classify the audio. Check your connection and try again."
+    "classifyError": "Could not classify the audio. Check your connection and try again.",
+    "noSpeciesIdentified": "No species could be identified in this recording — try a clearer recording, closer to the bird's song."
   },
   "result": {
     "completedTitle": "Bioacoustic Identification Complete",
