@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.alasonora.backend.entity.IucnStatus;
 import com.alasonora.backend.entity.Species;
-import com.alasonora.backend.entity.VocalizationType;
 
 public record SpeciesDto(
     String id,
@@ -16,7 +15,6 @@ public record SpeciesDto(
     String order,
     IucnStatus iucnStatus,
     String imageUrl,
-    VocalizationType vocalizationType,
     String behaviorNotes,
     // Referencia externa (Xeno-canto), no un análisis de ninguna grabación
     // puntual; vacía cuando la fuente no reportó nada usable.
@@ -33,7 +31,6 @@ public record SpeciesDto(
             species.getOrder(),
             species.getIucnStatus(),
             species.getImageUrl(),
-            species.getVocalizationType(),
             species.getBehaviorNotes(),
             splitTypicalVocalizations(species.getTypicalVocalizations())
         );

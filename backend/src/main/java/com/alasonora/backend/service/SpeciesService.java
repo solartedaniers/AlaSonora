@@ -1,6 +1,8 @@
 package com.alasonora.backend.service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -11,7 +13,6 @@ import com.alasonora.backend.config.AiProperties;
 import com.alasonora.backend.dto.SpeciesDto;
 import com.alasonora.backend.entity.IucnStatus;
 import com.alasonora.backend.entity.Species;
-import com.alasonora.backend.entity.VocalizationType;
 import com.alasonora.backend.repository.SpeciesRepository;
 import com.alasonora.backend.translation.SpeciesCommonNameTranslator;
 import com.alasonora.backend.translation.SpeciesImageResolver;
@@ -56,10 +57,9 @@ public class SpeciesService {
     /**
      * Organic catalog growth: reuses an existing species by scientific name,
      * or registers a new one from what the AI engine reported. Curated
-     * fields the engine can't provide (IUCN status, vocalization type,
-     * taxonomy) get honest placeholders rather than guessed values, so a
-     * human curator can fill them in later without the data looking
-     * authoritative in the meantime.
+     * fields the engine can't provide (IUCN status, taxonomy) get honest
+     * placeholders rather than guessed values, so a human curator can fill
+     * them in later without the data looking authoritative in the meantime.
      */
     @Transactional
     public Species findOrCreateByScientificName(String scientificName, String commonNameEn) {
@@ -71,19 +71,30 @@ public class SpeciesService {
         Species species = new Species();
         species.setScientificName(scientificName);
         species.setCommonNameEn(commonNameEn);
+        species.setIucnStatus(IucnStatus.NE);
+
+        // Las tres llamadas externas (Wikidata, Wikimedia, Xeno-canto) son
+        // independientes entre sí, así que se lanzan a la vez en vez de una
+        // tras otra: el tiempo total queda acotado por la más lenta de las
+        // tres, no por la suma (medido: de ~1.1-3.1s secuencial a ~0.6-1.7s
+        // en paralelo con las mismas especies, ver informe).
+        CompletableFuture<Optional<String>> commonNameFuture =
+            CompletableFuture.supplyAsync(() -> nameTranslator.translateToSpanish(scientificName));
+        CompletableFuture<Optional<String>> imageFuture =
+            CompletableFuture.supplyAsync(() -> imageResolver.resolveImageUrl(scientificName));
+        CompletableFuture<List<String>> vocalizationsFuture =
+            CompletableFuture.supplyAsync(() -> vocalizationReferenceResolver.resolveTypicalVocalizations(scientificName));
+
         // Traducción dinámica vía Wikidata (sin diccionario local); si no hay
         // entrada en español, se usa el nombre en inglés como respaldo.
-        species.setCommonName(nameTranslator.translateToSpanish(scientificName).orElse(commonNameEn));
-        species.setIucnStatus(IucnStatus.NE);
-        species.setVocalizationType(VocalizationType.UNKNOWN);
+        species.setCommonName(commonNameFuture.join().orElse(commonNameEn));
         // Foto de referencia real vía Wikimedia Commons si existe; si no,
         // placeholder genérico en vez de dejar la interfaz sin imagen.
-        species.setImageUrl(imageResolver.resolveImageUrl(scientificName).orElse(catalogProperties.defaultSpeciesImageUrl()));
+        species.setImageUrl(imageFuture.join().orElse(catalogProperties.defaultSpeciesImageUrl()));
         // Tipos de vocalización típicos según Xeno-canto, resueltos una sola
         // vez aquí; nunca se vuelve a consultar por cada grabación del usuario.
-        species.setTypicalVocalizations(
-            String.join(", ", vocalizationReferenceResolver.resolveTypicalVocalizations(scientificName))
-        );
+        species.setTypicalVocalizations(String.join(", ", vocalizationsFuture.join()));
+
         return species;
     }
 }

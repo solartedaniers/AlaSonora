@@ -55,11 +55,19 @@
     "ew": "Extinta en Estado Silvestre",
     "ex": "Extinta"
   },
-  "vocalization": {
-    "song": "Canto Territorial",
-    "call": "Llamada de Contacto",
+  "vocalizationTag": {
+    "song": "Canto",
+    "call": "Reclamo",
+    "alarmCall": "Llamada de alarma",
+    "flightCall": "Llamada de vuelo",
+    "nocturnalFlightCall": "Llamada de vuelo nocturno",
+    "duet": "Dueto",
+    "subsong": "Subcanto",
+    "beggingCall": "Llamada de solicitud",
+    "dawnSong": "Canto del amanecer",
+    "purring": "Arrullo",
     "drumming": "Tamborileo",
-    "unknown": "Vocalización sin Documentar"
+    "wingSound": "Sonido de alas (no vocal)"
   },
   "landing": {
     "badge": "Modelo Bioacústico Activo",

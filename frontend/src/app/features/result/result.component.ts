@@ -5,6 +5,7 @@ import { NavHeaderComponent } from '../../shared/components/nav-header/nav-heade
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
+import { VocalizationTagPipe } from '../../shared/pipes/vocalization-tag.pipe';
 import { DetectionsService } from '../../core/services/detections.service';
 import { LiveSyncService } from '../../core/services/live-sync.service';
 import { UserService } from '../../core/services/user.service';
@@ -14,7 +15,7 @@ import { Detection, Visibility } from '../../core/models';
 @Component({
   selector: 'app-result',
   standalone: true,
-  imports: [RouterLink, DecimalPipe, NavHeaderComponent, ConfidenceBadgeComponent, TranslatePipe, SpeciesNamePipe],
+  imports: [RouterLink, DecimalPipe, NavHeaderComponent, ConfidenceBadgeComponent, TranslatePipe, SpeciesNamePipe, VocalizationTagPipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './result.component.html',
 })

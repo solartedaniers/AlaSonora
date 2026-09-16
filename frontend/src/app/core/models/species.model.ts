@@ -12,7 +12,6 @@ export interface Species {
   order: string;
   iucnStatus: IucnStatus;
   imageUrl?: string;
-  vocalizationType: VocalizationType;
   behaviorNotes?: string;
   /** Reference only, sourced from Xeno-canto for the species overall — never an analysis of one specific recording. */
   typicalVocalizations: string[];
@@ -43,12 +42,38 @@ export const IUCN_LABELS: Record<IucnStatus, string> = {
   EX: 'iucn.ex',
 };
 
-/** Predominant vocalization documented for the species' profile (bioacoustic enrichment); UNKNOWN for species auto-registered from an AI classification. */
-export type VocalizationType = 'SONG' | 'CALL' | 'DRUMMING' | 'UNKNOWN';
-
-export const VOCALIZATION_LABELS: Record<VocalizationType, string> = {
-  SONG: 'vocalization.song',
-  CALL: 'vocalization.call',
-  DRUMMING: 'vocalization.drumming',
-  UNKNOWN: 'vocalization.unknown',
+/**
+ * Traducción de los valores del campo `type` de Xeno-canto (species.typicalVocalizations),
+ * texto semi-libre de un recolector de datos externo, no un enum cerrado.
+ * Claves en minúscula, ya recortadas. Cubre los valores observados con
+ * frecuencia real en pruebas contra la API (canto/reclamo y variantes
+ * documentadas), no un vocabulario inventado. Cualquier valor fuera de este
+ * diccionario se muestra tal cual vino de Xeno-canto (ver VocalizationTagPipe).
+ */
+export const XENO_CANTO_VOCALIZATION_LABELS: Record<string, string> = {
+  song: 'vocalizationTag.song',
+  singing: 'vocalizationTag.song',
+  call: 'vocalizationTag.call',
+  calls: 'vocalizationTag.call',
+  'alarm call': 'vocalizationTag.alarmCall',
+  'flight call': 'vocalizationTag.flightCall',
+  'nocturnal flight call': 'vocalizationTag.nocturnalFlightCall',
+  duet: 'vocalizationTag.duet',
+  subsong: 'vocalizationTag.subsong',
+  'begging call': 'vocalizationTag.beggingCall',
+  'dawn song': 'vocalizationTag.dawnSong',
+  purring: 'vocalizationTag.purring',
+  drumming: 'vocalizationTag.drumming',
+  // No vocal: sonido mecánico de alas, visto repetido en pruebas reales bajo
+  // varias redacciones distintas del mismo fenómeno.
+  wingbeats: 'vocalizationTag.wingSound',
+  wings: 'vocalizationTag.wingSound',
+  'wing beats': 'vocalizationTag.wingSound',
+  'flapping of wings': 'vocalizationTag.wingSound',
+  'mechanical sound - wings beating': 'vocalizationTag.wingSound',
 };
+
+/** Clave de traducción para un tag de Xeno-canto, o null si no está en el diccionario (el caller decide el fallback). */
+export function xenoCantoVocalizationLabelKey(rawType: string): string | null {
+  return XENO_CANTO_VOCALIZATION_LABELS[rawType.toLowerCase().trim()] ?? null;
+}

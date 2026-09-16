@@ -55,11 +55,19 @@
     "ew": "Extinct in the Wild",
     "ex": "Extinct"
   },
-  "vocalization": {
-    "song": "Territorial Song",
-    "call": "Contact Call",
+  "vocalizationTag": {
+    "song": "Song",
+    "call": "Call",
+    "alarmCall": "Alarm call",
+    "flightCall": "Flight call",
+    "nocturnalFlightCall": "Nocturnal flight call",
+    "duet": "Duet",
+    "subsong": "Subsong",
+    "beggingCall": "Begging call",
+    "dawnSong": "Dawn song",
+    "purring": "Purring",
     "drumming": "Drumming",
-    "unknown": "Undocumented Vocalization"
+    "wingSound": "Wing sound (non-vocal)"
   },
   "landing": {
     "badge": "Bioacoustic Model Active",

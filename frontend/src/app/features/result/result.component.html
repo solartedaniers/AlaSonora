@@ -58,9 +58,6 @@
             <span class="px-2 py-1 rounded-md bg-surface-container-high text-on-surface-variant font-mono text-xs">
               {{ ('iucn.' + d.species.iucnStatus.toLowerCase()) | translate }}
             </span>
-            <span class="px-2 py-1 rounded-md bg-surface-container-high text-secondary font-mono text-xs">
-              {{ ('vocalization.' + d.species.vocalizationType.toLowerCase()) | translate }}
-            </span>
           </div>
           <div>
             <h1 class="font-display text-3xl font-bold tracking-tight">{{ d.species | speciesName }}</h1>
@@ -113,7 +110,7 @@
               <h3 class="font-display font-semibold">{{ 'result.typicalVocalizationsTitle' | translate }}</h3>
               <div class="flex flex-wrap gap-2">
                 @for (type of d.species.typicalVocalizations; track type) {
-                  <span class="px-2.5 py-1 rounded-full bg-surface-container-high text-secondary text-xs capitalize">{{ type }}</span>
+                  <span class="px-2.5 py-1 rounded-full bg-surface-container-high text-secondary text-xs capitalize">{{ type | vocalizationTag }}</span>
                 }
               </div>
               <p class="text-xs text-on-surface-variant italic">{{ 'result.typicalVocalizationsHint' | translate }}</p>
