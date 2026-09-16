@@ -15,6 +15,7 @@ import com.alasonora.backend.entity.VocalizationType;
 import com.alasonora.backend.repository.SpeciesRepository;
 import com.alasonora.backend.translation.SpeciesCommonNameTranslator;
 import com.alasonora.backend.translation.SpeciesImageResolver;
+import com.alasonora.backend.translation.SpeciesVocalizationReferenceResolver;
 
 @Service
 public class SpeciesService {
@@ -22,17 +23,20 @@ public class SpeciesService {
     private final SpeciesRepository speciesRepository;
     private final SpeciesCommonNameTranslator nameTranslator;
     private final SpeciesImageResolver imageResolver;
+    private final SpeciesVocalizationReferenceResolver vocalizationReferenceResolver;
     private final AiProperties.Catalog catalogProperties;
 
     public SpeciesService(
         SpeciesRepository speciesRepository,
         SpeciesCommonNameTranslator nameTranslator,
         SpeciesImageResolver imageResolver,
+        SpeciesVocalizationReferenceResolver vocalizationReferenceResolver,
         AiProperties aiProperties
     ) {
         this.speciesRepository = speciesRepository;
         this.nameTranslator = nameTranslator;
         this.imageResolver = imageResolver;
+        this.vocalizationReferenceResolver = vocalizationReferenceResolver;
         this.catalogProperties = aiProperties.catalog();
     }
 
@@ -75,6 +79,11 @@ public class SpeciesService {
         // Foto de referencia real vía Wikimedia Commons si existe; si no,
         // placeholder genérico en vez de dejar la interfaz sin imagen.
         species.setImageUrl(imageResolver.resolveImageUrl(scientificName).orElse(catalogProperties.defaultSpeciesImageUrl()));
+        // Tipos de vocalización típicos según Xeno-canto, resueltos una sola
+        // vez aquí; nunca se vuelve a consultar por cada grabación del usuario.
+        species.setTypicalVocalizations(
+            String.join(", ", vocalizationReferenceResolver.resolveTypicalVocalizations(scientificName))
+        );
         return species;
     }
 }

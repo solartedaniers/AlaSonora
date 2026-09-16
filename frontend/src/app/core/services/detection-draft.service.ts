@@ -6,8 +6,13 @@ export const DRAFT_DETECTION_ID = 'draft';
 
 export interface DetectionDraft {
   species: Species;
+  /** Object key in the private `recordings` bucket; this, not `audioUrl`, is what gets persisted. */
+  audioStoragePath?: string;
   recordedAt: string;
   audioUrl?: string;
+  // Siempre undefined: un draft aún no tiene id de backend, así que no puede
+  // tener foto de observador propia todavía (ver ResultComponent.isDraft).
+  observerPhotoUrl?: string;
   durationSeconds: number;
   confidence: number;
   peakFrequencyHz: number;

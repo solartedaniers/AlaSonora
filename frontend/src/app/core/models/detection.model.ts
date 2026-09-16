@@ -28,6 +28,8 @@ export interface Detection {
   id: string;
   recordedAt: string; // ISO 8601
   audioUrl?: string;
+  /** The observer's own photo for THIS detection, signed on demand like audioUrl — never the species' official reference photo. */
+  observerPhotoUrl?: string;
   durationSeconds: number;
   species: Species;
   confidence: number; // 0-100
@@ -46,7 +48,8 @@ export interface Detection {
 export interface CreateDetectionRequest {
   speciesId: string;
   recordedAt: string;
-  audioUrl?: string;
+  /** Object key in the private `recordings` bucket, never a signed URL. */
+  audioStoragePath?: string;
   durationSeconds: number;
   confidence: number;
   peakFrequencyHz: number;

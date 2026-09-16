@@ -27,6 +27,7 @@
   },
   "common": {
     "loading": "Loading…",
+    "uploading": "Uploading…",
     "save": "Save",
     "cancel": "Cancel",
     "discard": "Discard",
@@ -49,7 +50,10 @@
     "vu": "Vulnerable",
     "en": "Endangered",
     "cr": "Critically Endangered",
-    "ne": "Not Evaluated"
+    "dd": "Data Deficient",
+    "ne": "Not Evaluated",
+    "ew": "Extinct in the Wild",
+    "ex": "Extinct"
   },
   "vocalization": {
     "song": "Territorial Song",
@@ -197,6 +201,12 @@
   "result": {
     "completedTitle": "Bioacoustic Identification Complete",
     "behaviorContext": "Bioacoustic Context",
+    "typicalVocalizationsTitle": "Typical vocalizations of this species",
+    "typicalVocalizationsHint": "General reference from Xeno-canto for the species, not an analysis of this recording.",
+    "referencePhotoLabel": "Reference photo",
+    "observerPhotoLabel": "Photo submitted by the observer",
+    "uploadObserverPhoto": "Upload my photo",
+    "observerPhotoError": "Could not upload the photo. Please try again.",
     "spectrogramTitle": "Thermal Spectrogram & Harmonic Window",
     "confidenceBreakdown": "AI Confidence Breakdown",
     "alternatives": "Alternative Species",

@@ -27,6 +27,7 @@
   },
   "common": {
     "loading": "Cargando…",
+    "uploading": "Subiendo…",
     "save": "Guardar",
     "cancel": "Cancelar",
     "discard": "Descartar",
@@ -49,7 +50,10 @@
     "vu": "Vulnerable",
     "en": "En Peligro",
     "cr": "En Peligro Crítico",
-    "ne": "No Evaluada"
+    "dd": "Datos Insuficientes",
+    "ne": "No Evaluada",
+    "ew": "Extinta en Estado Silvestre",
+    "ex": "Extinta"
   },
   "vocalization": {
     "song": "Canto Territorial",
@@ -197,6 +201,12 @@
   "result": {
     "completedTitle": "Identificación Bioacústica Completada",
     "behaviorContext": "Contexto Bioacústico",
+    "typicalVocalizationsTitle": "Vocalizaciones típicas de esta especie",
+    "typicalVocalizationsHint": "Referencia general de Xeno-canto para la especie, no un análisis de esta grabación.",
+    "referencePhotoLabel": "Foto de referencia",
+    "observerPhotoLabel": "Foto aportada por el observador",
+    "uploadObserverPhoto": "Subir mi foto",
+    "observerPhotoError": "No se pudo subir la foto. Inténtalo de nuevo.",
     "spectrogramTitle": "Espectrograma Térmico & Ventana Armónica",
     "confidenceBreakdown": "Barra de Certeza de IA",
     "alternatives": "Especies Alternativas",

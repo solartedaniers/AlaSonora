@@ -25,7 +25,31 @@
             } @else {
               <span class="material-symbols-outlined text-6xl text-primary">flutter_dash</span>
             }
+            <span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-surface/80 text-[10px] uppercase tracking-wide text-on-surface-variant">
+              {{ 'result.referencePhotoLabel' | translate }}
+            </span>
           </div>
+
+          <!-- Foto del observador: nunca dentro del mismo recuadro que la foto de referencia oficial de la especie -->
+          @if (d.observerPhotoUrl) {
+            <div class="relative w-full aspect-square rounded-xl overflow-hidden shadow-lg bg-surface-container-high">
+              <img [src]="d.observerPhotoUrl" alt="" class="w-full h-full object-cover" />
+              <span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-secondary text-on-secondary text-[10px] uppercase tracking-wide font-semibold">
+                {{ 'result.observerPhotoLabel' | translate }}
+              </span>
+            </div>
+          }
+
+          @if (!isDraft()) {
+            <label class="flex items-center justify-center gap-2 h-10 rounded-lg border border-dashed border-outline-variant text-xs text-on-surface-variant cursor-pointer hover:bg-surface-container-high transition-colors">
+              <span class="material-symbols-outlined text-base">add_a_photo</span>
+              <span>{{ uploadingPhoto() ? ('common.uploading' | translate) : ('result.uploadObserverPhoto' | translate) }}</span>
+              <input type="file" accept="image/*" class="hidden" [disabled]="uploadingPhoto()" (change)="onObserverPhotoSelected($event)" />
+            </label>
+            @if (photoUploadError()) {
+              <p class="text-xs text-error">{{ photoUploadError()! | translate }}</p>
+            }
+          }
         </div>
 
         <div class="lg:col-span-8 flex flex-col gap-3">
@@ -77,6 +101,24 @@
               <p class="text-xs text-on-surface-variant italic">{{ d.disclaimer }}</p>
             </div>
           }
+        </div>
+      }
+
+      <!-- Typical vocalizations: species-wide reference from Xeno-canto, never an analysis of this specific recording -->
+      @if (d.species.typicalVocalizations.length > 0) {
+        <div class="bg-surface-container-low rounded-2xl p-6 shadow-md flex flex-col gap-3">
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-secondary shrink-0">library_music</span>
+            <div class="flex flex-col gap-2">
+              <h3 class="font-display font-semibold">{{ 'result.typicalVocalizationsTitle' | translate }}</h3>
+              <div class="flex flex-wrap gap-2">
+                @for (type of d.species.typicalVocalizations; track type) {
+                  <span class="px-2.5 py-1 rounded-full bg-surface-container-high text-secondary text-xs capitalize">{{ type }}</span>
+                }
+              </div>
+              <p class="text-xs text-on-surface-variant italic">{{ 'result.typicalVocalizationsHint' | translate }}</p>
+            </div>
+          </div>
         </div>
       }
 

@@ -41,6 +41,8 @@ export class ResultComponent implements OnInit {
   readonly saving = signal(false);
   readonly saved = signal(false);
   readonly fieldNotesDraft = signal('');
+  readonly uploadingPhoto = signal(false);
+  readonly photoUploadError = signal<string | null>(null);
 
   async ngOnInit(): Promise<void> {
     const id = this.route.snapshot.paramMap.get('id');
@@ -90,7 +92,7 @@ export class ResultComponent implements OnInit {
       const created = await this.detectionsService.create({
         speciesId: draft.species.id,
         recordedAt: draft.recordedAt,
-        audioUrl: draft.audioUrl,
+        audioStoragePath: draft.audioStoragePath,
         durationSeconds: draft.durationSeconds,
         confidence: draft.confidence,
         peakFrequencyHz: draft.peakFrequencyHz,
@@ -126,5 +128,26 @@ export class ResultComponent implements OnInit {
 
   recordAnother(): void {
     this.router.navigateByUrl('/record');
+  }
+
+  // Solo aplica sobre una detección ya guardada (necesita un id real de
+  // backend); el resultado de un draft aún no confirmado no admite foto
+  // propia todavía.
+  async onObserverPhotoSelected(event: Event): Promise<void> {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    const detection = this.detection();
+    const userId = await this.user.getUserId();
+    if (!file || !detection || !userId) return;
+
+    this.photoUploadError.set(null);
+    this.uploadingPhoto.set(true);
+    try {
+      this.detection.set(await this.detectionsService.uploadObserverPhoto(detection.id, userId, file));
+    } catch (error) {
+      console.error('Observer photo upload failed', error);
+      this.photoUploadError.set('result.observerPhotoError');
+    } finally {
+      this.uploadingPhoto.set(false);
+    }
   }
 }

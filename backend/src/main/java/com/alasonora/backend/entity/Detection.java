@@ -42,8 +42,17 @@ public class Detection {
     @Column(nullable = false)
     private Instant recordedAt;
 
+    // Object key within the private "recordings" Supabase Storage bucket
+    // (e.g. "{ownerId}/{timestamp}.wav"), never a signed URL: those expire
+    // and must be generated on demand, see PrivateObjectSignedUrlResolver.
     @Column(columnDefinition = "TEXT")
-    private String audioUrl;
+    private String audioStoragePath;
+
+    // Object key within the private "observer-photos" bucket for the photo
+    // the observer attached to THIS detection (not the species' official
+    // reference photo). Null when the observer didn't upload one.
+    @Column(columnDefinition = "TEXT")
+    private String observerPhotoStoragePath;
 
     @Column(nullable = false)
     private double durationSeconds;

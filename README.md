@@ -290,3 +290,10 @@ ai-engine/app/
 ├── schemas.py                # modelos Pydantic de request/response
 └── test_audio_quality.py     # self-check con señales sintéticas
 ```
+
+
+para corre la ia 
+1. cd ai-engine
+2. .venv\Scripts\activate
+3. python -m uvicorn app.main:app --reload --port 8000
+4. deactivate

@@ -15,7 +15,9 @@ import jakarta.validation.constraints.PositiveOrZero;
 public record CreateDetectionRequest(
     @NotBlank String speciesId,
     @NotNull Instant recordedAt,
-    String audioUrl,
+    // Object key dentro del bucket privado "recordings", nunca una URL
+    // firmada: el backend la genera bajo demanda al leer la detección.
+    String audioStoragePath,
     @PositiveOrZero double durationSeconds,
     @DecimalMin("0") @DecimalMax("100") double confidence,
     double peakFrequencyHz,

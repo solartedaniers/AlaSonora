@@ -14,6 +14,8 @@ export interface Species {
   imageUrl?: string;
   vocalizationType: VocalizationType;
   behaviorNotes?: string;
+  /** Reference only, sourced from Xeno-canto for the species overall — never an analysis of one specific recording. */
+  typicalVocalizations: string[];
 }
 
 /**
@@ -27,7 +29,7 @@ export function speciesDisplayName(species: Species, lang: 'es' | 'en'): string 
   return localized || other || species.scientificName;
 }
 
-export type IucnStatus = 'LC' | 'NT' | 'VU' | 'EN' | 'CR' | 'NE';
+export type IucnStatus = 'LC' | 'NT' | 'VU' | 'EN' | 'CR' | 'DD' | 'NE' | 'EW' | 'EX';
 
 export const IUCN_LABELS: Record<IucnStatus, string> = {
   LC: 'iucn.lc',
@@ -35,7 +37,10 @@ export const IUCN_LABELS: Record<IucnStatus, string> = {
   VU: 'iucn.vu',
   EN: 'iucn.en',
   CR: 'iucn.cr',
+  DD: 'iucn.dd',
   NE: 'iucn.ne',
+  EW: 'iucn.ew',
+  EX: 'iucn.ex',
 };
 
 /** Predominant vocalization documented for the species' profile (bioacoustic enrichment); UNKNOWN for species auto-registered from an AI classification. */

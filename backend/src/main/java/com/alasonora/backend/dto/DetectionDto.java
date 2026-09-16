@@ -18,14 +18,19 @@ public record DetectionDto(
     GeoLocationDto location,
     String observerName,
     String fieldNotes,
-    Visibility visibility
+    Visibility visibility,
+    // Foto que el propio observador adjuntó a ESTA detección puntual (nunca
+    // la foto de referencia oficial de la especie); null si no subió ninguna.
+    String observerPhotoUrl
 ) {
 
-    public static DetectionDto fromEntity(Detection detection) {
+    // El caller resuelve las URLs firmadas (ver PrivateObjectSignedUrlResolver):
+    // este DTO solo mapea, nunca llama a Supabase Storage.
+    public static DetectionDto fromEntity(Detection detection, String signedAudioUrl, String signedObserverPhotoUrl) {
         return new DetectionDto(
             detection.getId().toString(),
             detection.getRecordedAt(),
-            detection.getAudioUrl(),
+            signedAudioUrl,
             detection.getDurationSeconds(),
             SpeciesDto.fromEntity(detection.getSpecies()),
             detection.getConfidence(),
@@ -34,7 +39,8 @@ public record DetectionDto(
             GeoLocationDto.fromEntity(detection.getLocation()),
             detection.getObserverName(),
             detection.getFieldNotes(),
-            detection.getVisibility()
+            detection.getVisibility(),
+            signedObserverPhotoUrl
         );
     }
 }

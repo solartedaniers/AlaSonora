@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +22,7 @@ import com.alasonora.backend.dto.ClassificationResultDto;
 import com.alasonora.backend.dto.ClassifyDetectionRequest;
 import com.alasonora.backend.dto.CreateDetectionRequest;
 import com.alasonora.backend.dto.DetectionDto;
+import com.alasonora.backend.dto.SetObserverPhotoRequest;
 import com.alasonora.backend.service.DetectionClassificationService;
 import com.alasonora.backend.service.DetectionService;
 
@@ -52,6 +55,14 @@ public class DetectionController {
         return detectionService.getMyDetections(UUID.fromString(jwt.getSubject()));
     }
 
+    // La URL de audio se firma en el momento, nunca se guarda fija: así una
+    // detección PRIVATE sigue siendo reproducible sin importar cuánto tiempo
+    // haya pasado desde que se subió.
+    @GetMapping("/{id}")
+    public DetectionDto getById(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id) {
+        return detectionService.getByIdForRequester(id, UUID.fromString(jwt.getSubject()));
+    }
+
     @PostMapping
     public ResponseEntity<DetectionDto> create(
         @AuthenticationPrincipal Jwt jwt,
@@ -59,6 +70,18 @@ public class DetectionController {
     ) {
         DetectionDto created = detectionService.createDetection(UUID.fromString(jwt.getSubject()), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    // El frontend ya subió la foto directo a Storage (mismo patrón que
+    // avatars); este endpoint solo persiste el path, y solo si el
+    // solicitante es dueño de la detección.
+    @PutMapping("/{id}/observer-photo")
+    public DetectionDto setObserverPhoto(
+        @AuthenticationPrincipal Jwt jwt,
+        @PathVariable Long id,
+        @Valid @RequestBody SetObserverPhotoRequest request
+    ) {
+        return detectionService.setObserverPhoto(id, UUID.fromString(jwt.getSubject()), request.observerPhotoStoragePath());
     }
 
     // Returns a CompletableFuture: Spring MVC releases this Tomcat request

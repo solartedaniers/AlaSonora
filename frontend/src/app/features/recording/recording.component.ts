@@ -104,13 +104,17 @@ export class RecordingComponent {
     try {
       const recordedAt = new Date().toISOString();
       const location = await this.currentLocation();
-      const audioUrl = await this.classificationService.uploadRecording(userId, audio);
-      const result = await this.classificationService.classify(audioUrl, recordedAt, location);
+      const { storagePath, signedUrl } = await this.classificationService.uploadRecording(userId, audio);
+      const result = await this.classificationService.classify(signedUrl, recordedAt, location);
 
       this.draftService.set({
         species: result.species,
         recordedAt,
-        audioUrl,
+        audioStoragePath: storagePath,
+        // Válida solo por unos minutos; suficiente para revisar el resultado
+        // antes de guardarlo. Tras guardar, el backend firma una nueva URL
+        // cada vez que se pide la detección, a partir de audioStoragePath.
+        audioUrl: signedUrl,
         durationSeconds,
         confidence: result.confidence,
         peakFrequencyHz,
