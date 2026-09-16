@@ -166,6 +166,19 @@
             }
           </div>
 
+          <div class="flex flex-col gap-1.5">
+            <label for="createSystemRole" class="text-sm font-semibold">{{ 'admin.createModal.systemRole' | translate }}</label>
+            <select
+              id="createSystemRole"
+              formControlName="systemRole"
+              class="w-full h-12 px-4 bg-surface-container-lowest text-on-surface rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow appearance-none cursor-pointer"
+            >
+              @for (r of systemRoles; track r) {
+                <option [value]="r">{{ (r === 'admin' ? 'admin.roleAdmin' : 'admin.roleUser') | translate }}</option>
+              }
+            </select>
+          </div>
+
           <div class="flex justify-end gap-3 pt-2">
             <button type="button" (click)="closeCreateModal()" class="px-5 py-2.5 rounded-lg bg-surface-container-high text-on-surface font-display text-sm font-semibold">
               {{ 'common.cancel' | translate }}

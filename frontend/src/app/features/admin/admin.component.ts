@@ -12,7 +12,7 @@ import { AdminUsersService } from '../../core/services/admin-users.service';
 import { DetectionsService } from '../../core/services/detections.service';
 import { nameValidator } from '../../core/validators/name.validator';
 import { passwordStrengthValidator } from '../../core/validators/password-strength.validator';
-import { Detection, ObserverRole, Profile } from '../../core/models';
+import { Detection, ObserverRole, Profile, SystemRole } from '../../core/models';
 
 @Component({
   selector: 'app-admin',
@@ -37,6 +37,7 @@ export class AdminComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
 
   readonly roles: ObserverRole[] = ['ornithologist', 'ranger', 'biologist', 'hobbyist', 'student'];
+  readonly systemRoles: SystemRole[] = ['user', 'admin'];
 
   readonly loading = signal(true);
   readonly users = signal<Profile[]>([]);
@@ -54,6 +55,7 @@ export class AdminComponent implements OnInit {
     displayName: ['', [Validators.required, nameValidator]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, passwordStrengthValidator]],
+    systemRole: ['user' as SystemRole, Validators.required],
   });
 
   readonly editingUser = signal<Profile | null>(null);
@@ -75,7 +77,7 @@ export class AdminComponent implements OnInit {
   }
 
   openCreateModal(): void {
-    this.createForm.reset({ displayName: '', email: '', password: '' });
+    this.createForm.reset({ displayName: '', email: '', password: '', systemRole: 'user' });
     this.createModalOpen.set(true);
   }
 
@@ -90,8 +92,8 @@ export class AdminComponent implements OnInit {
     }
     this.creating.set(true);
     try {
-      const { displayName, email, password } = this.createForm.getRawValue();
-      await this.adminUsers.create({ displayName, email, password });
+      const { displayName, email, password, systemRole } = this.createForm.getRawValue();
+      await this.adminUsers.create({ displayName, email, password, systemRole });
       this.createModalOpen.set(false);
       await this.reload();
     } finally {

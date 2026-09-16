@@ -41,6 +41,7 @@ public class AdminUserService {
         profile.setId(userId);
         profile.setDisplayName(request.displayName());
         profile.setRole(DEFAULT_ROLE);
+        profile.setSystemRole(request.systemRole());
         return ProfileDto.fromEntity(profileRepository.save(profile));
     }
 

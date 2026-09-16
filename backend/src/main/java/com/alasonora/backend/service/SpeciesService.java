@@ -14,21 +14,25 @@ import com.alasonora.backend.entity.Species;
 import com.alasonora.backend.entity.VocalizationType;
 import com.alasonora.backend.repository.SpeciesRepository;
 import com.alasonora.backend.translation.SpeciesCommonNameTranslator;
+import com.alasonora.backend.translation.SpeciesImageResolver;
 
 @Service
 public class SpeciesService {
 
     private final SpeciesRepository speciesRepository;
     private final SpeciesCommonNameTranslator nameTranslator;
+    private final SpeciesImageResolver imageResolver;
     private final AiProperties.Catalog catalogProperties;
 
     public SpeciesService(
         SpeciesRepository speciesRepository,
         SpeciesCommonNameTranslator nameTranslator,
+        SpeciesImageResolver imageResolver,
         AiProperties aiProperties
     ) {
         this.speciesRepository = speciesRepository;
         this.nameTranslator = nameTranslator;
+        this.imageResolver = imageResolver;
         this.catalogProperties = aiProperties.catalog();
     }
 
@@ -68,7 +72,9 @@ public class SpeciesService {
         species.setCommonName(nameTranslator.translateToSpanish(scientificName).orElse(commonNameEn));
         species.setIucnStatus(IucnStatus.NE);
         species.setVocalizationType(VocalizationType.UNKNOWN);
-        species.setImageUrl(catalogProperties.defaultSpeciesImageUrl());
+        // Foto de referencia real vía Wikimedia Commons si existe; si no,
+        // placeholder genérico en vez de dejar la interfaz sin imagen.
+        species.setImageUrl(imageResolver.resolveImageUrl(scientificName).orElse(catalogProperties.defaultSpeciesImageUrl()));
         return species;
     }
 }

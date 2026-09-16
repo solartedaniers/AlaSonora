@@ -21,6 +21,7 @@ export interface CreateUserRequest {
   email: string;
   password: string;
   displayName: string;
+  systemRole: SystemRole;
 }
 
 export interface UpdateUserRequest {
@@ -43,7 +44,9 @@ export class AdminUsersService {
   }
 
   async create(request: CreateUserRequest): Promise<Profile> {
-    const created = await firstValueFrom(this.http.post<BackendProfile>(this.baseUrl, request));
+    const created = await firstValueFrom(
+      this.http.post<BackendProfile>(this.baseUrl, { ...request, systemRole: request.systemRole.toUpperCase() })
+    );
     return this.fromBackend(created);
   }
 

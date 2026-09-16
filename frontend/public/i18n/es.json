@@ -275,7 +275,8 @@
       "delete": "Eliminar"
     },
     "createModal": {
-      "title": "Crear Nuevo Usuario"
+      "title": "Crear Nuevo Usuario",
+      "systemRole": "Rol de Acceso"
     },
     "editModal": {
       "title": "Editar Usuario"
