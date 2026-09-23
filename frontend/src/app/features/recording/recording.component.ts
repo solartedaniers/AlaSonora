@@ -54,8 +54,6 @@ export class RecordingComponent {
   private readonly router = inject(Router);
 
   readonly activeTab = signal<RecordingTab>('live');
-  readonly gainDb = signal(12);
-  readonly highPassEnabled = signal(true);
   readonly isDragOver = signal(false);
 
   // Se pasa como función (no como valor) para que el componente de canvas
@@ -113,9 +111,14 @@ export class RecordingComponent {
     this.isClassifying.set(true);
     try {
       const recordedAt = new Date().toISOString();
-      const location = await this.currentLocation();
+      // Solo se pasa a BirdNET cuando es un GPS real: el fallback de campo
+      // no representa dónde se grabó el audio, y narrowear candidatos con
+      // una ubicación inventada excluye especies legítimas fuera de esa
+      // región (ver BirdNetClassifier.classify en el ai-engine).
+      const gpsLocation = await this.currentLocation();
       const { storagePath, signedUrl } = await this.classificationService.uploadRecording(userId, audio);
-      const result = await this.classificationService.classify(signedUrl, recordedAt, location);
+      const result = await this.classificationService.classify(signedUrl, recordedAt, gpsLocation);
+      const location = gpsLocation ?? FALLBACK_LOCATION;
 
       this.draftService.set({
         species: result.species,
@@ -174,15 +177,16 @@ export class RecordingComponent {
     }
   }
 
-  private currentLocation(): Promise<GeoLocation> {
+  /** Resolves to `undefined` (never the field fallback) when no real GPS fix is available — see the call site for why. */
+  private currentLocation(): Promise<GeoLocation | undefined> {
     return new Promise((resolve) => {
       if (!navigator.geolocation) {
-        resolve(FALLBACK_LOCATION);
+        resolve(undefined);
         return;
       }
       navigator.geolocation.getCurrentPosition(
         (pos) => resolve({ latitude: pos.coords.latitude, longitude: pos.coords.longitude }),
-        () => resolve(FALLBACK_LOCATION),
+        () => resolve(undefined),
         { timeout: 4000 }
       );
     });

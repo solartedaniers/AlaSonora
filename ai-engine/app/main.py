@@ -49,11 +49,11 @@ async def analyze(
     audio: UploadFile,
     min_confidence: float = Form(default=settings.default_min_confidence),
     max_results: int = Form(default=settings.default_max_results),
-    # latitude/longitude ya no se aceptan: BirdNET siempre evalúa contra su
-    # catálogo global (ver BirdNetClassifier.classify). El backend de Spring
-    # puede seguir enviándolos en el multipart sin que rompa nada — FastAPI
-    # ignora campos de formulario no declarados.
     recorded_at: datetime | None = Form(default=None),
+    # Opcionales: solo deben venir cuando el backend tiene una ubicación GPS
+    # real del dispositivo (ver BirdNetClassifier.classify).
+    latitude: float | None = Form(default=None),
+    longitude: float | None = Form(default=None),
 ) -> ClassificationResponse:
     suffix = os.path.splitext(audio.filename or "recording.wav")[1] or ".wav"
     with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp_file:
@@ -72,6 +72,8 @@ async def analyze(
             recorded_at,
             min_confidence,
             max_results,
+            latitude,
+            longitude,
         )
     except TooNoisyAudioError as exc:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=TOO_NOISY_MESSAGE) from exc

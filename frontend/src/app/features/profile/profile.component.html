@@ -66,6 +66,9 @@
               <span class="text-sm text-on-surface-variant">{{ 'common.loading' | translate }}</span>
             }
           </div>
+          @if (avatarError()) {
+            <p class="text-sm text-error">{{ avatarError() }}</p>
+          }
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="flex flex-col gap-1.5">
@@ -140,13 +143,16 @@
 
     <!-- Settings -->
     <div class="space-y-6">
-      <h2 class="font-display text-lg font-semibold">{{ 'profile.systemSettings' | translate }}</h2>
+      <div class="flex flex-col gap-1">
+        <span class="eyebrow-label">{{ 'profile.settingsEyebrow' | translate }}</span>
+        <h2 class="font-display text-lg font-semibold">{{ 'profile.systemSettings' | translate }}</h2>
+      </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Theme -->
         <div class="feature-card glass-card rounded-xl p-6 shadow-sm space-y-4">
-          <h3 class="font-display font-semibold flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary">palette</span>
+          <h3 class="font-display font-semibold flex items-center gap-3">
+            <span class="icon-wrapper icon-wrapper--sm"><span class="material-symbols-outlined text-[20px]">palette</span></span>
             {{ 'profile.appearance' | translate }}
           </h3>
           <div class="grid grid-cols-3 gap-2.5 p-1.5 bg-surface-container rounded-lg">
@@ -168,8 +174,8 @@
 
         <!-- Language -->
         <div class="feature-card glass-card rounded-xl p-6 shadow-sm space-y-4">
-          <h3 class="font-display font-semibold flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary">translate</span>
+          <h3 class="font-display font-semibold flex items-center gap-3">
+            <span class="icon-wrapper icon-wrapper--sm"><span class="material-symbols-outlined text-[20px]">translate</span></span>
             {{ 'profile.languageTaxonomy' | translate }}
           </h3>
           <div class="grid grid-cols-2 gap-3">
@@ -190,13 +196,22 @@
 
         <!-- Mic gain -->
         <div class="feature-card glass-card rounded-xl p-6 shadow-sm space-y-4 lg:col-span-2">
-          <h3 class="font-display font-semibold flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary">settings_input_antenna</span>
+          <h3 class="font-display font-semibold flex items-center gap-3">
+            <span class="icon-wrapper icon-wrapper--sm"><span class="material-symbols-outlined text-[20px]">settings_input_antenna</span></span>
             {{ 'profile.micHardware' | translate }}
           </h3>
           <div class="bg-surface-container p-4 rounded-xl space-y-2">
             <div class="flex justify-between items-center">
-              <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'recording.gain' | translate }}</span>
+              <span class="text-xs text-on-surface-variant uppercase tracking-wider inline-flex items-center gap-1">
+                {{ 'recording.gain' | translate }}
+                <span
+                  class="material-symbols-outlined text-[14px] cursor-help"
+                  [title]="'recording.gainHelp' | translate"
+                  [attr.aria-label]="'recording.gainHelp' | translate"
+                  role="img"
+                  >help</span
+                >
+              </span>
               <span class="font-mono text-primary font-bold">+{{ gainDb() }} dB</span>
             </div>
             <input

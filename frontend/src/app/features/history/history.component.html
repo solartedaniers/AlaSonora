@@ -1,10 +1,12 @@
 <div class="flex flex-col w-full min-h-screen bg-surface text-on-surface relative">
   <app-soft-aurora />
   <app-nav-header class="relative z-10" />
+  <app-offline-banner class="relative z-10" />
 
   <div class="relative z-10 w-full px-4 md:px-8 py-8 max-w-7xl mx-auto flex flex-col gap-6">
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
+        <span class="eyebrow-label">{{ 'history.eyebrow' | translate }}</span>
         <h1 class="font-display text-2xl font-bold tracking-tight hero-title-3d">{{ 'history.title' | translate }}</h1>
         <p class="text-sm text-on-surface-variant mt-1">{{ 'history.subtitle' | translate }}</p>
       </div>
@@ -16,6 +18,40 @@
         {{ 'history.export' | translate }}
       </button>
     </div>
+
+    <!-- Stats -->
+    @if (stats(); as s) {
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="stat-card feature-card glass-card p-4 rounded-xl shadow-sm">
+          <span class="icon-wrapper icon-wrapper--sm"><span class="material-symbols-outlined text-[18px]">graphic_eq</span></span>
+          <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'history.stats.recordings' | translate }}</span>
+            <span class="font-display text-xl font-bold">{{ s.recordings }}</span>
+          </div>
+        </div>
+        <div class="stat-card feature-card glass-card p-4 rounded-xl shadow-sm">
+          <span class="icon-wrapper icon-wrapper--sm"><span class="material-symbols-outlined text-[18px]">verified</span></span>
+          <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'history.stats.validated' | translate }}</span>
+            <span class="font-display text-xl font-bold">{{ s.validated }}</span>
+          </div>
+        </div>
+        <div class="stat-card feature-card glass-card p-4 rounded-xl shadow-sm">
+          <span class="icon-wrapper icon-wrapper--sm"><span class="material-symbols-outlined text-[18px]">cloud_sync</span></span>
+          <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'history.stats.pending' | translate }}</span>
+            <span class="font-display text-xl font-bold">{{ s.pending }}</span>
+          </div>
+        </div>
+        <div class="stat-card feature-card glass-card p-4 rounded-xl shadow-sm">
+          <span class="icon-wrapper icon-wrapper--sm"><span class="material-symbols-outlined text-[18px]">flutter_dash</span></span>
+          <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'history.stats.species' | translate }}</span>
+            <span class="font-display text-xl font-bold">{{ s.species }}</span>
+          </div>
+        </div>
+      </div>
+    }
 
     <!-- Toolbar -->
     <div class="glass-card p-4 rounded-2xl shadow-sm flex flex-col gap-3">
@@ -81,8 +117,8 @@
     </div>
 
     @if (filtered().length === 0) {
-      <div class="flex flex-col items-center justify-center gap-3 py-20 text-center">
-        <span class="material-symbols-outlined text-5xl text-on-surface-variant">inbox</span>
+      <div class="empty-state-banner glass-card rounded-2xl flex flex-col items-center justify-center gap-3 py-20 text-center">
+        <span class="icon-wrapper"><span class="material-symbols-outlined">inbox</span></span>
         <h3 class="font-display font-semibold">{{ 'history.emptyTitle' | translate }}</h3>
         <p class="text-sm text-on-surface-variant max-w-sm">{{ 'history.emptyBody' | translate }}</p>
         <a routerLink="/record" class="mt-2 px-5 py-2.5 rounded-xl bg-primary text-on-primary font-display font-semibold">

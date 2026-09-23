@@ -108,25 +108,43 @@
           <div class="glass-card p-4 rounded-2xl flex flex-col gap-4 shadow-md">
             <div class="flex flex-col gap-2">
               <div class="flex justify-between items-center text-xs text-on-surface-variant">
-                <span>{{ 'recording.gain' | translate }}</span>
-                <span class="text-primary font-bold">+{{ gainDb() }} dB</span>
+                <span class="inline-flex items-center gap-1">
+                  {{ 'recording.gain' | translate }}
+                  <span
+                    class="material-symbols-outlined text-[14px] cursor-help"
+                    [title]="'recording.gainHelp' | translate"
+                    [attr.aria-label]="'recording.gainHelp' | translate"
+                    role="img"
+                    >help</span
+                  >
+                </span>
+                <span class="text-primary font-bold">+{{ capture.gainDb() }} dB</span>
               </div>
               <input
                 type="range"
                 min="0"
                 max="36"
-                [value]="gainDb()"
-                (input)="gainDb.set($any($event.target).valueAsNumber)"
+                [value]="capture.gainDb()"
+                (input)="capture.setGainDb($any($event.target).valueAsNumber)"
                 class="w-full accent-primary"
               />
             </div>
             <div class="flex items-center justify-between p-3 bg-surface-container rounded-xl">
-              <span class="text-sm font-medium">{{ 'recording.highPassFilter' | translate }}</span>
+              <span class="text-sm font-medium inline-flex items-center gap-1">
+                {{ 'recording.highPassFilter' | translate }}
+                <span
+                  class="material-symbols-outlined text-[14px] cursor-help"
+                  [title]="'recording.highPassFilterHelp' | translate"
+                  [attr.aria-label]="'recording.highPassFilterHelp' | translate"
+                  role="img"
+                  >help</span
+                >
+              </span>
               <label class="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
-                  [checked]="highPassEnabled()"
-                  (change)="highPassEnabled.set($any($event.target).checked)"
+                  [checked]="capture.highPassEnabled()"
+                  (change)="capture.setHighPassEnabled($any($event.target).checked)"
                   class="sr-only peer"
                 />
                 <div class="w-11 h-6 bg-surface-container-highest peer-checked:bg-primary rounded-full transition-colors relative after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5"></div>

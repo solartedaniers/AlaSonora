@@ -3,6 +3,7 @@ import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
+import { OfflineBannerComponent } from '../../shared/components/offline-banner/offline-banner.component';
 import { SoftAuroraComponent } from '../../shared/components/soft-aurora/soft-aurora.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
@@ -15,7 +16,16 @@ type StatusFilter = 'all' | SyncStatus;
 @Component({
   selector: 'app-history',
   standalone: true,
-  imports: [RouterLink, DatePipe, NavHeaderComponent, ConfidenceBadgeComponent, SoftAuroraComponent, TranslatePipe, SpeciesNamePipe],
+  imports: [
+    RouterLink,
+    DatePipe,
+    NavHeaderComponent,
+    ConfidenceBadgeComponent,
+    OfflineBannerComponent,
+    SoftAuroraComponent,
+    TranslatePipe,
+    SpeciesNamePipe,
+  ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './history.component.html',
 })
@@ -26,6 +36,16 @@ export class HistoryComponent implements OnInit {
   readonly view = signal<HistoryView>('gallery');
   readonly statusFilter = signal<StatusFilter>('all');
   readonly searchTerm = signal('');
+
+  readonly stats = computed(() => {
+    const all = this.all();
+    return {
+      recordings: all.length,
+      validated: all.filter((d) => d.syncStatus === 'synced').length,
+      pending: all.filter((d) => d.syncStatus === 'pending-sync').length,
+      species: new Set(all.map((d) => d.species.scientificName)).size,
+    };
+  });
 
   readonly filtered = computed(() => {
     const status = this.statusFilter();

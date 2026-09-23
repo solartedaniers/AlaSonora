@@ -36,29 +36,7 @@
 
   <!-- Map canvas + feed -->
   <section class="relative z-10 w-full flex-1 min-h-[600px] bg-surface-container-lowest overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-br from-surface-container-low to-surface-container-lowest"></div>
-
-    <!-- Markers -->
-    @for (d of feed(); track d.id; let i = $index) {
-      <button
-        type="button"
-        class="absolute -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer group"
-        [style.top]="markerOffset(i).top"
-        [style.left]="markerOffset(i).left"
-        (click)="select(d)"
-      >
-        <span class="absolute w-10 h-10 -inset-2 rounded-full bg-primary/20 animate-ping"></span>
-        <span
-          class="relative w-7 h-7 rounded-full flex items-center justify-center shadow-lg transition-transform group-hover:scale-110"
-          [class.bg-primary]="selected()?.id === d.id"
-          [class.text-on-primary]="selected()?.id === d.id"
-          [class.bg-surface-container-high]="selected()?.id !== d.id"
-          [class.text-primary]="selected()?.id !== d.id"
-        >
-          <span class="material-symbols-outlined text-[16px]">graphic_eq</span>
-        </span>
-      </button>
-    }
+    <div #mapContainer class="absolute inset-0 z-0"></div>
 
     <!-- Selected detection popup -->
     @if (selected(); as d) {
@@ -77,10 +55,20 @@
 
     <!-- Live feed dock -->
     <aside class="hidden xl:flex flex-col absolute top-4 bottom-4 right-4 w-80 bg-surface-container-low/95 backdrop-blur-xl rounded-2xl shadow-2xl p-4 z-20 overflow-hidden">
-      <div class="flex items-center gap-2 pb-3">
-        <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
-        <h4 class="font-display font-semibold">{{ 'map.liveFeed' | translate }}</h4>
+      <div class="flex flex-col gap-1 pb-3">
+        <span class="eyebrow-label">{{ 'map.eyebrow' | translate }}</span>
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+          <h4 class="font-display font-semibold">{{ 'map.liveFeed' | translate }}</h4>
+        </div>
       </div>
+      @if (feed().length === 0) {
+        <div class="empty-state-banner glass-card rounded-xl flex-1 flex flex-col items-center justify-center gap-2 text-center p-4">
+          <span class="icon-wrapper icon-wrapper--sm"><span class="material-symbols-outlined text-[18px]">sensors_off</span></span>
+          <h5 class="font-display text-sm font-semibold">{{ 'map.emptyFeedTitle' | translate }}</h5>
+          <p class="text-xs text-on-surface-variant">{{ 'map.emptyFeedBody' | translate }}</p>
+        </div>
+      }
       <div class="flex-1 overflow-y-auto space-y-2 pr-1">
         @for (d of feed(); track d.id) {
           <button

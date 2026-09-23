@@ -54,23 +54,38 @@
 
     <!-- Metrics -->
     @if (stats(); as s) {
-      <h2 class="font-display text-lg font-semibold">{{ 'dashboard.personalStatsTitle' | translate }}</h2>
+      <div class="flex flex-col gap-1">
+        <span class="eyebrow-label">{{ 'dashboard.metricsEyebrow' | translate }}</span>
+        <h2 class="font-display text-lg font-semibold">{{ 'dashboard.personalStatsTitle' | translate }}</h2>
+      </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div appBorderGlow class="feature-card glass-card p-5 rounded-xl shadow-sm flex flex-col gap-2">
-          <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.species' | translate }}</span>
-          <span class="font-display text-3xl font-bold"><app-count-up [value]="s.distinctSpecies" /></span>
+        <div appBorderGlow class="stat-card feature-card glass-card p-5 rounded-xl shadow-sm">
+          <span class="icon-wrapper"><span class="material-symbols-outlined">flutter_dash</span></span>
+          <div class="flex flex-col gap-1">
+            <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.species' | translate }}</span>
+            <span class="font-display text-3xl font-bold"><app-count-up [value]="s.distinctSpecies" /></span>
+          </div>
         </div>
-        <div appBorderGlow class="feature-card glass-card p-5 rounded-xl shadow-sm flex flex-col gap-2">
-          <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.recordings' | translate }}</span>
-          <span class="font-display text-3xl font-bold"><app-count-up [value]="s.totalRecordings" /></span>
+        <div appBorderGlow class="stat-card feature-card glass-card p-5 rounded-xl shadow-sm">
+          <span class="icon-wrapper"><span class="material-symbols-outlined">graphic_eq</span></span>
+          <div class="flex flex-col gap-1">
+            <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.recordings' | translate }}</span>
+            <span class="font-display text-3xl font-bold"><app-count-up [value]="s.totalRecordings" /></span>
+          </div>
         </div>
-        <div appBorderGlow class="feature-card glass-card p-5 rounded-xl shadow-sm flex flex-col gap-2">
-          <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.streak' | translate }}</span>
-          <span class="font-display text-3xl font-bold text-secondary"><app-count-up [value]="s.activeStreakDays" /></span>
+        <div appBorderGlow class="stat-card feature-card glass-card p-5 rounded-xl shadow-sm">
+          <span class="icon-wrapper"><span class="material-symbols-outlined">local_fire_department</span></span>
+          <div class="flex flex-col gap-1">
+            <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.streak' | translate }}</span>
+            <span class="font-display text-3xl font-bold text-secondary"><app-count-up [value]="s.activeStreakDays" /></span>
+          </div>
         </div>
-        <div appBorderGlow class="feature-card glass-card p-5 rounded-xl shadow-sm flex flex-col gap-2">
-          <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.hours' | translate }}</span>
-          <span class="font-display text-3xl font-bold"><app-count-up [value]="s.averageConfidence" suffix="%" /></span>
+        <div appBorderGlow class="stat-card feature-card glass-card p-5 rounded-xl shadow-sm">
+          <span class="icon-wrapper"><span class="material-symbols-outlined">timer</span></span>
+          <div class="flex flex-col gap-1">
+            <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.hours' | translate }}</span>
+            <span class="font-display text-3xl font-bold"><app-count-up [value]="s.averageConfidence" suffix="%" /></span>
+          </div>
         </div>
       </div>
     }

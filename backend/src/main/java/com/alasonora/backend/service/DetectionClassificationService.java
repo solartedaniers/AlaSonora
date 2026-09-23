@@ -18,6 +18,7 @@ import com.alasonora.backend.config.AiProperties;
 import com.alasonora.backend.dto.ClassificationResultDto;
 import com.alasonora.backend.dto.ClassifyDetectionRequest;
 import com.alasonora.backend.dto.DetectionCandidateDto;
+import com.alasonora.backend.dto.GeoLocationDto;
 import com.alasonora.backend.dto.SpeciesDto;
 
 /**
@@ -52,12 +53,13 @@ public class DetectionClassificationService {
     }
 
     private ClassificationResultDto runClassification(ClassifyDetectionRequest request) {
+        GeoLocationDto location = request.location();
         List<RawClassificationCandidate> raw;
         try {
             raw = classifier.classify(new ClassificationRequest(
                 request.audioUrl(),
-                request.location().latitude(),
-                request.location().longitude(),
+                location != null ? location.latitude() : null,
+                location != null ? location.longitude() : null,
                 request.recordedAt()
             ));
         } catch (AudioQualityException ex) {

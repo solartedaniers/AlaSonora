@@ -34,19 +34,41 @@ export interface SpectrogramFrame {
  */
 @Injectable({ providedIn: 'root' })
 export class AudioCaptureService {
+  // Cutoff bajo el rango típico de canto de aves (2-8 kHz); filtra rumble de
+  // viento/tráfico sin recortar la señal de interés.
+  private static readonly HIGH_PASS_CUTOFF_HZ = 300;
+
   readonly isRecording = signal(false);
   readonly latestFrame = signal<SpectrogramFrame | null>(null);
   readonly elapsedSeconds = signal(0);
+  readonly gainDb = signal(12);
+  readonly highPassEnabled = signal(true);
 
   private worker?: Worker;
   private audioContext?: AudioContext;
   private mediaStream?: MediaStream;
+  private gainNode?: GainNode;
+  private filterNode?: BiquadFilterNode;
   private processorNode?: ScriptProcessorNode;
   private chunkCounter = 0;
   private startedAt = 0;
   private elapsedIntervalId?: ReturnType<typeof setInterval>;
 
   constructor(private readonly zone: NgZone) {}
+
+  /** Aplicado de inmediato al GainNode en vivo si hay una grabación en curso. */
+  setGainDb(db: number): void {
+    this.gainDb.set(db);
+    if (this.gainNode) this.gainNode.gain.value = AudioCaptureService.dbToLinear(db);
+  }
+
+  /** Aplicado de inmediato al BiquadFilterNode en vivo si hay una grabación en curso. */
+  setHighPassEnabled(enabled: boolean): void {
+    this.highPassEnabled.set(enabled);
+    if (this.filterNode) {
+      this.filterNode.frequency.value = enabled ? AudioCaptureService.HIGH_PASS_CUTOFF_HZ : 0;
+    }
+  }
 
   async start(): Promise<void> {
     if (this.isRecording()) return;
@@ -65,9 +87,22 @@ export class AudioCaptureService {
       this.worker.onmessage = ({ data }: MessageEvent<AudioWorkerOutboundMessage>) =>
         this.onWorkerMessage(data);
 
+      this.gainNode = this.audioContext!.createGain();
+      this.gainNode.gain.value = AudioCaptureService.dbToLinear(this.gainDb());
+
+      this.filterNode = this.audioContext!.createBiquadFilter();
+      this.filterNode.type = 'highpass';
+      this.filterNode.frequency.value = this.highPassEnabled() ? AudioCaptureService.HIGH_PASS_CUTOFF_HZ : 0;
+
       this.processorNode = this.audioContext!.createScriptProcessor(2048, 1, 1);
       this.processorNode.onaudioprocess = (event) => this.onAudioProcess(event);
-      source.connect(this.processorNode);
+
+      // source -> gain -> highpass -> processor: el worker mide RMS sobre la
+      // señal YA afectada por estos dos nodos, así el slider/toggle cambian
+      // el nivel real capturado, no solo un valor decorativo en la UI.
+      source.connect(this.gainNode);
+      this.gainNode.connect(this.filterNode);
+      this.filterNode.connect(this.processorNode);
       this.processorNode.connect(this.audioContext!.destination);
     });
 
@@ -78,6 +113,10 @@ export class AudioCaptureService {
     }, 100);
   }
 
+  private static dbToLinear(db: number): number {
+    return Math.pow(10, db / 20);
+  }
+
   /**
    * Detiene la captura y pide al worker que empaquete todo el audio
    * acumulado como un WAV antes de terminarlo, para poder subirlo a
@@ -85,6 +124,8 @@ export class AudioCaptureService {
    * codificación.
    */
   async stop(): Promise<Blob> {
+    this.gainNode?.disconnect();
+    this.filterNode?.disconnect();
     this.processorNode?.disconnect();
     this.audioContext?.close();
     this.mediaStream?.getTracks().forEach((track) => track.stop());
@@ -105,6 +146,8 @@ export class AudioCaptureService {
     worker?.terminate();
 
     this.isRecording.set(false);
+    this.gainNode = undefined;
+    this.filterNode = undefined;
     this.processorNode = undefined;
     this.audioContext = undefined;
     this.mediaStream = undefined;

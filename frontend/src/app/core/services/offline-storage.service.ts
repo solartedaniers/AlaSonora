@@ -24,6 +24,14 @@ export class OfflineStorageService {
   readonly pendingCount = signal(0);
   private dbPromise: Promise<IDBDatabase> | null = null;
 
+  constructor() {
+    // `pendingCount` used to start hardcoded at 0 and only ever refresh from
+    // enqueue()/remove() calls made *after* construction — any recordings
+    // already sitting in IndexedDB from a previous session stayed invisible
+    // to the banner until one of those methods happened to run again.
+    void this.refreshCount();
+  }
+
   private openDb(): Promise<IDBDatabase> {
     if (this.dbPromise) return this.dbPromise;
 

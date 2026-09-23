@@ -47,7 +47,10 @@ export class SpectrogramViewComponent implements AfterViewInit, OnDestroy {
   private ctx?: CanvasRenderingContext2D | null;
   private rafId?: number;
   private history: Float32Array[] = [];
-  private readonly maxColumns = 200;
+  // Menos columnas = barras más anchas y visibles (antes 200, casi ilegibles).
+  private readonly maxColumns = 48;
+  private hotColor: [number, number, number] = [234, 190, 154];
+  private peakColor: [number, number, number] = [255, 180, 171];
 
   constructor(private readonly zone: NgZone) {}
 
@@ -57,9 +60,23 @@ export class SpectrogramViewComponent implements AfterViewInit, OnDestroy {
     canvas.height = canvas.clientHeight || 200;
     this.ctx = canvas.getContext('2d');
 
+    // Colores rojo/naranja tomados de los tokens de tema (--color-secondary,
+    // --color-error) en vez de hex sueltos, para que el degradado siga la
+    // paleta activa (claro/oscuro) sin duplicar valores aquí.
+    const styles = getComputedStyle(document.documentElement);
+    this.hotColor = this.parseHex(styles.getPropertyValue('--color-secondary')) ?? this.hotColor;
+    this.peakColor = this.parseHex(styles.getPropertyValue('--color-error')) ?? this.peakColor;
+
     // El bucle de dibujo no necesita disparar detección de cambios de
     // Angular en cada frame — corre fuera de la zona (TASK pura de rAF).
     this.zone.runOutsideAngular(() => this.loop());
+  }
+
+  private parseHex(hex: string): [number, number, number] | null {
+    const match = hex.trim().match(/^#([0-9a-f]{6})$/i);
+    if (!match) return null;
+    const value = match[1];
+    return [parseInt(value.slice(0, 2), 16), parseInt(value.slice(2, 4), 16), parseInt(value.slice(4, 6), 16)];
   }
 
   ngOnDestroy(): void {
@@ -83,41 +100,29 @@ export class SpectrogramViewComponent implements AfterViewInit, OnDestroy {
     this.ctx.fillRect(0, 0, width, height);
 
     const colWidth = width / this.maxColumns;
+    // Mientras no se ha llenado el historial, las columnas nacen centradas en
+    // el visualizador y crecen hacia los bordes, en vez de quedar pegadas a
+    // la izquierda con un vacío incómodo a la derecha.
+    const startCol = Math.floor((this.maxColumns - this.history.length) / 2);
     this.history.forEach((magnitudes, colIndex) => {
       const rowHeight = height / magnitudes.length;
+      const x = (startCol + colIndex) * colWidth;
       for (let bin = 0; bin < magnitudes.length; bin++) {
         const intensity = Math.min(1, magnitudes[bin] * 6);
         this.ctx!.fillStyle = this.heatColor(intensity);
-        this.ctx!.fillRect(
-          colIndex * colWidth,
-          height - bin * rowHeight - rowHeight,
-          colWidth + 0.5,
-          rowHeight + 0.5
-        );
+        this.ctx!.fillRect(x, height - bin * rowHeight - rowHeight, colWidth + 0.5, rowHeight + 0.5);
       }
     });
   }
 
-  /** Degradado térmico: azul oscuro -> verde -> naranja -> amarillo, como en el diseño Stitch. */
+  /** Degradado rojo/naranja (tokens --color-secondary / --color-error) sobre el fondo oscuro del lienzo. */
   private heatColor(t: number): string {
-    const stops: [number, [number, number, number]][] = [
-      [0, [3, 17, 12]],
-      [0.3, [45, 106, 79]],
-      [0.6, [149, 212, 179]],
-      [0.85, [249, 199, 79]],
-      [1, [255, 183, 3]],
-    ];
-    for (let i = 0; i < stops.length - 1; i++) {
-      const [p0, c0] = stops[i];
-      const [p1, c1] = stops[i + 1];
-      if (t >= p0 && t <= p1) {
-        const localT = (t - p0) / (p1 - p0 || 1);
-        const r = Math.round(c0[0] + (c1[0] - c0[0]) * localT);
-        const g = Math.round(c0[1] + (c1[1] - c0[1]) * localT);
-        const b = Math.round(c0[2] + (c1[2] - c0[2]) * localT);
-        return `rgb(${r},${g},${b})`;
-      }
+    const [r0, g0, b0] = [3, 17, 12];
+    if (t <= 0.35) {
+      const localT = t / 0.35;
+      return `rgb(${Math.round(r0 + (this.hotColor[0] - r0) * localT)},${Math.round(g0 + (this.hotColor[1] - g0) * localT)},${Math.round(b0 + (this.hotColor[2] - b0) * localT)})`;
     }
-    return 'rgb(255,183,3)';
+    const localT = (t - 0.35) / 0.65;
+    return `rgb(${Math.round(this.hotColor[0] + (this.peakColor[0] - this.hotColor[0]) * localT)},${Math.round(this.hotColor[1] + (this.peakColor[1] - this.hotColor[1]) * localT)},${Math.round(this.hotColor[2] + (this.peakColor[2] - this.hotColor[2]) * localT)})`;
   }
 }

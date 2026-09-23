@@ -215,3 +215,64 @@ body {
     opacity: 0;
   }
 }
+
+// Kicker en mayúsculas que antecede a un título de sección — aporta
+// jerarquía visual sin depender de un tamaño de fuente extra.
+.eyebrow-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+// Contenedor cuadrado tras un ícono — usado en cards de métricas/ajustes
+// para darle peso visual sin depender de un tamaño de ícono extra grande.
+.icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.875rem;
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+// Variante compacta — íconos junto a un título de sección (h3), donde el
+// tamaño por defecto de .icon-wrapper resulta demasiado grande.
+.icon-wrapper--sm {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.625rem;
+}
+
+// Layout base de una tarjeta de resumen numérico (ícono + valor + etiqueta).
+// Se combina con .feature-card para el hover-lift y con .glass-card para el
+// fondo, en vez de definir su propio elevado/fondo por separado.
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+// Tarjeta de estado vacío con banda de gradiente superior — mismo gradiente
+// que ya usan los formularios de auth, para que un estado "sin datos" se
+// lea como parte del mismo lenguaje visual en vez de un error.
+.empty-state-banner {
+  position: relative;
+  overflow: hidden;
+}
+.empty-state-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0.375rem;
+  background: linear-gradient(to right, var(--color-primary-container), var(--color-primary), var(--color-secondary));
+}

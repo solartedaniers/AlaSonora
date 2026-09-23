@@ -26,7 +26,7 @@ export interface UploadedRecording {
 interface ClassifyDetectionPayload {
   audioUrl: string;
   recordedAt: string;
-  location: GeoLocation;
+  location?: GeoLocation;
 }
 
 /** Uploads a recording to private Supabase Storage and requests its BirdNET classification from the backend. */
@@ -56,7 +56,8 @@ export class ClassificationService {
     return { storagePath, signedUrl: data.signedUrl };
   }
 
-  async classify(audioUrl: string, recordedAt: string, location: GeoLocation): Promise<ClassificationResult> {
+  /** `location` should only be passed when it's a real GPS fix — narrows BirdNET's candidates to that region; omit it to use the global catalog. */
+  async classify(audioUrl: string, recordedAt: string, location?: GeoLocation): Promise<ClassificationResult> {
     const payload: ClassifyDetectionPayload = { audioUrl, recordedAt, location };
     return firstValueFrom(
       this.http.post<ClassificationResult>(`${environment.apiBaseUrl}/detections/classify`, payload)

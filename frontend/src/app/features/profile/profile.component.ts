@@ -41,6 +41,7 @@ export class ProfileComponent implements OnInit {
   readonly saving = signal(false);
   readonly uploadingAvatar = signal(false);
   readonly avatarUrl = signal<string | undefined>(undefined);
+  readonly avatarError = signal<string | null>(null);
 
   readonly roles: ObserverRole[] = ['ornithologist', 'ranger', 'biologist', 'hobbyist', 'student'];
 
@@ -74,12 +75,25 @@ export class ProfileComponent implements OnInit {
 
   async onAvatarSelected(event: Event): Promise<void> {
     const file = (event.target as HTMLInputElement).files?.[0];
-    const userId = this.user.currentUser()?.id;
-    if (!file || !userId) return;
+    if (!file) return;
 
+    this.avatarError.set(null);
     this.uploadingAvatar.set(true);
     try {
+      // Reads the session directly rather than the `currentUser` signal, which
+      // only resolves after its initial getSession() promise settles — see
+      // UserService.isAuthenticated for the same rationale. Reading
+      // `currentUser()?.id` here silently no-opped the whole upload whenever
+      // this page was opened before that signal had resolved.
+      const userId = await this.user.getUserId();
+      if (!userId) {
+        this.avatarError.set(this.i18n.translate('profile.avatarUploadError'));
+        return;
+      }
       this.avatarUrl.set(await this.profileService.uploadAvatar(userId, file));
+    } catch (error) {
+      console.error('Avatar upload failed', error);
+      this.avatarError.set(this.i18n.translate('profile.avatarUploadError'));
     } finally {
       this.uploadingAvatar.set(false);
     }

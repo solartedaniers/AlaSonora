@@ -175,6 +175,7 @@
     "recordCtaBody": "Continuous passive capture with vocal frequency isolation",
     "uploadCta": "Upload Audio File",
     "uploadCtaBody": "WAV, FLAC, MP3 up to 500MB",
+    "metricsEyebrow": "Metrics",
     "personalStatsTitle": "Personal Statistics",
     "metrics": {
       "species": "Species Detected",
@@ -196,7 +197,9 @@
     "listening": "AI Listening…",
     "classifying": "AI Analyzing Sample…",
     "gain": "Preamp Gain",
+    "gainHelp": "Amplifies the microphone signal before recording. Raise it in quiet settings or when the bird is far away; lower it if the audio sounds clipped.",
     "highPassFilter": "High-Pass (Anti-Wind) Filter",
+    "highPassFilterHelp": "Attenuates very low frequencies (wind, traffic, footsteps) without affecting bird calls, which are usually higher-pitched.",
     "candidates": "Candidates Being Heard",
     "pause": "Pause Capture",
     "stopAndClassify": "Stop & Classify Sample",
@@ -235,6 +238,7 @@
     "snr": "Signal-to-Noise Ratio"
   },
   "history": {
+    "eyebrow": "Field Notebook",
     "title": "Bioacoustic Field Notebook",
     "subtitle": "Archived recordings, processed with the bioacoustic model.",
     "searchPlaceholder": "Search by species, scientific name, or location…",
@@ -246,9 +250,16 @@
     "export": "Export to eBird / Darwin Core",
     "syncNow": "Sync now",
     "emptyTitle": "No recordings yet",
-    "emptyBody": "Record or upload your first audio to start your field notebook."
+    "emptyBody": "Record or upload your first audio to start your field notebook.",
+    "stats": {
+      "recordings": "Recordings",
+      "validated": "Validated",
+      "pending": "Pending",
+      "species": "Species"
+    }
   },
   "map": {
+    "eyebrow": "Live Network",
     "title": "Live Sightings & Biophony Map",
     "subtitle": "Explore recent recordings identified by the network in real time.",
     "searchPlaceholder": "Search by species, family, or natural park…",
@@ -257,7 +268,9 @@
     "liveFeed": "Live Detections",
     "threatenedOnly": "Threatened species only (IUCN)",
     "heatmapLayer": "Heatmap layer",
-    "syncedTabs": "tabs synced"
+    "syncedTabs": "tabs synced",
+    "emptyFeedTitle": "No live detections",
+    "emptyFeedBody": "No recent public recordings in your area yet. Check back soon."
   },
   "profile": {
     "observerTitle": "Observer Profile",
@@ -267,6 +280,8 @@
     "orcidId": "ORCID ID",
     "stationName": "Field Station",
     "changeAvatar": "Change Photo",
+    "avatarUploadError": "Couldn't upload the photo. Check your session and connection, then try again.",
+    "settingsEyebrow": "Preferences",
     "systemSettings": "System Settings",
     "appearance": "Interface Theme",
     "languageTaxonomy": "Language & Primary Taxonomy",

@@ -175,6 +175,7 @@
     "recordCtaBody": "Captura pasiva continua con aislamiento de frecuencia vocal",
     "uploadCta": "Subir Archivo de Audio",
     "uploadCtaBody": "WAV, FLAC, MP3 hasta 500MB",
+    "metricsEyebrow": "Métricas",
     "personalStatsTitle": "Estadísticas Personales",
     "metrics": {
       "species": "Especies Detectadas",
@@ -196,7 +197,9 @@
     "listening": "IA Escuchando…",
     "classifying": "IA Analizando la Muestra…",
     "gain": "Ganancia Preamplificador",
+    "gainHelp": "Amplifica la señal del micrófono antes de grabarla. Súbela en ambientes silenciosos o si el ave está lejos; bájala si el audio suena saturado.",
     "highPassFilter": "Filtro Pasa-Altos (Anti-Viento)",
+    "highPassFilterHelp": "Atenúa frecuencias muy bajas (viento, tráfico, pasos) sin afectar los cantos de aves, que suelen ser más agudos.",
     "candidates": "Candidatos en Escucha",
     "pause": "Pausar Captura",
     "stopAndClassify": "Detener y Clasificar Muestra",
@@ -235,6 +238,7 @@
     "snr": "Relación Señal/Ruido"
   },
   "history": {
+    "eyebrow": "Cuaderno de Campo",
     "title": "Cuaderno de Campo Bioacústico",
     "subtitle": "Grabaciones archivadas, procesadas con el modelo bioacústico.",
     "searchPlaceholder": "Buscar por especie, nombre científico o ubicación…",
@@ -246,9 +250,16 @@
     "export": "Exportar a eBird / Darwin Core",
     "syncNow": "Sincronizar ahora",
     "emptyTitle": "Aún no hay grabaciones",
-    "emptyBody": "Graba o sube tu primer audio para empezar tu cuaderno de campo."
+    "emptyBody": "Graba o sube tu primer audio para empezar tu cuaderno de campo.",
+    "stats": {
+      "recordings": "Grabaciones",
+      "validated": "Validadas",
+      "pending": "Pendientes",
+      "species": "Especies"
+    }
   },
   "map": {
+    "eyebrow": "Red en Vivo",
     "title": "Mapa Vivo de Avistamientos y Biofonía",
     "subtitle": "Explora las grabaciones recientes identificadas por la red en tiempo real.",
     "searchPlaceholder": "Buscar por especie, familia o parque natural…",
@@ -257,7 +268,9 @@
     "liveFeed": "Detecciones en Vivo",
     "threatenedOnly": "Solo especies amenazadas (UICN)",
     "heatmapLayer": "Capa de puntos calientes",
-    "syncedTabs": "pestañas sincronizadas"
+    "syncedTabs": "pestañas sincronizadas",
+    "emptyFeedTitle": "Sin detecciones en vivo",
+    "emptyFeedBody": "Aún no hay grabaciones públicas recientes en tu área. Vuelve pronto."
   },
   "profile": {
     "observerTitle": "Perfil del Observador",
@@ -267,6 +280,8 @@
     "orcidId": "ID ORCID",
     "stationName": "Estación de Campo",
     "changeAvatar": "Cambiar Foto",
+    "avatarUploadError": "No se pudo subir la foto. Verifica tu sesión y tu conexión, e inténtalo de nuevo.",
+    "settingsEyebrow": "Preferencias",
     "systemSettings": "Configuración del Sistema",
     "appearance": "Tema de Interfaz",
     "languageTaxonomy": "Idioma & Taxonomía Primaria",
