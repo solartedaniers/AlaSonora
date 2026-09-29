@@ -41,7 +41,15 @@ export class AudioCaptureService {
   readonly isRecording = signal(false);
   readonly latestFrame = signal<SpectrogramFrame | null>(null);
   readonly elapsedSeconds = signal(0);
-  readonly gainDb = signal(12);
+  // 0 dB por defecto: el slider hasta ahora era decorativo (nunca tocaba el
+  // audio real), así que su valor de UI de +12dB nunca se validó contra la
+  // señal real. Con el GainNode ya conectado de verdad, +12dB (~x4 lineal)
+  // saturaba casi toda grabación con nivel de micrófono normal — confirmado
+  // simulando la misma conversión dB→lineal y el clamp de encodeWav sobre
+  // una señal de amplitud realista (pico 0.5 tras el AGC del navegador):
+  // ~67% de las muestras quedaban recortadas. 0dB deja el nivel del
+  // micrófono intacto; el usuario sube ganancia solo cuando la necesita.
+  readonly gainDb = signal(0);
   readonly highPassEnabled = signal(true);
 
   private worker?: Worker;
@@ -49,6 +57,7 @@ export class AudioCaptureService {
   private mediaStream?: MediaStream;
   private gainNode?: GainNode;
   private filterNode?: BiquadFilterNode;
+  private limiterNode?: DynamicsCompressorNode;
   private processorNode?: ScriptProcessorNode;
   private chunkCounter = 0;
   private startedAt = 0;
@@ -94,15 +103,28 @@ export class AudioCaptureService {
       this.filterNode.type = 'highpass';
       this.filterNode.frequency.value = this.highPassEnabled() ? AudioCaptureService.HIGH_PASS_CUTOFF_HZ : 0;
 
+      // Limitador: encodeWav (worker) recorta duro a [-1,1], lo que introduce
+      // distorsión armónica severa si el gain empuja la señal por encima de
+      // ese rango. Este compresor con ratio casi-infinito y ataque rápido
+      // evita que el GainNode sature la señal sin importar cuánta ganancia
+      // pida el usuario, en vez de solo confiar en un valor por defecto bajo.
+      this.limiterNode = this.audioContext!.createDynamicsCompressor();
+      this.limiterNode.threshold.value = -3;
+      this.limiterNode.knee.value = 0;
+      this.limiterNode.ratio.value = 20;
+      this.limiterNode.attack.value = 0.003;
+      this.limiterNode.release.value = 0.25;
+
       this.processorNode = this.audioContext!.createScriptProcessor(2048, 1, 1);
       this.processorNode.onaudioprocess = (event) => this.onAudioProcess(event);
 
-      // source -> gain -> highpass -> processor: el worker mide RMS sobre la
-      // señal YA afectada por estos dos nodos, así el slider/toggle cambian
-      // el nivel real capturado, no solo un valor decorativo en la UI.
+      // source -> gain -> highpass -> limiter -> processor: el worker mide
+      // RMS sobre la señal YA afectada por estos nodos, así el slider/toggle
+      // cambian el nivel real capturado, no solo un valor decorativo en la UI.
       source.connect(this.gainNode);
       this.gainNode.connect(this.filterNode);
-      this.filterNode.connect(this.processorNode);
+      this.filterNode.connect(this.limiterNode);
+      this.limiterNode.connect(this.processorNode);
       this.processorNode.connect(this.audioContext!.destination);
     });
 
@@ -126,6 +148,7 @@ export class AudioCaptureService {
   async stop(): Promise<Blob> {
     this.gainNode?.disconnect();
     this.filterNode?.disconnect();
+    this.limiterNode?.disconnect();
     this.processorNode?.disconnect();
     this.audioContext?.close();
     this.mediaStream?.getTracks().forEach((track) => track.stop());
@@ -148,6 +171,7 @@ export class AudioCaptureService {
     this.isRecording.set(false);
     this.gainNode = undefined;
     this.filterNode = undefined;
+    this.limiterNode = undefined;
     this.processorNode = undefined;
     this.audioContext = undefined;
     this.mediaStream = undefined;

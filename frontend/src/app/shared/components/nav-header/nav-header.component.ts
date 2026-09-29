@@ -123,6 +123,7 @@ export class NavHeaderComponent {
   private readonly allNavItems = [
     { path: '/dashboard', icon: 'home', labelKey: 'nav.dashboard', protected: true, adminOnly: false },
     { path: '/record', icon: 'graphic_eq', labelKey: 'nav.record', protected: true, adminOnly: false },
+    { path: '/photo-id', icon: 'add_a_photo', labelKey: 'nav.photoId', protected: true, adminOnly: false },
     { path: '/history', icon: 'library_music', labelKey: 'nav.history', protected: true, adminOnly: false },
     { path: '/map', icon: 'map', labelKey: 'nav.map', protected: false, adminOnly: false },
     { path: '/profile', icon: 'person', labelKey: 'nav.profile', protected: true, adminOnly: false },

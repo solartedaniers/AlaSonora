@@ -59,6 +59,13 @@ export const routes: Routes = [
     title: 'AlaSonora — Resultado',
   },
   {
+    path: 'photo-id',
+    loadComponent: () =>
+      import('./features/photo-id/photo-id.component').then((m) => m.PhotoIdComponent),
+    canActivate: [authGuard],
+    title: 'AlaSonora — Identificar por Foto',
+  },
+  {
     path: 'history',
     loadComponent: () =>
       import('./features/history/history.component').then((m) => m.HistoryComponent),

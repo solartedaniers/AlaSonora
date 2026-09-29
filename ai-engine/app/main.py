@@ -11,12 +11,14 @@ from fastapi.security import APIKeyHeader
 from app.audio_quality import NoBirdSignalDetectedError, TooNoisyAudioError
 from app.classifier import BirdNetClassifier
 from app.config import settings
-from app.schemas import ClassificationResponse
+from app.photo_classifier import BirdPhotoClassifier, NoBirdInPhotoError
+from app.schemas import ClassificationResponse, PhotoClassificationResponse
 
 # Mensajes exactos que debe ver el usuario final en el frontend (vía el
 # backend de Spring Boot, que reenvía este "detail" sin modificarlo).
 TOO_NOISY_MESSAGE = "Demasiada interferencia de ruido, por favor grabe de nuevo o cargue un audio más limpio"
 NO_BIRD_SIGNAL_MESSAGE = "No se detecta sonido de aves en la grabación, por favor intente nuevamente"
+NO_BIRD_IN_PHOTO_MESSAGE = "No se pudo identificar un ave en esta foto, por favor intente con otra imagen"
 
 api_key_header = APIKeyHeader(name="X-Internal-Api-Key")
 
@@ -31,6 +33,9 @@ async def lifespan(app: FastAPI):
     # Cargado una sola vez al iniciar: el modelo BirdNET pesa varios cientos
     # de MB y su carga es lenta, repetirla por request sería inaceptable.
     app.state.classifier = BirdNetClassifier()
+    # Modelo de foto, completamente independiente del de audio; mismo motivo
+    # para cargarlo una sola vez en el arranque.
+    app.state.photo_classifier = BirdPhotoClassifier(settings.photo_model_id)
     app.state.inference_pool = ThreadPoolExecutor(max_workers=settings.max_inference_workers)
     yield
     app.state.inference_pool.shutdown(wait=False)
@@ -83,3 +88,25 @@ async def analyze(
         os.remove(tmp_path)
 
     return ClassificationResponse(candidates=candidates)
+
+
+@app.post("/classify-photo", response_model=PhotoClassificationResponse, dependencies=[Depends(require_api_key)])
+async def classify_photo(
+    photo: UploadFile,
+    min_confidence: float = Form(default=settings.default_photo_min_confidence),
+    max_results: int = Form(default=settings.default_photo_max_results),
+) -> PhotoClassificationResponse:
+    image_bytes = await photo.read()
+    loop = asyncio.get_running_loop()
+    try:
+        candidates = await loop.run_in_executor(
+            app.state.inference_pool,
+            app.state.photo_classifier.classify,
+            image_bytes,
+            min_confidence,
+            max_results,
+        )
+    except NoBirdInPhotoError as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=NO_BIRD_IN_PHOTO_MESSAGE) from exc
+
+    return PhotoClassificationResponse(candidates=candidates)

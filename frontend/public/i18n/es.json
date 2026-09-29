@@ -7,6 +7,7 @@
     "landing": "Inicio",
     "dashboard": "Inicio",
     "record": "Grabar / Subir",
+    "photoId": "Identificar por Foto",
     "history": "Mi Historial",
     "map": "Mapa Público",
     "profile": "Mi Perfil",
@@ -90,6 +91,19 @@
       "step2Body": "El modelo descompone armónicos, frecuencias centrales y cadencias vocales de forma rápida y precisa.",
       "step3Title": "Registro y ciencia ciudadana",
       "step3Body": "Guarda tus hallazgos, explora mapas de distribución y nutre el atlas colectivo de biodiversidad."
+    },
+    "pipeline": {
+      "eyebrow": "Arquitectura del Motor de IA",
+      "title": "Cómo AlaSonora escucha e identifica un canto",
+      "subtitle": "Desde el micrófono hasta la especie confirmada, así es el recorrido de cada grabación dentro de nuestro motor bioacústico.",
+      "step1Title": "Grabación",
+      "step1Body": "El navegador captura el audio con la Web Audio API y lo codifica como WAV, listo para analizarse sin perder fidelidad.",
+      "step2Title": "Espectrograma",
+      "step2Body": "Un worker dedicado aplica FFT en tiempo real, convirtiendo la señal sonora en un mapa de frecuencias que revela el patrón único de cada especie.",
+      "step3Title": "Red Neuronal",
+      "step3Body": "El motor de IA (BirdNET) compara ese patrón contra millones de cantos de referencia para reconocer la firma acústica del ave.",
+      "step4Title": "Resultado",
+      "step4Body": "La especie con mayor probabilidad se confirma con un puntaje de confianza y queda registrada en tu historial y el mapa colectivo."
     }
   },
   "auth": {
@@ -236,6 +250,16 @@
     "peakFrequency": "Pico Espectral",
     "duration": "Duración",
     "snr": "Relación Señal/Ruido"
+  },
+  "photoId": {
+    "title": "Identificación por Foto",
+    "subtitle": "Sube o toma una foto de un ave para identificar su especie con un modelo de visión por computadora, independiente del análisis de audio.",
+    "uploadPrompt": "Subir o tomar una foto",
+    "classifying": "Analizando la foto…",
+    "alternatives": "Otras especies posibles",
+    "disclaimer": "Esta identificación fue generada por un modelo de inteligencia artificial y es una referencia probabilística; valida el resultado en campo antes de tratarlo como un registro científico confirmado.",
+    "tryAnother": "Probar con otra foto",
+    "genericError": "No se pudo clasificar la foto, por favor intenta de nuevo."
   },
   "history": {
     "eyebrow": "Cuaderno de Campo",

@@ -17,3 +17,13 @@ soundfile
 # tflite-runtime has no Windows wheels; tensorflow is birdnetlib's own
 # fallback interpreter (see birdnetlib/analyzer.py) and works everywhere.
 tensorflow
+
+# Photo-based identification (dennisjooo/Birds-Classifier-EfficientNetB2),
+# fully separate model/endpoint from the BirdNET audio pipeline above.
+# CPU-only wheels: this engine has no GPU in any deployment target, and the
+# default (CUDA) wheels are several times larger for no benefit here.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+torchvision
+transformers
+pillow

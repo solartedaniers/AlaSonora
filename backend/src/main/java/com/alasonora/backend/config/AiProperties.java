@@ -9,10 +9,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * binding to emit IDE metadata for these properties.
  */
 @ConfigurationProperties(prefix = "ai")
-public record AiProperties(Engine engine, Executor executor, Catalog catalog) {
+public record AiProperties(Engine engine, Executor executor, Catalog catalog, Photo photo) {
 
     /** Connection details for the Python/FastAPI bioacoustic engine. */
     public record Engine(String baseUrl, String apiKey, long timeoutMs, double minConfidence, int maxResults) {
+    }
+
+    /** Photo-classification thresholds; reuses the same engine connection (baseUrl/apiKey/timeoutMs) since it's the same Python service, a different endpoint. */
+    public record Photo(double minConfidence, int maxResults) {
     }
 
     /** Sizing for the dedicated bulkhead thread pool that isolates AI work from Tomcat's request threads. */

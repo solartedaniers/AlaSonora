@@ -192,6 +192,126 @@
     </div>
   </section>
 
+  <!-- How BirdNET-powered pipeline works -->
+  <section class="w-full px-6 lg:px-12 py-20 bg-surface-container-lowest">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <span class="font-mono text-xs uppercase tracking-widest text-primary font-semibold">
+          {{ 'landing.pipeline.eyebrow' | translate }}
+        </span>
+        <h2 class="font-display text-2xl md:text-3xl font-bold mt-2 tracking-tight">
+          {{ 'landing.pipeline.title' | translate }}
+        </h2>
+        <p class="text-sm text-on-surface-variant mt-3 leading-relaxed">
+          {{ 'landing.pipeline.subtitle' | translate }}
+        </p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="flex items-center justify-center gap-2 sm:gap-4 mb-8 flex-wrap">
+        @for (step of pipelineSteps; track step) {
+          <button
+            type="button"
+            (click)="pipelineStep.set(step)"
+            class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-display text-sm font-semibold transition-all"
+            [class.bg-primary]="pipelineStep() === step"
+            [class.text-on-primary]="pipelineStep() === step"
+            [class.shadow-md]="pipelineStep() === step"
+            [class.bg-surface-container]="pipelineStep() !== step"
+            [class.text-on-surface-variant]="pipelineStep() !== step"
+          >
+            <span class="material-symbols-outlined text-[18px]">
+              {{ step === 0 ? 'mic' : step === 1 ? 'graphic_eq' : step === 2 ? 'neurology' : 'check_circle' }}
+            </span>
+            {{ ('landing.pipeline.step' + (step + 1) + 'Title') | translate }}
+          </button>
+        }
+      </div>
+
+      <!-- Progress track -->
+      <div class="relative h-1 max-w-2xl mx-auto mb-10 bg-surface-container rounded-full overflow-hidden">
+        <div
+          class="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-tertiary rounded-full transition-all duration-300"
+          [style.width.%]="(pipelineStep() + 1) * 25"
+        ></div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+        <!-- Visualization panel -->
+        <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl h-72 flex items-center justify-center overflow-hidden relative">
+          @switch (pipelineStep()) {
+            @case (0) {
+              <!-- Grabación: barras de ecualizador animadas (CSS puro) -->
+              <div class="flex items-center justify-center gap-1.5 h-full w-full px-4">
+                @for (h of [30, 55, 80, 45, 95, 60, 35, 70, 50, 85, 40, 65]; track $index) {
+                  <div
+                    class="w-2.5 rounded-full bg-gradient-to-t from-primary to-tertiary animate-pulse"
+                    [style.height.%]="h"
+                    [style.animation-delay.ms]="$index * 90"
+                  ></div>
+                }
+              </div>
+            }
+            @case (1) {
+              <!-- Espectrograma: el mismo componente de la grabación real, alimentado con datos sintéticos -->
+              <app-spectrogram-view [getFrame]="getPipelineFrame" ariaLabel="Espectrograma de ejemplo" />
+            }
+            @case (2) {
+              <!-- Red neuronal: diagrama de capas simple -->
+              <svg viewBox="0 0 200 100" class="w-full h-full" preserveAspectRatio="xMidYMid meet">
+                @for (layer of [0, 1, 2, 3]; track layer) {
+                  @for (node of (layer === 0 || layer === 3 ? [0, 1, 2] : [0, 1, 2, 3, 4]); track node) {
+                    <circle
+                      [attr.cx]="20 + layer * 55"
+                      [attr.cy]="50 - ((layer === 0 || layer === 3 ? 2 : 4) * 9) / 2 + node * 9"
+                      r="3.5"
+                      class="fill-primary animate-pulse"
+                      [style.animation-delay.ms]="(layer * 5 + node) * 120"
+                    />
+                  }
+                }
+              </svg>
+            }
+            @case (3) {
+              <!-- Resultado: reutiliza el badge de confianza real -->
+              <div class="w-full px-2 flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h4 class="font-display font-bold text-on-surface">Zorzal Chiguanco</h4>
+                    <p class="text-xs italic text-on-surface-variant">Turdus chiguanco</p>
+                  </div>
+                  <app-confidence-badge [value]="96" />
+                </div>
+                <div class="flex flex-col gap-2">
+                  @for (c of [{ n: 'Turdus chiguanco', v: 96 }, { n: 'Turdus fuscater', v: 3 }, { n: 'Zonotrichia capensis', v: 1 }]; track c.n) {
+                    <div class="flex items-center gap-2">
+                      <span class="text-[11px] font-mono text-on-surface-variant w-32 truncate">{{ c.n }}</span>
+                      <div class="flex-1 h-2 rounded-full bg-surface-container overflow-hidden">
+                        <div class="h-full rounded-full bg-primary" [style.width.%]="c.v"></div>
+                      </div>
+                      <span class="text-[11px] font-mono text-on-surface-variant w-8 text-right">{{ c.v }}%</span>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          }
+        </div>
+
+        <!-- Descripción del paso activo -->
+        <div class="flex flex-col gap-3">
+          @for (step of pipelineSteps; track step) {
+            @if (pipelineStep() === step) {
+              <span class="font-mono text-xs uppercase tracking-widest text-primary font-semibold">0{{ step + 1 }}</span>
+              <h3 class="font-display text-xl font-bold">{{ ('landing.pipeline.step' + (step + 1) + 'Title') | translate }}</h3>
+              <p class="text-sm text-on-surface-variant leading-relaxed">{{ ('landing.pipeline.step' + (step + 1) + 'Body') | translate }}</p>
+            }
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="w-full bg-surface-container-low px-6 lg:px-12 py-8 text-center">
     <span class="text-sm text-on-surface-variant">© 2026 AlaSonora — {{ 'footer.rights' | translate }}</span>

@@ -17,5 +17,10 @@ class Settings(BaseSettings):
     audio_noise_flatness_threshold: float = 0.3
     audio_bird_band_energy_ratio_threshold: float = 0.15
 
+    # Identificación por foto (modelo separado, sin relación con BirdNET).
+    photo_model_id: str = "dennisjooo/Birds-Classifier-EfficientNetB2"
+    default_photo_min_confidence: float = 0.3
+    default_photo_max_results: int = 3
+
 
 settings = Settings()

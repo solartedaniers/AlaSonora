@@ -9,3 +9,12 @@ class ClassificationCandidate(BaseModel):
 
 class ClassificationResponse(BaseModel):
     candidates: list[ClassificationCandidate]
+
+
+class PhotoClassificationCandidate(BaseModel):
+    label: str
+    confidence: float  # 0-1, softmax score
+
+
+class PhotoClassificationResponse(BaseModel):
+    candidates: list[PhotoClassificationCandidate]
