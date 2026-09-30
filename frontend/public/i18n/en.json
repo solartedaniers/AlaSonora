@@ -240,7 +240,6 @@
     "uploadObserverPhoto": "Upload my photo",
     "observerPhotoError": "Could not upload the photo. Please try again.",
     "spectrogramTitle": "Thermal Spectrogram & Harmonic Window",
-    "confidenceBreakdown": "AI Confidence Breakdown",
     "alternatives": "Alternative Species",
     "fieldNotes": "Ecological Field Notes",
     "fieldNotesPlaceholder": "Describe the specimen's observed behavior…",
@@ -255,10 +254,7 @@
     "reportIncorrect": "Not correct? Report for community review",
     "peakFrequency": "Peak Frequency",
     "duration": "Duration",
-    "snr": "Signal-to-Noise Ratio",
-    "featureTemporalPattern": "Temporal pattern",
-    "featureFundamentalFrequency": "Fundamental frequency",
-    "featureSoundContour": "Sound contour"
+    "snr": "Signal-to-Noise Ratio"
   },
   "photoId": {
     "title": "Photo Identification",

@@ -159,50 +159,23 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Confidence breakdown -->
-        <div class="lg:col-span-7 bg-surface-container-low rounded-2xl p-6 shadow-md flex flex-col gap-4">
-          <h3 class="font-display font-semibold flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary">analytics</span>
-            {{ 'result.confidenceBreakdown' | translate }}
-          </h3>
-          <div class="flex flex-col gap-3">
-            @for (row of [
-              { labelKey: 'result.featureTemporalPattern', value: 99.0 },
-              { labelKey: 'result.featureFundamentalFrequency', value: 98.2 },
-              { labelKey: 'result.featureSoundContour', value: 98.0 }
-            ]; track row.labelKey) {
-              <div>
-                <div class="flex justify-between text-sm mb-1">
-                  <span>{{ row.labelKey | translate }}</span>
-                  <span class="font-mono text-primary font-semibold">{{ row.value }}%</span>
-                </div>
-                <div class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
-                  <div class="h-full bg-primary rounded-full" [style.width.%]="row.value"></div>
-                </div>
-              </div>
-            }
-          </div>
-        </div>
-
-        <!-- Alternatives -->
-        <div class="lg:col-span-5 bg-surface-container-low rounded-2xl p-6 shadow-md flex flex-col gap-3">
-          <h3 class="font-display font-semibold flex items-center gap-2">
-            <span class="material-symbols-outlined text-secondary">compare_arrows</span>
-            {{ 'result.alternatives' | translate }}
-          </h3>
-          @for (alt of d.alternatives; track alt.species.id) {
-            <div class="p-2.5 rounded-lg bg-surface-container-high flex items-center justify-between">
-              <div>
-                <p class="text-sm font-semibold">{{ alt.species | speciesName }}</p>
-                <p class="text-xs italic text-on-surface-variant">{{ alt.species.scientificName }}</p>
-              </div>
-              <span class="font-mono text-xs text-on-surface-variant">{{ alt.confidence | number: '1.0-0' }}%</span>
+      <!-- Alternatives -->
+      <div class="bg-surface-container-low rounded-2xl p-6 shadow-md flex flex-col gap-3">
+        <h3 class="font-display font-semibold flex items-center gap-2">
+          <span class="material-symbols-outlined text-secondary">compare_arrows</span>
+          {{ 'result.alternatives' | translate }}
+        </h3>
+        @for (alt of d.alternatives; track alt.species.id) {
+          <div class="p-2.5 rounded-lg bg-surface-container-high flex items-center justify-between">
+            <div>
+              <p class="text-sm font-semibold">{{ alt.species | speciesName }}</p>
+              <p class="text-xs italic text-on-surface-variant">{{ alt.species.scientificName }}</p>
             </div>
-          } @empty {
-            <p class="text-sm text-on-surface-variant">—</p>
-          }
-        </div>
+            <span class="font-mono text-xs text-on-surface-variant">{{ alt.confidence | number: '1.0-0' }}%</span>
+          </div>
+        } @empty {
+          <p class="text-sm text-on-surface-variant">—</p>
+        }
       </div>
 
       <!-- Field notes -->

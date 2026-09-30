@@ -240,7 +240,6 @@
     "uploadObserverPhoto": "Subir mi foto",
     "observerPhotoError": "No se pudo subir la foto. Inténtalo de nuevo.",
     "spectrogramTitle": "Espectrograma Térmico & Ventana Armónica",
-    "confidenceBreakdown": "Barra de Certeza de IA",
     "alternatives": "Especies Alternativas",
     "fieldNotes": "Notas Ecológicas de Campo",
     "fieldNotesPlaceholder": "Describe el comportamiento del espécimen observado…",
@@ -255,10 +254,7 @@
     "reportIncorrect": "¿No es correcto? Reportar para revisión comunitaria",
     "peakFrequency": "Pico Espectral",
     "duration": "Duración",
-    "snr": "Relación Señal/Ruido",
-    "featureTemporalPattern": "Patrón temporal",
-    "featureFundamentalFrequency": "Frecuencia fundamental",
-    "featureSoundContour": "Contorno sonoro"
+    "snr": "Relación Señal/Ruido"
   },
   "photoId": {
     "title": "Identificación por Foto",
