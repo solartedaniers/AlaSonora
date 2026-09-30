@@ -6,7 +6,8 @@
     "start": "ng serve --port 4200",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "serve:ssr:frontend": "node dist/frontend/server/server.mjs"
   },
   "private": true,
   "dependencies": {
@@ -16,9 +17,12 @@
     "@angular/forms": "^22.1.5",
     "@angular/platform-browser": "^22.1.5",
     "@angular/platform-browser-dynamic": "^22.1.5",
+    "@angular/platform-server": "^22.1.5",
     "@angular/router": "^22.1.5",
     "@angular/service-worker": "^22.1.5",
+    "@angular/ssr": "^22.1.7",
     "@supabase/supabase-js": "^2.116.0",
+    "express": "^5.1.0",
     "leaflet": "^1.9.4",
     "ogl": "^1.0.11",
     "rxjs": "~7.8.0",
@@ -29,8 +33,10 @@
     "@angular/build": "^22.1.7",
     "@angular/cli": "^22.1.7",
     "@angular/compiler-cli": "^22.1.5",
+    "@types/express": "^5.0.1",
     "@types/jasmine": "~5.1.0",
     "@types/leaflet": "^1.9.22",
+    "@types/node": "^20.17.19",
     "autoprefixer": "^10.5.4",
     "istanbul-lib-instrument": "^6.0.3",
     "jasmine-core": "~5.6.0",

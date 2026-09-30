@@ -1,12 +1,14 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { I18nService, AppLang } from '../../../core/services/i18n.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-lang-toggle',
   standalone: true,
+  imports: [TranslatePipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   template: `
-    <div class="flex items-center bg-surface-container-lowest p-1 rounded-full" role="group" aria-label="Language switcher">
+    <div class="flex items-center bg-surface-container-lowest p-1 rounded-full" role="group" [attr.aria-label]="'common.langSwitcherLabel' | translate">
       @for (option of options; track option) {
         <button
           type="button"

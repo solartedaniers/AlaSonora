@@ -1,0 +1,13 @@
+# Solo las páginas públicas (prerenderizadas con SSG o renderizadas con SSR)
+# tienen contenido indexable; las privadas se arman en el cliente (CSR) y
+# requieren sesión.
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /record
+Disallow: /result/
+Disallow: /photo-id
+Disallow: /history
+Disallow: /profile
+Disallow: /admin
+Disallow: /reset-password

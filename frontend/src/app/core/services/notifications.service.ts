@@ -1,4 +1,5 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { RealtimePostgresInsertPayload } from '@supabase/supabase-js';
 import { Detection } from '../models';
 import { DetectionsService } from './detections.service';
@@ -27,6 +28,10 @@ export class NotificationsService {
   readonly unseenCount = signal(0);
 
   constructor() {
+    // En SSR esto abriría un WebSocket de Realtime por cada petición al
+    // servidor (y nunca se cerraría): solo tiene sentido en el navegador.
+    if (!isPlatformBrowser(inject(PLATFORM_ID))) return;
+
     this.supabase.client
       .channel('public-detections')
       .on(

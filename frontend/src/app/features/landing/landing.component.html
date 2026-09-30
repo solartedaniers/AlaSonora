@@ -76,8 +76,8 @@
                 <span class="material-symbols-outlined text-[20px]">graphic_eq</span>
               </span>
               <div>
-                <p class="font-display text-sm text-on-surface font-semibold">Monitoreo Bioacústico en Vivo</p>
-                <p class="font-mono text-[10px] text-primary">96kHz / 24-bit</p>
+                <p class="font-display text-sm text-on-surface font-semibold">{{ 'landing.liveMonitorTitle' | translate }}</p>
+                <p class="font-mono text-[10px] text-primary">{{ 'landing.liveMonitorSpecs' | translate }}</p>
               </div>
             </div>
             <div class="flex items-center gap-1.5 px-3 py-1 bg-surface-container rounded-full">
@@ -111,8 +111,8 @@
               </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <h4 class="font-display font-bold text-on-surface">Zorzal Chiguanco</h4>
-                  <span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono text-[10px] font-semibold">98.4% IA</span>
+                  <h4 class="font-display font-bold text-on-surface">{{ 'landing.demoSpeciesName' | translate }}</h4>
+                  <span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono text-[10px] font-semibold">{{ 'landing.demoAiBadge' | translate }}</span>
                 </div>
                 <p class="text-xs text-on-surface-variant italic">Turdus chiguanco</p>
               </div>
@@ -130,7 +130,10 @@
     </div>
   </section>
 
-  <!-- Stats bar -->
+  <!-- Stats bar: @defer (on viewport) → el HTML estático llega sin esperar
+       estos datos vivos; el bloque (y CountUpComponent) se carga cuando el
+       usuario llega a esta sección. -->
+  @defer (on viewport) {
   @if (stats(); as s) {
     <section class="w-full bg-surface-container-low py-10 shadow-sm">
       <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -152,6 +155,9 @@
         </div>
       </div>
     </section>
+  }
+  } @placeholder {
+    <section class="w-full bg-surface-container-low py-10 shadow-sm min-h-[7.5rem]" aria-hidden="true"></section>
   }
 
   <!-- How it works -->
@@ -277,7 +283,7 @@
               <div class="w-full px-2 flex flex-col gap-4">
                 <div class="flex items-center justify-between">
                   <div>
-                    <h4 class="font-display font-bold text-on-surface">Zorzal Chiguanco</h4>
+                    <h4 class="font-display font-bold text-on-surface">{{ 'landing.demoSpeciesName' | translate }}</h4>
                     <p class="text-xs italic text-on-surface-variant">Turdus chiguanco</p>
                   </div>
                   <app-confidence-badge [value]="96" />

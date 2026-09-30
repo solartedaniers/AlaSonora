@@ -8,9 +8,14 @@ import { ThemeService } from './core/services/theme.service';
   standalone: true,
   imports: [RouterOutlet, GlowCursorComponent],
   changeDetection: ChangeDetectionStrategy.Eager,
+  // @defer (on idle): el cursor WebGL (librería ogl) es puramente decorativo,
+  // así que sale del bundle inicial y nunca se renderiza en el servidor
+  // (usa window/WebGL); se carga cuando el navegador queda ocioso.
   template: `
-    @if (theme.resolvedTheme() === 'dark') {
-      <app-glow-cursor />
+    @defer (on idle) {
+      @if (theme.resolvedTheme() === 'dark') {
+        <app-glow-cursor />
+      }
     }
     <router-outlet />
   `,

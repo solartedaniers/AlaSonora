@@ -24,7 +24,8 @@
   "theme": {
     "light": "Modo Claro",
     "dark": "Modo Oscuro",
-    "system": "Automático"
+    "system": "Automático",
+    "switcherLabel": "Selector de tema"
   },
   "common": {
     "loading": "Cargando…",
@@ -43,7 +44,8 @@
     "filter": "Filtrar",
     "high": "Alta",
     "medium": "Media",
-    "low": "Baja"
+    "low": "Baja",
+    "langSwitcherLabel": "Selector de idioma"
   },
   "iucn": {
     "lc": "Preocupación Menor",
@@ -104,7 +106,11 @@
       "step3Body": "El motor de IA (BirdNET) compara ese patrón contra millones de cantos de referencia para reconocer la firma acústica del ave.",
       "step4Title": "Resultado",
       "step4Body": "La especie con mayor probabilidad se confirma con un puntaje de confianza y queda registrada en tu historial y el mapa colectivo."
-    }
+    },
+    "liveMonitorTitle": "Monitoreo Bioacústico en Vivo",
+    "liveMonitorSpecs": "96kHz / 24-bit",
+    "demoSpeciesName": "Zorzal Chiguanco",
+    "demoAiBadge": "98.4% IA"
   },
   "auth": {
     "togglePassword": "Mostrar u ocultar contraseña",
@@ -249,7 +255,10 @@
     "reportIncorrect": "¿No es correcto? Reportar para revisión comunitaria",
     "peakFrequency": "Pico Espectral",
     "duration": "Duración",
-    "snr": "Relación Señal/Ruido"
+    "snr": "Relación Señal/Ruido",
+    "featureTemporalPattern": "Patrón temporal",
+    "featureFundamentalFrequency": "Frecuencia fundamental",
+    "featureSoundContour": "Contorno sonoro"
   },
   "photoId": {
     "title": "Identificación por Foto",
@@ -355,5 +364,19 @@
     "protocol": "Protocolo de Grabación",
     "api": "API para Investigadores",
     "contact": "Contacto Científico"
+  },
+  "routeTitle": {
+    "login": "Iniciar Sesión",
+    "register": "Crear Cuenta",
+    "forgotPassword": "Recuperar Contraseña",
+    "resetPassword": "Nueva Contraseña",
+    "dashboard": "Dashboard",
+    "record": "Grabar",
+    "result": "Resultado",
+    "photoId": "Identificar por Foto",
+    "history": "Mi Historial",
+    "map": "Mapa Público",
+    "profile": "Mi Perfil",
+    "admin": "Administración"
   }
 }

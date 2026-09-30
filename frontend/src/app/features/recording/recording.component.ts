@@ -9,7 +9,6 @@ import { SoftAuroraComponent } from '../../shared/components/soft-aurora/soft-au
 import { PointerGlowDirective } from '../../shared/directives/pointer-glow.directive';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { AudioCaptureService } from '../../core/services/audio-capture.service';
-import { OfflineStorageService } from '../../core/services/offline-storage.service';
 import { ClassificationService } from '../../core/services/classification.service';
 import { UserService } from '../../core/services/user.service';
 import { I18nService } from '../../core/services/i18n.service';
@@ -46,7 +45,6 @@ const NO_SPECIES_IDENTIFIED_DETAIL = 'No bird species were identified in this re
 })
 export class RecordingComponent {
   readonly capture = inject(AudioCaptureService);
-  private readonly offlineStorage = inject(OfflineStorageService);
   private readonly classificationService = inject(ClassificationService);
   private readonly userService = inject(UserService);
   private readonly i18n = inject(I18nService);

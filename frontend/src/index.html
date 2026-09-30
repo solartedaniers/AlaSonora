@@ -7,7 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <meta name="theme-color" content="#1b4332" />
-  <meta name="description" content="AlaSonora: identificacion de aves por su canto mediante IA." />
+  <meta name="description" content="AlaSonora: identificación de aves por su canto mediante inteligencia artificial, con mapa público de avistamientos." />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AlaSonora" />
+  <meta property="og:title" content="AlaSonora — Bioacústica &amp; IA" />
+  <meta property="og:description" content="Identificación de aves por su canto mediante inteligencia artificial." />
+  <meta property="og:locale" content="es_CO" />
+  <meta name="twitter:card" content="summary" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -23,6 +30,25 @@
   <link rel="manifest" href="manifest.webmanifest" />
 </head>
 <body class="theme-dark">
+  <!--
+    Las páginas prerenderizadas (SSG) y las de SSR salen del servidor con el
+    tema por defecto (oscuro), porque el servidor no puede leer localStorage.
+    Este script corre antes del primer pintado y aplica el tema guardado, así
+    un usuario con tema claro no ve un destello oscuro mientras hidrata.
+    Mismo criterio que ThemeService (clave "alasonora.theme").
+  -->
+  <script>
+    (function () {
+      try {
+        var mode = localStorage.getItem('alasonora.theme') || 'dark';
+        var dark = mode === 'system' ? window.matchMedia('(prefers-color-scheme: dark)').matches : mode !== 'light';
+        var theme = dark ? 'theme-dark' : 'theme-light';
+        document.documentElement.classList.remove('theme-light', 'theme-dark');
+        document.documentElement.classList.add(theme);
+        document.body.className = theme;
+      } catch (e) {}
+    })();
+  </script>
   <app-root></app-root>
 </body>
 </html>

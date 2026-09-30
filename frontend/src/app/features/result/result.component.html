@@ -168,13 +168,13 @@
           </h3>
           <div class="flex flex-col gap-3">
             @for (row of [
-              { label: 'Patrón temporal', value: 99.0 },
-              { label: 'Frecuencia fundamental', value: 98.2 },
-              { label: 'Contorno sonoro', value: 98.0 }
-            ]; track row.label) {
+              { labelKey: 'result.featureTemporalPattern', value: 99.0 },
+              { labelKey: 'result.featureFundamentalFrequency', value: 98.2 },
+              { labelKey: 'result.featureSoundContour', value: 98.0 }
+            ]; track row.labelKey) {
               <div>
                 <div class="flex justify-between text-sm mb-1">
-                  <span>{{ row.label }}</span>
+                  <span>{{ row.labelKey | translate }}</span>
                   <span class="font-mono text-primary font-semibold">{{ row.value }}%</span>
                 </div>
                 <div class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">

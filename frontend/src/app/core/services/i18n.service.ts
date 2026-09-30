@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, effect, inject, signal } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { Injectable, PLATFORM_ID, effect, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 export type AppLang = 'es' | 'en';
@@ -17,16 +18,24 @@ type TranslationDict = Record<string, unknown>;
 @Injectable({ providedIn: 'root' })
 export class I18nService {
   private readonly http = inject(HttpClient);
+  private readonly document = inject(DOCUMENT);
+  // En el servidor (SSR/prerender) no existe localStorage: se usa el idioma
+  // por defecto y el cliente aplica el guardado al hidratar.
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   readonly lang = signal<AppLang>(this.readStoredLang());
   readonly dict = signal<TranslationDict>({});
+  private loadedLang: AppLang | null = null;
+
+  /** Se resuelve cuando el diccionario inicial ya está cargado (lo espera el app initializer). */
+  readonly ready: Promise<void> = this.loadDictionary(this.lang());
 
   constructor() {
     effect(() => {
       const lang = this.lang();
-      localStorage.setItem(STORAGE_KEY, lang);
-      document.documentElement.lang = lang;
-      this.loadDictionary(lang);
+      if (this.isBrowser) localStorage.setItem(STORAGE_KEY, lang);
+      this.document.documentElement.lang = lang;
+      if (lang !== this.loadedLang) this.loadDictionary(lang);
     });
   }
 
@@ -53,13 +62,29 @@ export class I18nService {
   }
 
   private async loadDictionary(lang: AppLang): Promise<void> {
-    const data = await firstValueFrom(
-      this.http.get<TranslationDict>(`i18n/${lang}.json`)
-    ).catch(() => ({}) as TranslationDict);
+    this.loadedLang = lang;
+    const data = this.isBrowser
+      ? await firstValueFrom(this.http.get<TranslationDict>(`i18n/${lang}.json`)).catch(
+          () => ({}) as TranslationDict
+        )
+      : await this.importDictionary(lang);
     this.dict.set(data);
   }
 
+  // En el servidor no hay un origen HTTP al que pedir "i18n/es.json" (en el
+  // prerender de `ng build` ni siquiera hay servidor corriendo), así que se
+  // importa el mismo archivo de public/ directamente. En el navegador este
+  // import() nunca se ejecuta.
+  private async importDictionary(lang: AppLang): Promise<TranslationDict> {
+    const module =
+      lang === 'en'
+        ? await import('../../../../public/i18n/en.json')
+        : await import('../../../../public/i18n/es.json');
+    return module.default as TranslationDict;
+  }
+
   private readStoredLang(): AppLang {
+    if (!this.isBrowser) return 'es';
     const stored = localStorage.getItem(STORAGE_KEY) as AppLang | null;
     return stored === 'en' ? 'en' : 'es';
   }

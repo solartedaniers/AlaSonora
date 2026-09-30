@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme-toggle.component';
@@ -33,6 +34,7 @@ import { SpectrogramFrame } from '../../core/services/audio-capture.service';
 })
 export class LandingComponent implements OnInit, OnDestroy {
   private readonly statsService = inject(NetworkStatsService);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   readonly stats = signal<NetworkStats | null>(null);
 
   // Recorrido animado de la sección "Cómo AlaSonora escucha e identifica":
@@ -63,6 +65,12 @@ export class LandingComponent implements OnInit, OnDestroy {
   };
 
   async ngOnInit(): Promise<void> {
+    // Esta página se prerenderiza en build (SSG): las estadísticas son datos
+    // vivos, así que se piden solo en el navegador (si no, quedarían
+    // congeladas con los números del momento del build) y el setInterval
+    // nunca debe correr en el servidor (la app no llegaría a quedar estable
+    // y el prerender se colgaría).
+    if (!this.isBrowser) return;
     this.stats.set(await this.statsService.get());
     this.pipelineIntervalId = setInterval(() => {
       this.pipelineStep.set((this.pipelineStep() + 1) % 4);

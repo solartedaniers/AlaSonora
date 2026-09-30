@@ -8,7 +8,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
   imports: [TranslatePipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   template: `
-    <div class="flex items-center bg-surface-container-lowest p-1 rounded-full" role="group" aria-label="Selector de tema">
+    <div class="flex items-center bg-surface-container-lowest p-1 rounded-full" role="group" [attr.aria-label]="'theme.switcherLabel' | translate">
       @for (option of options; track option.mode) {
         <button
           type="button"

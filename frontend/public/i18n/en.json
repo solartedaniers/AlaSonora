@@ -24,7 +24,8 @@
   "theme": {
     "light": "Light Mode",
     "dark": "Dark Mode",
-    "system": "Automatic"
+    "system": "Automatic",
+    "switcherLabel": "Theme switcher"
   },
   "common": {
     "loading": "Loading…",
@@ -43,7 +44,8 @@
     "filter": "Filter",
     "high": "High",
     "medium": "Medium",
-    "low": "Low"
+    "low": "Low",
+    "langSwitcherLabel": "Language switcher"
   },
   "iucn": {
     "lc": "Least Concern",
@@ -104,7 +106,11 @@
       "step3Body": "Our AI engine (BirdNET) compares that pattern against millions of reference songs to recognize the bird's acoustic signature.",
       "step4Title": "Result",
       "step4Body": "The most likely species is confirmed with a confidence score and logged to your history and the collective map."
-    }
+    },
+    "liveMonitorTitle": "Live Bioacoustic Monitoring",
+    "liveMonitorSpecs": "96kHz / 24-bit",
+    "demoSpeciesName": "Chiguanco Thrush",
+    "demoAiBadge": "98.4% AI"
   },
   "auth": {
     "togglePassword": "Show or hide password",
@@ -249,7 +255,10 @@
     "reportIncorrect": "Not correct? Report for community review",
     "peakFrequency": "Peak Frequency",
     "duration": "Duration",
-    "snr": "Signal-to-Noise Ratio"
+    "snr": "Signal-to-Noise Ratio",
+    "featureTemporalPattern": "Temporal pattern",
+    "featureFundamentalFrequency": "Fundamental frequency",
+    "featureSoundContour": "Sound contour"
   },
   "photoId": {
     "title": "Photo Identification",
@@ -355,5 +364,19 @@
     "protocol": "Recording Protocol",
     "api": "API for Researchers",
     "contact": "Scientific Contact"
+  },
+  "routeTitle": {
+    "login": "Log In",
+    "register": "Create Account",
+    "forgotPassword": "Recover Password",
+    "resetPassword": "New Password",
+    "dashboard": "Dashboard",
+    "record": "Record",
+    "result": "Result",
+    "photoId": "Identify by Photo",
+    "history": "My History",
+    "map": "Public Map",
+    "profile": "My Profile",
+    "admin": "Administration"
   }
 }
