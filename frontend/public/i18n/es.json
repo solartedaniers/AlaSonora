@@ -264,7 +264,8 @@
     "alternatives": "Otras especies posibles",
     "disclaimer": "Esta identificación fue generada por un modelo de inteligencia artificial y es una referencia probabilística; valida el resultado en campo antes de tratarlo como un registro científico confirmado.",
     "tryAnother": "Probar con otra foto",
-    "genericError": "No se pudo clasificar la foto, por favor intenta de nuevo."
+    "genericError": "No se pudo clasificar la foto, por favor intenta de nuevo.",
+    "unavailable": "La identificación por foto no está disponible por ahora. Mientras tanto puedes identificar aves por su canto."
   },
   "history": {
     "eyebrow": "Cuaderno de Campo",

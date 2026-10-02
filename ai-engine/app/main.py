@@ -1,6 +1,8 @@
 import asyncio
+import functools
 import os
 import tempfile
+import threading
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
 from datetime import datetime
@@ -11,7 +13,6 @@ from fastapi.security import APIKeyHeader
 from app.audio_quality import NoBirdSignalDetectedError, TooNoisyAudioError
 from app.classifier import BirdNetClassifier
 from app.config import settings
-from app.photo_classifier import BirdPhotoClassifier, NoBirdInPhotoError
 from app.schemas import ClassificationResponse, PhotoClassificationResponse
 
 # Mensajes exactos que debe ver el usuario final en el frontend (vía el
@@ -19,6 +20,7 @@ from app.schemas import ClassificationResponse, PhotoClassificationResponse
 TOO_NOISY_MESSAGE = "Demasiada interferencia de ruido, por favor grabe de nuevo o cargue un audio más limpio"
 NO_BIRD_SIGNAL_MESSAGE = "No se detecta sonido de aves en la grabación, por favor intente nuevamente"
 NO_BIRD_IN_PHOTO_MESSAGE = "No se pudo identificar un ave en esta foto, por favor intente con otra imagen"
+PHOTO_DISABLED_MESSAGE = "La identificación por foto no está disponible en este despliegue"
 
 api_key_header = APIKeyHeader(name="X-Internal-Api-Key")
 
@@ -33,9 +35,6 @@ async def lifespan(app: FastAPI):
     # Cargado una sola vez al iniciar: el modelo BirdNET pesa varios cientos
     # de MB y su carga es lenta, repetirla por request sería inaceptable.
     app.state.classifier = BirdNetClassifier()
-    # Modelo de foto, completamente independiente del de audio; mismo motivo
-    # para cargarlo una sola vez en el arranque.
-    app.state.photo_classifier = BirdPhotoClassifier(settings.photo_model_id)
     app.state.inference_pool = ThreadPoolExecutor(max_workers=settings.max_inference_workers)
     yield
     app.state.inference_pool.shutdown(wait=False)
@@ -96,17 +95,36 @@ async def classify_photo(
     min_confidence: float = Form(default=settings.default_photo_min_confidence),
     max_results: int = Form(default=settings.default_photo_max_results),
 ) -> PhotoClassificationResponse:
+    if not settings.photo_classification_enabled:
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=PHOTO_DISABLED_MESSAGE)
     image_bytes = await photo.read()
     loop = asyncio.get_running_loop()
+    candidates = await loop.run_in_executor(
+        app.state.inference_pool, _classify_photo, image_bytes, min_confidence, max_results
+    )
+    return PhotoClassificationResponse(candidates=candidates)
+
+
+# Carga perezosa: torch + transformers + EfficientNetB2 suman ~430 MB de RAM,
+# así que solo se importan la primera vez que alguien usa /classify-photo
+# (dentro del pool, para no congelar el event loop). El lock evita que dos
+# peticiones simultáneas carguen el modelo dos veces.
+_photo_classifier_lock = threading.Lock()
+
+
+@functools.cache
+def _load_photo_classifier():
+    from app.photo_classifier import BirdPhotoClassifier
+
+    return BirdPhotoClassifier(settings.photo_model_id)
+
+
+def _classify_photo(image_bytes: bytes, min_confidence: float, max_results: int):
+    from app.photo_classifier import NoBirdInPhotoError
+
+    with _photo_classifier_lock:
+        classifier = _load_photo_classifier()
     try:
-        candidates = await loop.run_in_executor(
-            app.state.inference_pool,
-            app.state.photo_classifier.classify,
-            image_bytes,
-            min_confidence,
-            max_results,
-        )
+        return classifier.classify(image_bytes, min_confidence, max_results)
     except NoBirdInPhotoError as exc:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=NO_BIRD_IN_PHOTO_MESSAGE) from exc
-
-    return PhotoClassificationResponse(candidates=candidates)

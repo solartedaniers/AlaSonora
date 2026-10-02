@@ -55,6 +55,12 @@ export class PhotoIdComponent {
       const detail = (error.error as { message?: string } | null)?.message;
       if (detail) return detail;
     }
+    // 503: el motor de IA tiene apagada la clasificación por foto. El backend
+    // hoy reenvía cualquier fallo del motor como 502, así que ambos
+    // significan "esta función no está disponible ahora mismo".
+    if (error instanceof HttpErrorResponse && (error.status === 503 || error.status === 502)) {
+      return this.i18n.translate('photoId.unavailable');
+    }
     return this.i18n.translate('photoId.genericError');
   }
 }

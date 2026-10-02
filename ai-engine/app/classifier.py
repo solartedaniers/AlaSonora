@@ -1,9 +1,20 @@
 import os
+import sys
 import tempfile
+import types
 from datetime import datetime
 
+import ai_edge_litert.interpreter as litert_interpreter
 import librosa
 import soundfile as sf
+
+# birdnetlib busca el runtime liviano como "tflite_runtime" y, si no lo
+# encuentra, importa TensorFlow completo (~180 MB más de RAM). LiteRT expone
+# el mismo Interpreter, así que se registra bajo ese nombre antes de que
+# birdnetlib se importe.
+sys.modules.setdefault("tflite_runtime", types.ModuleType("tflite_runtime"))
+sys.modules.setdefault("tflite_runtime.interpreter", litert_interpreter)
+
 from birdnetlib import Recording
 from birdnetlib.analyzer import Analyzer
 

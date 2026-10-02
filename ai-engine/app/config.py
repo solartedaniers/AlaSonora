@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     audio_bird_band_energy_ratio_threshold: float = 0.15
 
     # Identificación por foto (modelo separado, sin relación con BirdNET).
+    # En false, /classify-photo responde 503 sin cargar el modelo: torch +
+    # transformers suman ~430 MB y no caben en instancias de 512 MB.
+    photo_classification_enabled: bool = True
     photo_model_id: str = "dennisjooo/Birds-Classifier-EfficientNetB2"
     default_photo_min_confidence: float = 0.3
     default_photo_max_results: int = 3
