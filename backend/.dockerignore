@@ -1,0 +1,6 @@
+# .env tiene credenciales: en Render se configuran como variables de entorno,
+# nunca dentro de la imagen.
+.env
+target
+.idea
+.vscode
