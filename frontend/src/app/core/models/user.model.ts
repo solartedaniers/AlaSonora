@@ -14,8 +14,6 @@ export interface AppUser {
 /** Estadísticas agregadas del cuaderno de campo de un usuario. */
 export interface UserStats {
   totalRecordings: number;
-  validatedRecordings: number;
-  pendingSyncRecordings: number;
   distinctSpecies: number;
   averageConfidence: number;
   activeStreakDays: number;

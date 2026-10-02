@@ -49,7 +49,9 @@ export class DashboardComponent implements OnInit {
   });
 
   async ngOnInit(): Promise<void> {
-    this.stats.set(await this.user.getStats());
+    // Sin catch, un fallo de las métricas impediría cargar también las
+    // detecciones recientes; si fallan, la sección simplemente no se muestra.
+    this.user.getStats().then((stats) => this.stats.set(stats)).catch(() => undefined);
     const recent = await this.detectionsService.getRecent(5);
     this.recent.set(recent);
     this.latest.set(recent[0] ?? null);

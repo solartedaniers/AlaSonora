@@ -1,7 +1,10 @@
 import { Injectable, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import type { User } from '@supabase/supabase-js';
 import { AppUser, ObserverRole, UserStats } from '../models';
 import { SupabaseClientService } from './supabase-client.service';
+import { environment } from '../../../environments/environment';
 
 const DEFAULT_ROLE: ObserverRole = 'hobbyist';
 
@@ -14,6 +17,7 @@ const DEFAULT_ROLE: ObserverRole = 'hobbyist';
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private readonly supabase = inject(SupabaseClientService).client;
+  private readonly http = inject(HttpClient);
 
   readonly currentUser = signal<AppUser | null>(null);
 
@@ -49,15 +53,13 @@ export class UserService {
     return data.session?.user.id ?? null;
   }
 
+  // Se envía la zona horaria del navegador para que la racha cuente días
+  // del calendario del usuario, no del servidor.
   async getStats(): Promise<UserStats> {
-    return {
-      totalRecordings: 412,
-      validatedRecordings: 384,
-      pendingSyncRecordings: 8,
-      distinctSpecies: 148,
-      averageConfidence: 98.4,
-      activeStreakDays: 18,
-    };
+    const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    return firstValueFrom(
+      this.http.get<UserStats>(`${environment.apiBaseUrl}/detections/mine/stats`, { params: { zone } })
+    );
   }
 
   async login(email: string, password: string): Promise<void> {

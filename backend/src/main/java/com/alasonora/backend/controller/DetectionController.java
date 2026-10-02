@@ -1,5 +1,6 @@
 package com.alasonora.backend.controller;
 
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -23,8 +24,10 @@ import com.alasonora.backend.dto.ClassifyDetectionRequest;
 import com.alasonora.backend.dto.CreateDetectionRequest;
 import com.alasonora.backend.dto.DetectionDto;
 import com.alasonora.backend.dto.SetObserverPhotoRequest;
+import com.alasonora.backend.dto.UserStatsDto;
 import com.alasonora.backend.service.DetectionClassificationService;
 import com.alasonora.backend.service.DetectionService;
+import com.alasonora.backend.service.UserStatsService;
 
 import jakarta.validation.Valid;
 
@@ -36,10 +39,16 @@ public class DetectionController {
 
     private final DetectionService detectionService;
     private final DetectionClassificationService classificationService;
+    private final UserStatsService userStatsService;
 
-    public DetectionController(DetectionService detectionService, DetectionClassificationService classificationService) {
+    public DetectionController(
+        DetectionService detectionService,
+        DetectionClassificationService classificationService,
+        UserStatsService userStatsService
+    ) {
         this.detectionService = detectionService;
         this.classificationService = classificationService;
+        this.userStatsService = userStatsService;
     }
 
     @GetMapping
@@ -53,6 +62,11 @@ public class DetectionController {
     @GetMapping("/mine")
     public List<DetectionDto> getMine(@AuthenticationPrincipal Jwt jwt) {
         return detectionService.getMyDetections(UUID.fromString(jwt.getSubject()));
+    }
+
+    @GetMapping("/mine/stats")
+    public UserStatsDto getMyStats(@AuthenticationPrincipal Jwt jwt, @RequestParam(defaultValue = "UTC") ZoneId zone) {
+        return userStatsService.getStats(UUID.fromString(jwt.getSubject()), zone);
     }
 
     // La URL de audio se firma en el momento, nunca se guarda fija: así una

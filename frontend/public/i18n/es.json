@@ -201,7 +201,7 @@
       "species": "Especies Detectadas",
       "recordings": "Grabaciones Totales",
       "streak": "Racha de Campo",
-      "hours": "Horas de Escucha"
+      "confidence": "Confianza Promedio"
     },
     "lastDetection": "Última Detección Algorítmica",
     "speciesSpotlight": "Especies Destacadas"

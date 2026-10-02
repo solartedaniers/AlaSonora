@@ -1,5 +1,6 @@
 package com.alasonora.backend.repository;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,4 +24,15 @@ public interface DetectionRepository extends JpaRepository<Detection, Long> {
 
     @Query("select avg(d.confidence) from Detection d where d.visibility = :visibility")
     Double averageConfidenceByVisibility(@Param("visibility") Visibility visibility);
+
+    long countByOwnerId(UUID ownerId);
+
+    @Query("select count(distinct d.species.id) from Detection d where d.ownerId = :ownerId")
+    long countDistinctSpeciesByOwnerId(@Param("ownerId") UUID ownerId);
+
+    @Query("select avg(d.confidence) from Detection d where d.ownerId = :ownerId")
+    Double averageConfidenceByOwnerId(@Param("ownerId") UUID ownerId);
+
+    @Query("select d.recordedAt from Detection d where d.ownerId = :ownerId")
+    List<Instant> findRecordedAtByOwnerId(@Param("ownerId") UUID ownerId);
 }

@@ -38,6 +38,6 @@ public record SpeciesDto(
 
     private static List<String> splitTypicalVocalizations(String stored) {
         if (stored == null || stored.isBlank()) return List.of();
-        return Arrays.stream(stored.split(",")).map(String::trim).filter(s -> !s.isEmpty()).toList();
+        return Arrays.stream(stored.split(",")).map(s -> s.trim()).filter(s -> !s.isEmpty()).toList();
     }
 }

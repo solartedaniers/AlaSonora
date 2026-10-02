@@ -79,15 +79,15 @@ public class XenoCantoVocalizationReferenceResolver implements SpeciesVocalizati
             for (String rawType : recording.path("type").asString("").split(",")) {
                 String type = rawType.trim().toLowerCase();
                 if (NON_VOCALIZATION_TYPES.contains(type)) continue;
-                occurrences.merge(type, 1, Integer::sum);
+                occurrences.merge(type, 1, (current, added) -> current + added);
             }
         }
 
         return occurrences.entrySet().stream()
             .filter(entry -> entry.getValue() >= MIN_OCCURRENCES)
-            .sorted(Comparator.<Map.Entry<String, Integer>>comparingInt(Map.Entry::getValue).reversed())
+            .sorted(Comparator.<Map.Entry<String, Integer>>comparingInt(entry -> entry.getValue()).reversed())
             .limit(MAX_TYPES)
-            .map(Map.Entry::getKey)
+            .map(entry -> entry.getKey())
             .toList();
     }
 }
