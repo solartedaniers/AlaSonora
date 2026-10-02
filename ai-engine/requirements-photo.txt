@@ -1,0 +1,11 @@
+# Solo para /classify-photo (dennisjooo/Birds-Classifier-EfficientNetB2).
+# Instalar junto a requirements.txt únicamente si PHOTO_CLASSIFICATION_ENABLED
+# es true; la ruta de audio no importa nada de esto.
+#
+# Wheels solo-CPU: ningún despliegue de este motor tiene GPU, y los wheels
+# por defecto (CUDA) pesan varias veces más sin ningún beneficio aquí.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+torchvision
+transformers
+pillow
