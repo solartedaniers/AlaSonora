@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
+import { environment } from '../environments/environment';
 
 export const routes: Routes = [
   {
@@ -62,6 +63,10 @@ export const routes: Routes = [
     path: 'photo-id',
     loadComponent: () =>
       import('./features/photo-id/photo-id.component').then((m) => m.PhotoIdComponent),
+    // Hidden intentionally — see environment.photoIdentificationEnabled. While
+    // disabled the route never matches, so a direct visit falls through to the
+    // '**' wildcard and redirects home.
+    canMatch: [() => environment.photoIdentificationEnabled],
     canActivate: [authGuard],
     title: 'routeTitle.photoId',
   },

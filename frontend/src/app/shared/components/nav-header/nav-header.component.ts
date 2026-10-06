@@ -7,12 +7,17 @@ import { SpeciesNamePipe } from '../../pipes/species-name.pipe';
 import { UserService } from '../../../core/services/user.service';
 import { NotificationsService } from '../../../core/services/notifications.service';
 import { AdminAccessService } from '../../../core/services/admin-access.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-nav-header',
   standalone: true,
   imports: [RouterLink, RouterLinkActive, ThemeToggleComponent, LangToggleComponent, TranslatePipe, SpeciesNamePipe],
   changeDetection: ChangeDetectionStrategy.Eager,
+  // The host is the stacking context that bounds the notifications dropdown:
+  // it must sit above the page sections that follow it in the DOM (which use
+  // relative z-10 over the aurora background), or they paint over the panel.
+  host: { class: 'relative z-40' },
   template: `
     <header class="w-full bg-surface-container-low/90 backdrop-blur-md sticky top-0 z-40 px-4 sm:px-8 py-3 flex items-center justify-between shadow-sm">
       <a routerLink="/" class="flex items-center gap-2.5 shrink-0">
@@ -22,7 +27,7 @@ import { AdminAccessService } from '../../../core/services/admin-access.service'
         </span>
       </a>
 
-      <nav class="hidden md:flex items-center gap-1">
+      <nav class="hidden lg:flex items-center gap-1">
         @for (item of navItems(); track item.path) {
           <a
             [routerLink]="item.path"
@@ -36,12 +41,12 @@ import { AdminAccessService } from '../../../core/services/admin-access.service'
       </nav>
 
       <div class="flex items-center gap-3">
-        <app-lang-toggle />
-        <app-theme-toggle />
+        <app-lang-toggle class="hidden sm:block" />
+        <app-theme-toggle class="hidden sm:block" />
 
         <button
           type="button"
-          class="md:hidden w-9 h-9 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors"
+          class="lg:hidden w-9 h-9 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors"
           [attr.aria-label]="'nav.menu' | translate"
           (click)="mobileMenuOpen.update((open) => !open)"
         >
@@ -96,7 +101,7 @@ import { AdminAccessService } from '../../../core/services/admin-access.service'
     </header>
 
     @if (mobileMenuOpen()) {
-      <nav class="md:hidden w-full bg-surface-container-low border-t border-outline-variant/20 px-4 py-2 sticky top-[60px] z-30 shadow-sm">
+      <nav class="lg:hidden w-full bg-surface-container-low border-t border-outline-variant/20 px-4 py-2 sticky top-[60px] z-30 shadow-sm">
         @for (item of navItems(); track item.path) {
           <a
             [routerLink]="item.path"
@@ -108,6 +113,11 @@ import { AdminAccessService } from '../../../core/services/admin-access.service'
             <span>{{ item.labelKey | translate }}</span>
           </a>
         }
+        <!-- On phones the header row can't fit both toggles, so they live here instead. -->
+        <div class="sm:hidden flex items-center gap-3 px-3 py-2.5">
+          <app-lang-toggle />
+          <app-theme-toggle />
+        </div>
       </nav>
     }
   `,
@@ -123,7 +133,10 @@ export class NavHeaderComponent {
   private readonly allNavItems = [
     { path: '/dashboard', icon: 'home', labelKey: 'nav.dashboard', protected: true, adminOnly: false },
     { path: '/record', icon: 'graphic_eq', labelKey: 'nav.record', protected: true, adminOnly: false },
-    { path: '/photo-id', icon: 'add_a_photo', labelKey: 'nav.photoId', protected: true, adminOnly: false },
+    // Hidden intentionally — see environment.photoIdentificationEnabled.
+    ...(environment.photoIdentificationEnabled
+      ? [{ path: '/photo-id', icon: 'add_a_photo', labelKey: 'nav.photoId', protected: true, adminOnly: false }]
+      : []),
     { path: '/history', icon: 'library_music', labelKey: 'nav.history', protected: true, adminOnly: false },
     { path: '/map', icon: 'map', labelKey: 'nav.map', protected: false, adminOnly: false },
     { path: '/profile', icon: 'person', labelKey: 'nav.profile', protected: true, adminOnly: false },
