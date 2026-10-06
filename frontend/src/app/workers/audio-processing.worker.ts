@@ -25,6 +25,13 @@ addEventListener('message', ({ data }: MessageEvent<AudioWorkerInboundMessage>) 
     return;
   }
 
+  if (data.type === 'compute-recording-spectrogram') {
+    const columns = computeRecordingSpectrogram(data.samples, data.fftSize, data.columnCount);
+    const response: AudioWorkerOutboundMessage = { type: 'recording-spectrogram', columns };
+    (postMessage as (msg: unknown, transfer: Transferable[]) => void)(response, columns.map((c) => c.buffer));
+    return;
+  }
+
   if (data.type !== 'process-audio-chunk') return;
 
   const { chunkId, samples, sampleRate, fftSize } = data;
@@ -106,6 +113,16 @@ function computeMagnitudeSpectrum(samples: Float32Array, fftSize: number): Float
   }
 
   return magnitudes;
+}
+
+/** Evenly spaced FFT windows across the whole recording, one per output column. */
+function computeRecordingSpectrogram(samples: Float32Array, fftSize: number, columnCount: number): Float32Array[] {
+  const lastStart = Math.max(0, samples.length - fftSize);
+  const columns = Math.max(1, Math.min(columnCount, Math.floor(samples.length / fftSize) || 1));
+  return Array.from({ length: columns }, (_, i) => {
+    const start = columns === 1 ? 0 : Math.round((i * lastStart) / (columns - 1));
+    return computeMagnitudeSpectrum(samples.subarray(start, start + fftSize), fftSize);
+  });
 }
 
 function hannWindow(t: number, n: number): number {

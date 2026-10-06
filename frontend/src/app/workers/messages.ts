@@ -44,8 +44,23 @@ export interface RecordingEncodedResponse {
   wavBuffer: ArrayBuffer;
 }
 
-export type AudioWorkerInboundMessage = AudioProcessingRequest | FinalizeRecordingRequest;
-export type AudioWorkerOutboundMessage = AudioProcessingResponse | RecordingEncodedResponse;
+/** Spectrogram of a whole recording (result screen), independent of any live capture session. */
+export interface RecordingSpectrogramRequest {
+  type: 'compute-recording-spectrogram';
+  samples: Float32Array;
+  sampleRate: number;
+  fftSize: 256 | 512 | 1024 | 2048;
+  columnCount: number;
+}
+
+export interface RecordingSpectrogramResponse {
+  type: 'recording-spectrogram';
+  /** One magnitude spectrum per time column, oldest first. */
+  columns: Float32Array[];
+}
+
+export type AudioWorkerInboundMessage = AudioProcessingRequest | FinalizeRecordingRequest | RecordingSpectrogramRequest;
+export type AudioWorkerOutboundMessage = AudioProcessingResponse | RecordingEncodedResponse | RecordingSpectrogramResponse;
 
 // ---------------------------------------------------------------------------
 // 2. Shared Worker: sync.worker.ts (estado compartido entre pestañas)
