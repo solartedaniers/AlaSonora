@@ -345,3 +345,6 @@ para corre la ia
 2. .venv\Scripts\activate
 3. python -m uvicorn app.main:app --reload --port 8000
 4. deactivate
+
+# Correr en la nuve
+https://alasonora-frontend.onrender.com
