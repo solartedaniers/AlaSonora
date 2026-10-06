@@ -122,17 +122,7 @@
           {{ 'result.spectrogramTitle' | translate }}
         </h2>
         <div class="relative w-full h-64 bg-surface-container-lowest rounded-lg overflow-hidden shadow-inner">
-          <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 800 240">
-            <defs>
-              <linearGradient id="resultSpectro" x1="0%" y1="100%" x2="0%" y2="0%">
-                <stop offset="0%" stop-color="#071611" stop-opacity="0.2" />
-                <stop offset="55%" stop-color="#2d6a4f" stop-opacity="0.85" />
-                <stop offset="90%" stop-color="#f9c74f" stop-opacity="1" />
-              </linearGradient>
-            </defs>
-            <path d="M 280,195 C 310,140 340,115 390,135 C 430,150 460,190 510,185" fill="none" stroke="url(#resultSpectro)" stroke-width="8" stroke-linecap="round" />
-            <path d="M 290,165 C 320,110 350,85 400,105 C 440,120 470,160 520,155" fill="none" stroke="url(#resultSpectro)" stroke-width="4" stroke-linecap="round" opacity="0.8" />
-          </svg>
+          <app-recording-spectrogram [audioUrl]="d.audioUrl" />
         </div>
         <div class="flex items-center gap-4">
           <audio
