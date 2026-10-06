@@ -35,6 +35,7 @@
     "discard": "Descartar",
     "confidence": "Certeza IA",
     "seeMore": "Ver más",
+    "spectrogramLabel": "Espectrograma en tiempo real",
     "seeDetail": "Ver detalle",
     "listen": "Escuchar",
     "play": "Reproducir",
@@ -228,6 +229,7 @@
     "browseFiles": "Explorar Archivos Locales",
     "notSignedIn": "Tu sesión aún se está cargando. Espera un momento e inténtalo de nuevo.",
     "classifyError": "No se pudo clasificar el audio. Revisa tu conexión e inténtalo de nuevo.",
+    "savedOffline": "Sin conexión: la grabación quedó guardada en este dispositivo y se clasificará y guardará sola (como privada) cuando vuelva la señal.",
     "noSpeciesIdentified": "No se pudo identificar ninguna especie en esta grabación — intenta con un audio más claro o más cercano al canto del ave."
   },
   "result": {
@@ -253,8 +255,7 @@
     "viewHistory": "Ver en Mi Historial",
     "reportIncorrect": "¿No es correcto? Reportar para revisión comunitaria",
     "peakFrequency": "Pico Espectral",
-    "duration": "Duración",
-    "snr": "Relación Señal/Ruido"
+    "duration": "Duración"
   },
   "photoId": {
     "title": "Identificación por Foto",
@@ -290,6 +291,7 @@
   },
   "map": {
     "eyebrow": "Red en Vivo",
+    "aiSuffix": "IA",
     "title": "Mapa Vivo de Avistamientos y Biofonía",
     "subtitle": "Explora las grabaciones recientes identificadas por la red en tiempo real.",
     "searchPlaceholder": "Buscar por especie, familia o parque natural…",

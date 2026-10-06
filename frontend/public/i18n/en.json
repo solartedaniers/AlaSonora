@@ -35,6 +35,7 @@
     "discard": "Discard",
     "confidence": "AI Confidence",
     "seeMore": "See more",
+    "spectrogramLabel": "Real-time spectrogram",
     "seeDetail": "View detail",
     "listen": "Listen",
     "play": "Play",
@@ -228,6 +229,7 @@
     "browseFiles": "Browse Local Files",
     "notSignedIn": "Your session is still loading. Wait a moment and try again.",
     "classifyError": "Could not classify the audio. Check your connection and try again.",
+    "savedOffline": "You're offline: the recording was saved on this device and will be classified and saved (as private) automatically once you're back online.",
     "noSpeciesIdentified": "No species could be identified in this recording — try a clearer recording, closer to the bird's song."
   },
   "result": {
@@ -253,8 +255,7 @@
     "viewHistory": "View in My History",
     "reportIncorrect": "Not correct? Report for community review",
     "peakFrequency": "Peak Frequency",
-    "duration": "Duration",
-    "snr": "Signal-to-Noise Ratio"
+    "duration": "Duration"
   },
   "photoId": {
     "title": "Photo Identification",
@@ -290,6 +291,7 @@
   },
   "map": {
     "eyebrow": "Live Network",
+    "aiSuffix": "AI",
     "title": "Live Sightings & Biophony Map",
     "subtitle": "Explore recent recordings identified by the network in real time.",
     "searchPlaceholder": "Search by species, family, or natural park…",

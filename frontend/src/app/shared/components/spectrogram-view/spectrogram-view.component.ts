@@ -9,38 +9,38 @@ import {
   ChangeDetectionStrategy
 } from '@angular/core';
 import { SpectrogramFrame } from '../../../core/services/audio-capture.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 /**
  * Dibuja el espectrograma en un <canvas>.
  *
- * EVENT LOOP — por qué el pintado va en `requestAnimationFrame` (TASK):
+ * EVENT LOOP — por qué el pintado va en `requestAnimationFrame`:
  * -----------------------------------------------------------------------
- * `AudioCaptureService` actualiza su signal `latestFrame` desde el
- * callback del worker, que se resuelve como MICROTASK (ver comentario en
- * ese servicio). Si pintáramos el canvas directamente dentro de ese mismo
- * callback, cada frame de audio (varias veces por segundo) dispararía un
- * layout/paint síncrono, compitiendo con cualquier otra interacción del
- * usuario y arriesgando bloquear el hilo principal.
+ * `AudioCaptureService` actualiza su signal `latestFrame` desde el handler
+ * del evento `message` del worker, que es una TASK (ver comentario en ese
+ * servicio). Si pintáramos el canvas dentro de ese mismo handler, cada
+ * frame de audio (varias veces por segundo) dispararía un dibujo síncrono,
+ * compitiendo con cualquier otra interacción del usuario.
  *
- * En cambio, este componente mantiene su propio bucle de rAF (una TASK
- * calendarizada por el navegador, sincronizada con el refresco de
- * pantalla) que, en cada frame visual, simplemente LEE el último valor
- * disponible del signal y pinta. Así el trabajo de "recibir datos"
- * (microtasks, alta frecuencia) queda desacoplado del trabajo de "pintar"
- * (tasks, limitado a ~60fps), garantizando una interfaz fluida sin
- * importar cuántos frames de audio lleguen entre repintados.
+ * En cambio, este componente mantiene su propio bucle de rAF: sus
+ * callbacks no son tasks, corren en el paso de renderizado del event loop
+ * (una vez por refresco de pantalla, tras las tasks y microtasks
+ * pendientes) y en cada uno simplemente LEEN el último valor del signal y
+ * pintan. Así "recibir datos" (tasks de alta frecuencia) queda desacoplado
+ * de "pintar" (máx. ~60 veces por segundo), sin importar cuántos frames de
+ * audio lleguen entre repintados.
  */
 @Component({
   selector: 'app-spectrogram-view',
   standalone: true,
+  imports: [TranslatePipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   template: `
-    <canvas #canvas class="w-full h-full block" [attr.aria-label]="ariaLabel()"></canvas>
+    <canvas #canvas class="w-full h-full block" [attr.aria-label]="'common.spectrogramLabel' | translate"></canvas>
   `,
 })
 export class SpectrogramViewComponent implements AfterViewInit, OnDestroy {
   readonly getFrame = input.required<() => SpectrogramFrame | null>();
-  readonly ariaLabel = input('Espectrograma en tiempo real');
 
   @ViewChild('canvas') private canvasRef!: ElementRef<HTMLCanvasElement>;
 
