@@ -69,6 +69,7 @@ public class DetectionService {
 
     public DetectionDto createDetection(UUID ownerId, CreateDetectionRequest request) {
         Detection detection = new Detection();
+        requireOwnedStoragePath(ownerId, request.audioStoragePath());
         detection.setOwnerId(ownerId);
         detection.setRecordedAt(request.recordedAt());
         detection.setAudioStoragePath(request.audioStoragePath());
@@ -105,6 +106,7 @@ public class DetectionService {
         if (!detection.getOwnerId().equals(requesterId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Detection not found");
         }
+        requireOwnedStoragePath(requesterId, observerPhotoStoragePath);
         detection.setObserverPhotoStoragePath(observerPhotoStoragePath);
         return toDto(detection);
     }
@@ -117,6 +119,20 @@ public class DetectionService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Detection not found");
         }
         detectionRepository.deleteById(id);
+    }
+
+    // Los paths llegan del cliente y luego se firman con la service_role key,
+    // que ignora las políticas RLS de Storage: sin esta comprobación un
+    // usuario podría guardar el path de la carpeta de otro y recibir una URL
+    // firmada de su grabación/foto privada.
+    static boolean isOwnedStoragePath(UUID ownerId, String storagePath) {
+        return storagePath.startsWith(ownerId + "/") && !storagePath.contains("..");
+    }
+
+    private static void requireOwnedStoragePath(UUID ownerId, String storagePath) {
+        if (storagePath != null && !isOwnedStoragePath(ownerId, storagePath)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Storage path must be inside the requester's own folder");
+        }
     }
 
     private DetectionDto toDto(Detection detection) {
