@@ -1,5 +1,6 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { OfflineStorageService } from '../../../core/services/offline-storage.service';
+import { PendingRecordingsSyncService } from '../../../core/services/pending-recordings-sync.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
@@ -19,6 +20,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
         </div>
         <button
           type="button"
+          (click)="pendingSync.syncNow()"
           class="text-xs font-semibold text-on-secondary-container underline hover:text-on-surface transition-colors"
         >
           {{ 'workers.forceSync' | translate }}
@@ -29,4 +31,5 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 })
 export class OfflineBannerComponent {
   readonly offline = inject(OfflineStorageService);
+  readonly pendingSync = inject(PendingRecordingsSyncService);
 }

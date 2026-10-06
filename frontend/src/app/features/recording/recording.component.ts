@@ -13,13 +13,10 @@ import { ClassificationService } from '../../core/services/classification.servic
 import { UserService } from '../../core/services/user.service';
 import { I18nService } from '../../core/services/i18n.service';
 import { DetectionDraftService, DRAFT_DETECTION_ID } from '../../core/services/detection-draft.service';
+import { FALLBACK_LOCATION, PendingRecordingsSyncService } from '../../core/services/pending-recordings-sync.service';
 import { GeoLocation } from '../../core/models';
 
 type RecordingTab = 'live' | 'upload';
-
-// Bogotá's Eastern Hills as a stand-in field location when geolocation is
-// denied/unavailable, until the real AI phase adds actual GPS tagging.
-const FALLBACK_LOCATION: GeoLocation = { latitude: 4.6097, longitude: -74.0817 };
 
 // Texto exacto que DetectionClassificationService.runClassification lanza
 // cuando BirdNET no encuentra ninguna especie con confianza suficiente (422
@@ -49,6 +46,7 @@ export class RecordingComponent {
   private readonly userService = inject(UserService);
   private readonly i18n = inject(I18nService);
   private readonly draftService = inject(DetectionDraftService);
+  private readonly pendingSync = inject(PendingRecordingsSyncService);
   private readonly router = inject(Router);
 
   readonly activeTab = signal<RecordingTab>('live');
@@ -65,6 +63,7 @@ export class RecordingComponent {
 
   readonly isClassifying = signal(false);
   readonly classifyError = signal<string | null>(null);
+  readonly savedOffline = signal(false);
 
   async toggleRecording(): Promise<void> {
     if (this.capture.isRecording()) {
@@ -96,6 +95,12 @@ export class RecordingComponent {
 
   private async classifyAndNavigate(audio: Blob, durationSeconds: number, peakFrequencyHz: number): Promise<void> {
     this.classifyError.set(null);
+    this.savedOffline.set(false);
+
+    if (!navigator.onLine) {
+      await this.saveForLater(audio, durationSeconds, peakFrequencyHz);
+      return;
+    }
 
     // Reads the session directly rather than the `currentUser` signal, which
     // only resolves after its initial getSession() promise settles — see
@@ -136,11 +141,30 @@ export class RecordingComponent {
 
       await this.router.navigate(['/result', DRAFT_DETECTION_ID]);
     } catch (error) {
+      // Signal dropped mid-upload/classify: same as recording offline.
+      if (!navigator.onLine) {
+        await this.saveForLater(audio, durationSeconds, peakFrequencyHz);
+        return;
+      }
       console.error('Classification failed', error);
       this.classifyError.set(this.resolveClassifyErrorMessage(error));
     } finally {
       this.isClassifying.set(false);
     }
+  }
+
+  // Sin señal: la grabación queda en la cola de IndexedDB y
+  // PendingRecordingsSyncService la clasifica y guarda sola al volver la
+  // conexión. El GPS sí se intenta: no depende de datos móviles.
+  private async saveForLater(audio: Blob, durationSeconds: number, peakFrequencyHz: number): Promise<void> {
+    await this.pendingSync.enqueue({
+      recordedAt: new Date().toISOString(),
+      audioBlob: audio,
+      durationSeconds,
+      peakFrequencyHz,
+      gpsLocation: await this.currentLocation(),
+    });
+    this.savedOffline.set(true);
   }
 
   /**
