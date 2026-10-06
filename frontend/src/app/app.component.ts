@@ -1,7 +1,9 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { GlowCursorComponent } from './shared/components/glow-cursor/glow-cursor.component';
 import { ThemeService } from './core/services/theme.service';
+import { PendingRecordingsSyncService } from './core/services/pending-recordings-sync.service';
 
 @Component({
   selector: 'app-root',
@@ -22,4 +24,9 @@ import { ThemeService } from './core/services/theme.service';
 })
 export class AppComponent {
   readonly theme = inject(ThemeService);
+
+  constructor() {
+    // IndexedDB, Service Worker y eventos de red solo existen en el navegador.
+    if (isPlatformBrowser(inject(PLATFORM_ID))) inject(PendingRecordingsSyncService).start();
+  }
 }

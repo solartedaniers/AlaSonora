@@ -22,7 +22,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withComponentInputBinding()),
     { provide: TitleStrategy, useClass: I18nTitleStrategy },
     provideHttpClient(withXhr(), withInterceptors([authInterceptor])),
-    provideServiceWorker('ngsw-worker.js', {
+    // sw.js = ngsw-worker.js (app-shell cache) + Background Sync handler.
+    provideServiceWorker('sw.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
     }),
