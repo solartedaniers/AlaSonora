@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { GeoLocation } from '../models';
 
 const DB_NAME = 'alasonora-offline';
 const STORE_NAME = 'pending-recordings';
@@ -6,10 +7,12 @@ const DB_VERSION = 1;
 
 export interface PendingRecording {
   id: string;
-  createdAt: string;
+  recordedAt: string;
   audioBlob: Blob;
-  latitude: number;
-  longitude: number;
+  durationSeconds: number;
+  peakFrequencyHz: number;
+  /** Only a real GPS fix, never the field fallback — same rule as the online classify call. */
+  gpsLocation?: GeoLocation;
 }
 
 /**
