@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import type { User } from '@supabase/supabase-js';
 import { AppUser, ObserverRole, UserStats } from '../models';
-import { SupabaseClientService } from './supabase-client.service';
+import { SUPABASE_SESSION_STORAGE_KEY, SupabaseClientService } from './supabase-client.service';
 import { environment } from '../../../environments/environment';
 
 const DEFAULT_ROLE: ObserverRole = 'hobbyist';
@@ -23,7 +23,7 @@ export class UserService {
 
   constructor() {
     this.supabase.auth.getSession().then(({ data }) => {
-      this.currentUser.set(this.toAppUser(data.session?.user ?? null));
+      this.currentUser.set(this.toAppUser(data.session?.user ?? this.storedSession()?.user ?? null));
     });
     this.supabase.auth.onAuthStateChange((_event, session) => {
       this.currentUser.set(this.toAppUser(session?.user ?? null));
@@ -37,6 +37,12 @@ export class UserService {
    * would bounce a logged-in user on a hard refresh.
    */
   async isAuthenticated(): Promise<boolean> {
+    // Field mode: offline, an expired access token can't be refreshed and
+    // getSession() would retry for ~25s and then report no session, bouncing
+    // the user to a /login that can't work without signal. A session stored
+    // on this device is enough to keep recording; requests made once back
+    // online refresh it as usual (or fail and require a new login).
+    if (!navigator.onLine) return this.storedSession() !== null;
     const { data } = await this.supabase.auth.getSession();
     return data.session !== null;
   }
@@ -107,6 +113,14 @@ export class UserService {
   }): Promise<void> {
     const { error } = await this.supabase.auth.updateUser({ data: patch });
     if (error) throw error;
+  }
+
+  private storedSession(): { user: User } | null {
+    try {
+      return JSON.parse(localStorage.getItem(SUPABASE_SESSION_STORAGE_KEY) ?? 'null');
+    } catch {
+      return null;
+    }
   }
 
   private toAppUser(user: User | null): AppUser | null {
