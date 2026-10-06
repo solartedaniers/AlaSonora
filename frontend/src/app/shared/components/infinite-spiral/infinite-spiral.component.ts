@@ -18,7 +18,7 @@ export interface SpiralItem {
     <div class="spiral-scene">
       <div class="spiral-track" [style.--count]="items().length">
         @for (item of items(); track item.imageUrl; let i = $index) {
-          <figure class="spiral-item" [style.--i]="i">
+          <figure class="spiral-item" [style.--i]="i" tabindex="0">
             <img [src]="item.imageUrl" [alt]="item.caption" loading="lazy" />
             <figcaption>{{ item.caption }}</figcaption>
           </figure>
@@ -41,8 +41,15 @@ export interface SpiralItem {
       transform-style: preserve-3d;
       animation: spiral-spin 24s linear infinite;
     }
-    .spiral-scene:hover .spiral-track {
+    /* Pause only while a single photo is hovered or focused (click/tap or
+       Tab focuses it; clicking anywhere else blurs it and resumes the spin) —
+       not while the cursor is merely somewhere over the whole scene. */
+    .spiral-track:has(.spiral-item:hover, .spiral-item:focus) {
       animation-play-state: paused;
+    }
+    .spiral-item:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
     }
     .spiral-item {
       position: absolute;
