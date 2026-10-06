@@ -62,12 +62,21 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       const detections = this.feed();
       if (this.map) this.renderMarkers(detections);
     });
+    // Otra pestaña de este navegador acaba de guardar una detección PUBLIC
+    // (llega por el Shared Worker): se recarga el feed público desde el
+    // backend en vez de armar un Detection parcial con el mensaje.
+    effect(() => {
+      if (this.liveSync.lastBroadcast()) void this.loadFeed(true);
+    });
   }
 
   async ngOnInit(): Promise<void> {
-    const all = await this.detectionsService.getAll();
-    this.feed.set(all);
-    this.selected.set(all[0] ?? null);
+    await this.loadFeed();
+    this.selected.set(this.feed()[0] ?? null);
+  }
+
+  private async loadFeed(fresh = false): Promise<void> {
+    this.feed.set(await this.detectionsService.getAll(fresh));
   }
 
   async ngAfterViewInit(): Promise<void> {

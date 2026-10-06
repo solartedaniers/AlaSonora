@@ -21,10 +21,15 @@ export class DetectionsService {
   private readonly supabase = inject(SupabaseClientService).client;
   private readonly baseUrl = `${environment.apiBaseUrl}/detections`;
 
-  async getAll(): Promise<Detection[]> {
+  /**
+   * `fresh` skips the SSR HTTP transfer cache, which keeps answering this
+   * same URL with the snapshot taken at render time until the app becomes
+   * stable — so a detection saved after the page loaded would never show up.
+   */
+  async getAll(fresh = false): Promise<Detection[]> {
     const params = new HttpParams().set('visibility', 'public');
     const detections = await firstValueFrom(
-      this.http.get<DetectionApiResponse[]>(this.baseUrl, { params })
+      this.http.get<DetectionApiResponse[]>(this.baseUrl, { params, transferCache: !fresh })
     );
     return detections.map((d) => this.withSyncStatus(d));
   }
