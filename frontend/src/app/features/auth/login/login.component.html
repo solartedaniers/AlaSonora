@@ -1,7 +1,7 @@
-<div class="min-h-screen w-full flex flex-col items-center bg-surface px-4 py-10 relative overflow-hidden">
+<div class="min-h-dvh w-full flex flex-col items-center bg-surface px-4 py-3 sm:py-5 relative overflow-hidden">
   <app-soft-aurora />
 
-  <div class="w-full max-w-md flex items-center justify-between mb-6 z-10">
+  <div class="w-full max-w-md flex items-center justify-between mb-3 z-10">
     <a routerLink="/" class="flex items-center gap-2 text-on-surface">
       <span class="material-symbols-outlined text-primary">graphic_eq</span>
       <span class="font-display font-bold">AlaSonora</span>
@@ -13,13 +13,13 @@
   </div>
 
   <div class="w-full max-w-md flex-1 flex items-center z-10">
-  <div appBorderGlow class="glass-card w-full rounded-2xl shadow-xl p-6 sm:p-8 relative overflow-hidden">
+  <div appBorderGlow class="glass-card w-full rounded-2xl shadow-xl p-5 sm:p-7 relative overflow-hidden">
     <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary-container via-primary to-secondary"></div>
 
-    <h1 class="font-display text-2xl sm:text-3xl font-bold tracking-tight text-center hero-title-3d mb-2">
+    <h1 class="font-display text-2xl sm:text-3xl font-bold tracking-tight text-center hero-title-3d mb-1">
       <span class="gradient-3d-text">{{ 'auth.login.title' | translate }}</span>
     </h1>
-    <p class="text-sm text-on-surface-variant text-center mb-6">{{ 'auth.login.subtitle' | translate }}</p>
+    <p class="text-sm text-on-surface-variant text-center mb-4">{{ 'auth.login.subtitle' | translate }}</p>
 
     @if (submitError(); as error) {
       <div class="mb-4 bg-error-container/40 rounded-lg p-3 flex items-start gap-2">
@@ -36,7 +36,7 @@
       </div>
     }
 
-    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-3">
       <div class="flex flex-col gap-1.5">
         <label for="email" class="text-sm font-semibold text-on-surface">{{ 'auth.login.email' | translate }}</label>
         <div class="relative flex items-center">
@@ -46,7 +46,7 @@
             type="email"
             formControlName="email"
             [placeholder]="'auth.login.emailPlaceholder' | translate"
-            class="w-full h-12 pl-12 pr-4 bg-surface-container-lowest text-on-surface placeholder:text-outline rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
+            class="w-full h-11 pl-12 pr-4 bg-surface-container-lowest text-on-surface placeholder:text-outline rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
           />
         </div>
       </div>
@@ -60,7 +60,7 @@
             [type]="showPassword() ? 'text' : 'password'"
             formControlName="password"
             placeholder="••••••••••••"
-            class="w-full h-12 pl-12 pr-12 bg-surface-container-lowest text-on-surface placeholder:text-outline rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
+            class="w-full h-11 pl-12 pr-12 bg-surface-container-lowest text-on-surface placeholder:text-outline rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
           />
           <button
             type="button"
@@ -74,7 +74,7 @@
         <a routerLink="/forgot-password" class="self-end text-xs text-primary hover:underline">{{ 'auth.login.forgotPassword' | translate }}</a>
       </div>
 
-      <label class="flex items-center gap-2 cursor-pointer select-none pt-1">
+      <label class="flex items-center gap-2 cursor-pointer select-none">
         <input type="checkbox" formControlName="remember" class="w-4 h-4 accent-primary rounded" />
         <span class="text-sm text-on-surface-variant flex items-center gap-1.5">
           <span class="material-symbols-outlined text-sm text-primary">cloud_sync</span>
@@ -85,14 +85,14 @@
       <button
         type="submit"
         [disabled]="submitting()"
-        class="bio-glow-btn mt-2 w-full h-12 rounded-lg bg-primary text-on-primary font-display font-semibold flex items-center justify-center gap-2 active:scale-[0.99] transition-all disabled:opacity-60"
+        class="bio-glow-btn mt-1 w-full h-11 rounded-lg bg-primary text-on-primary font-display font-semibold flex items-center justify-center gap-2 active:scale-[0.99] transition-all disabled:opacity-60"
       >
         <span class="material-symbols-outlined text-xl">login</span>
         <span>{{ 'auth.login.submit' | translate }}</span>
       </button>
     </form>
 
-    <div class="mt-6 pt-4 text-center border-t border-outline-variant/30">
+    <div class="mt-4 pt-3 text-center border-t border-outline-variant/30">
       <p class="text-sm text-on-surface-variant">
         {{ 'auth.login.noAccount' | translate }}
         <a routerLink="/register" class="font-semibold text-primary hover:underline ml-1">
@@ -103,7 +103,7 @@
   </div>
   </div>
 
-  <footer class="w-full max-w-md py-8 text-center z-10">
-    <span class="text-sm text-on-surface-variant">© 2026 AlaSonora — {{ 'footer.rights' | translate }}</span>
+  <footer class="w-full max-w-md pt-3 text-center text-xs sm:text-sm z-10">
+    <span class="text-on-surface-variant">© 2026 AlaSonora — {{ 'footer.rights' | translate }}</span>
   </footer>
 </div>
