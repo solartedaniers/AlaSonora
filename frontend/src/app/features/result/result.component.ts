@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
@@ -15,7 +15,7 @@ import { Detection, Visibility } from '../../core/models';
 @Component({
   selector: 'app-result',
   standalone: true,
-  imports: [RouterLink, DecimalPipe, NavHeaderComponent, ConfidenceBadgeComponent, TranslatePipe, SpeciesNamePipe, VocalizationTagPipe],
+  imports: [RouterLink, DatePipe, DecimalPipe, NavHeaderComponent, ConfidenceBadgeComponent, TranslatePipe, SpeciesNamePipe, VocalizationTagPipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './result.component.html',
 })

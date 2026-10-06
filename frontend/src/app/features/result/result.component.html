@@ -63,7 +63,7 @@
             <h1 class="font-display text-3xl font-bold tracking-tight">{{ d.species | speciesName }}</h1>
             <p class="text-lg text-primary italic">{{ d.species.scientificName }}</p>
           </div>
-          <div class="grid grid-cols-3 gap-2 pt-2">
+          <div class="grid grid-cols-2 gap-2 pt-2">
             <div class="bg-surface-container-high p-2.5 rounded-md">
               <span class="block text-[10px] uppercase text-on-surface-variant">{{ 'result.peakFrequency' | translate }}</span>
               <span class="block font-display font-bold text-primary">{{ d.peakFrequencyHz | number }} Hz</span>
@@ -71,10 +71,6 @@
             <div class="bg-surface-container-high p-2.5 rounded-md">
               <span class="block text-[10px] uppercase text-on-surface-variant">{{ 'result.duration' | translate }}</span>
               <span class="block font-display font-bold">{{ d.durationSeconds }}s</span>
-            </div>
-            <div class="bg-surface-container-high p-2.5 rounded-md">
-              <span class="block text-[10px] uppercase text-on-surface-variant">{{ 'result.snr' | translate }}</span>
-              <span class="block font-display font-bold text-secondary">+24.6 dB</span>
             </div>
           </div>
         </div>
@@ -155,7 +151,7 @@
           >
             <span class="material-symbols-outlined text-2xl">{{ isPlaying() ? 'pause' : 'play_arrow' }}</span>
           </button>
-          <span class="text-sm text-on-surface-variant font-mono">00:00 / 00:{{ d.durationSeconds < 10 ? '0' + d.durationSeconds : d.durationSeconds }}</span>
+          <span class="text-sm text-on-surface-variant font-mono">{{ d.durationSeconds * 1000 | date: 'mm:ss' : 'UTC' }}</span>
         </div>
       </div>
 
