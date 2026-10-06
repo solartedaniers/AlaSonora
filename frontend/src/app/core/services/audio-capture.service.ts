@@ -14,23 +14,26 @@ export interface SpectrogramFrame {
  *
  * EVENT LOOP — TASKS vs MICROTASKS:
  * -----------------------------------------------------------------------
- * - `AudioContext` entrega los buffers de audio a través de un
- *   `AudioWorkletNode`/`ScriptProcessorNode`, cuyo callback se dispara
- *   como una TASK del event loop (evento del dispositivo de audio).
- * - Dentro de ese callback NO llamamos código async pesado directamente:
- *   solo copiamos el buffer y lo enviamos al worker vía `postMessage`
- *   (llamada síncrona, no bloqueante). La promesa que resuelve la
- *   respuesta del worker (`waitForFrame`) se resuelve como MICROTASK
- *   cuando llega el mensaje — las microtasks se procesan antes de que el
- *   navegador pinte el siguiente frame o ejecute la siguiente task, así
- *   que encolar aquí (en vez de en una task nueva) evita introducir un
- *   frame de retraso extra en la actualización del signal `latestFrame`.
- * - La actualización VISUAL del espectrograma (dibujar en <canvas>) se
- *   agenda explícitamente como TASK mediante `requestAnimationFrame` en
- *   `SpectrogramCanvasComponent`, nunca aquí: así el trabajo de captura/
- *   procesamiento (microtasks) nunca compite por el mismo turno del loop
- *   que el trabajo de pintado (tasks), y la interfaz nunca se congela
- *   aunque lleguen frames de audio muy seguidos.
+ * - El `ScriptProcessorNode` entrega cada buffer de audio con un evento
+ *   `audioprocess`, que llega al hilo principal como una TASK.
+ * - Dentro de ese callback no se hace trabajo pesado: solo se copia el
+ *   buffer y se transfiere al worker con `postMessage` (encolar el mensaje
+ *   es síncrono y no bloquea; la FFT corre en el hilo del worker).
+ * - La respuesta del worker llega como evento `message`, que también es una
+ *   TASK (no una microtask). Su handler (`onWorkerMessage`) solo actualiza
+ *   el signal `latestFrame`: barato, sin tocar el DOM ni el canvas.
+ * - Las MICROTASKS aparecen al cerrar la grabación: `stop()` envuelve el
+ *   mensaje `recording-encoded` en una Promise; su `resolve()` ocurre dentro
+ *   de esa task de mensaje, y la continuación del `await` en quien llamó
+ *   (RecordingComponent) corre como microtask justo al terminar esa task,
+ *   antes de la siguiente task o del siguiente pintado.
+ * - El PINTADO del espectrograma va en `requestAnimationFrame` dentro de
+ *   `SpectrogramViewComponent`, nunca aquí: los callbacks de rAF no son
+ *   tasks, se ejecutan en el paso de renderizado del event loop (una vez
+ *   por frame de pantalla, después de las tasks y microtasks pendientes).
+ *   Así recibir datos (tasks de alta frecuencia) queda desacoplado de
+ *   pintar (máx. una vez por frame), y la interfaz no se congela aunque
+ *   lleguen frames de audio muy seguidos.
  */
 @Injectable({ providedIn: 'root' })
 export class AudioCaptureService {
