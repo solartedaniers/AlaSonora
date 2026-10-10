@@ -14,13 +14,13 @@ const STORAGE_KEY = 'alasonora.theme';
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
   private readonly document = inject(DOCUMENT);
-  // En el servidor (SSR/prerender) no hay localStorage ni matchMedia: se
-  // renderiza con el tema por defecto y el script inline de index.html
-  // corrige la clase antes del primer pintado en el navegador.
+  // En el servidor (SSR/prerender) no hay localStorage ni matchMedia: el HTML
+  // sale sin clase de tema y el script inline de index.html resuelve la
+  // elección guardada (o «sistema») antes del primer pintado.
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   readonly mode = signal<ThemeMode>(this.readStoredMode());
-  readonly resolvedTheme = signal<'light' | 'dark'>('dark');
+  readonly resolvedTheme = signal<'light' | 'dark'>('light');
 
   private readonly mediaQuery = this.isBrowser ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
@@ -39,8 +39,9 @@ export class ThemeService {
   }
 
   private applyResolvedTheme(): void {
+    if (!this.isBrowser) return;
     const mode = this.mode();
-    const prefersDark = this.mediaQuery?.matches ?? true;
+    const prefersDark = this.mediaQuery?.matches ?? false;
     const resolved: 'light' | 'dark' = mode === 'system' ? (prefersDark ? 'dark' : 'light') : mode;
 
     this.resolvedTheme.set(resolved);
@@ -53,8 +54,8 @@ export class ThemeService {
   }
 
   private readStoredMode(): ThemeMode {
-    if (!this.isBrowser) return 'dark';
+    if (!this.isBrowser) return 'system';
     const stored = localStorage.getItem(STORAGE_KEY) as ThemeMode | null;
-    return stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'dark';
+    return stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
   }
 }

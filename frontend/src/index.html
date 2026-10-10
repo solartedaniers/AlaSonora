@@ -6,7 +6,9 @@
   <base href="/" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  <meta name="theme-color" content="#1b4332" />
+  <!-- Debe ser literal (el navegador no lee variables CSS aquí): replica --color-surface de tokens.scss. -->
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2f6f7" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#070d10" />
   <meta name="description" content="AlaSonora: identificación de aves por su canto mediante inteligencia artificial, con mapa público de avistamientos." />
   <meta name="robots" content="index, follow" />
   <meta property="og:type" content="website" />
@@ -16,12 +18,10 @@
   <meta property="og:locale" content="es_CO" />
   <meta name="twitter:card" content="summary" />
 
+  <link rel="preload" href="assets/fonts/atkinson-hyperlegible-latin-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/bricolage-grotesque-latin-var.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap"
-    rel="stylesheet"
-  />
   <link
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
     rel="stylesheet"
@@ -29,18 +29,18 @@
 
   <link rel="manifest" href="manifest.webmanifest" />
 </head>
-<body class="theme-dark">
+<body>
   <!--
     Las páginas prerenderizadas (SSG) y las de SSR salen del servidor con el
-    tema por defecto (oscuro), porque el servidor no puede leer localStorage.
+    tema claro de :root, porque el servidor no puede leer localStorage.
     Este script corre antes del primer pintado y aplica el tema guardado, así
-    un usuario con tema claro no ve un destello oscuro mientras hidrata.
+    un usuario con tema oscuro no ve un destello claro mientras hidrata.
     Mismo criterio que ThemeService (clave "alasonora.theme").
   -->
   <script>
     (function () {
       try {
-        var mode = localStorage.getItem('alasonora.theme') || 'dark';
+        var mode = localStorage.getItem('alasonora.theme') || 'system';
         var dark = mode === 'system' ? window.matchMedia('(prefers-color-scheme: dark)').matches : mode !== 'light';
         var theme = dark ? 'theme-dark' : 'theme-light';
         document.documentElement.classList.remove('theme-light', 'theme-dark');
