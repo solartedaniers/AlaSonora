@@ -54,8 +54,8 @@
 
         <div class="lg:col-span-8 flex flex-col gap-3">
           <div class="flex flex-wrap items-center gap-2">
-            <span class="px-2 py-1 rounded-md bg-surface-container-high text-primary font-mono text-xs">{{ d.species.family }}</span>
-            <span class="px-2 py-1 rounded-md bg-surface-container-high text-on-surface-variant font-mono text-xs">
+            <span class="px-2 py-1 rounded-md bg-surface-container-high text-primary font-data text-xs">{{ d.species.family }}</span>
+            <span class="px-2 py-1 rounded-md bg-surface-container-high text-on-surface-variant font-data text-xs">
               {{ ('iucn.' + d.species.iucnStatus.toLowerCase()) | translate }}
             </span>
           </div>
@@ -141,7 +141,7 @@
           >
             <span class="material-symbols-outlined text-2xl">{{ isPlaying() ? 'pause' : 'play_arrow' }}</span>
           </button>
-          <span class="text-sm text-on-surface-variant font-mono">{{ d.durationSeconds * 1000 | date: 'mm:ss' : 'UTC' }}</span>
+          <span class="text-sm text-on-surface-variant font-data">{{ d.durationSeconds * 1000 | date: 'mm:ss' : 'UTC' }}</span>
         </div>
       </div>
 
@@ -157,7 +157,7 @@
               <p class="text-sm font-semibold">{{ alt.species | speciesName }}</p>
               <p class="text-xs italic text-on-surface-variant">{{ alt.species.scientificName }}</p>
             </div>
-            <span class="font-mono text-xs text-on-surface-variant">{{ alt.confidence | number: '1.0-0' }}%</span>
+            <span class="font-data text-xs text-on-surface-variant">{{ alt.confidence | number: '1.0-0' }}%</span>
           </div>
         } @empty {
           <p class="text-sm text-on-surface-variant">—</p>
