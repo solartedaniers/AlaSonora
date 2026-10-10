@@ -1,0 +1,65 @@
+// Identidad: retrato con anillo azufre y el nombre como titular.
+.profile-identity {
+  display: grid;
+  gap: calc(var(--space-unit) * 8);
+  align-items: center;
+
+  @screen md {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+}
+
+.profile-avatar {
+  width: calc(var(--space-unit) * 36);
+  height: calc(var(--space-unit) * 36);
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background: var(--color-surface-container-high);
+  outline: calc(var(--space-unit) * 1.5) solid var(--color-sulfur);
+  outline-offset: calc(var(--space-unit) * 1.5);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.profile-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--space-unit) * 2) calc(var(--space-unit) * 6);
+  margin: 0;
+  color: var(--color-on-surface-variant);
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-unit) * 6);
+  padding-block: calc(var(--space-unit) * 8);
+  border-block: 1px solid var(--color-outline-variant);
+}
+
+// Cada ajuste es una fila: título a la izquierda, control a la derecha.
+.profile-setting {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--space-unit) * 4) calc(var(--space-unit) * 8);
+  padding-block: calc(var(--space-unit) * 6);
+  border-block-start: 1px solid var(--color-outline-variant);
+}
+
+.profile-logout {
+  background: var(--color-error-container);
+  color: var(--color-on-error-container);
+
+  &:hover {
+    background: var(--color-error);
+    color: var(--color-on-error);
+  }
+}

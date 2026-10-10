@@ -8,10 +8,11 @@ import { ProfileService } from '../../core/services/profile.service';
 import { ThemeService, ThemeMode } from '../../core/services/theme.service';
 import { I18nService, AppLang } from '../../core/services/i18n.service';
 import { LettersOnlyDirective } from '../../shared/directives/letters-only.directive';
-import { PointerGlowDirective } from '../../shared/directives/pointer-glow.directive';
-import { FieldBackdropComponent } from '../../shared/components/field-backdrop/field-backdrop.component';
 import { nameValidator } from '../../core/validators/name.validator';
 import { ObserverRole, Profile } from '../../core/models';
+
+// Tiempo que se muestra la confirmación de guardado.
+const SAVED_NOTICE_MS = 3200;
 
 @Component({
   selector: 'app-profile',
@@ -21,11 +22,10 @@ import { ObserverRole, Profile } from '../../core/models';
     TranslatePipe,
     ReactiveFormsModule,
     LettersOnlyDirective,
-    PointerGlowDirective,
-    FieldBackdropComponent,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './profile.component.html',
+  styleUrl: './profile.component.scss',
 })
 export class ProfileComponent implements OnInit {
   readonly user = inject(UserService);
@@ -42,6 +42,10 @@ export class ProfileComponent implements OnInit {
   readonly uploadingAvatar = signal(false);
   readonly avatarUrl = signal<string | undefined>(undefined);
   readonly avatarError = signal<string | null>(null);
+  /** Solo estado de vista: avisa si el perfil no cargó, para no editar sobre un formulario vacío. */
+  readonly loadFailed = signal(false);
+  /** Solo estado de vista: confirma un guardado exitoso. */
+  readonly justSaved = signal(false);
 
   readonly roles: ObserverRole[] = ['ornithologist', 'ranger', 'biologist', 'hobbyist', 'student'];
 
@@ -62,7 +66,12 @@ export class ProfileComponent implements OnInit {
   readonly langOptions: AppLang[] = ['es', 'en'];
 
   async ngOnInit(): Promise<void> {
-    this.applyProfile(await this.profileService.getMine());
+    try {
+      this.applyProfile(await this.profileService.getMine());
+    } catch (error) {
+      console.error('Profile load failed', error);
+      this.loadFailed.set(true);
+    }
   }
 
   startEditing(): void {
@@ -123,6 +132,8 @@ export class ProfileComponent implements OnInit {
         station_name: updated.stationName,
       });
       this.editing.set(false);
+      this.justSaved.set(true);
+      setTimeout(() => this.justSaved.set(false), SAVED_NOTICE_MS);
     } finally {
       this.saving.set(false);
     }

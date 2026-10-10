@@ -2,12 +2,11 @@ import { Component, OnInit, computed, inject, signal, ChangeDetectionStrategy } 
 import { DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
-import { FieldBackdropComponent } from '../../shared/components/field-backdrop/field-backdrop.component';
+import { LoadingStateComponent } from '../../shared/components/loading-state/loading-state.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
 import { LettersOnlyDirective } from '../../shared/directives/letters-only.directive';
-import { PointerGlowDirective } from '../../shared/directives/pointer-glow.directive';
 import { AdminUsersService } from '../../core/services/admin-users.service';
 import { DetectionsService } from '../../core/services/detections.service';
 import { nameValidator } from '../../core/validators/name.validator';
@@ -20,16 +19,17 @@ import { Detection, ObserverRole, Profile, SystemRole } from '../../core/models'
   imports: [
     DatePipe,
     NavHeaderComponent,
-    FieldBackdropComponent,
+    LoadingStateComponent,
     TranslatePipe,
     SpeciesNamePipe,
     ConfidenceBadgeComponent,
     ReactiveFormsModule,
     LettersOnlyDirective,
-    PointerGlowDirective,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './admin.component.html',
+  styleUrl: './admin.component.scss',
+  host: { '(document:keydown.escape)': 'closeDialogs()' },
 })
 export class AdminComponent implements OnInit {
   private readonly adminUsers = inject(AdminUsersService);
@@ -161,6 +161,13 @@ export class AdminComponent implements OnInit {
     } finally {
       this.historyLoading.set(false);
     }
+  }
+
+  /** Escape cierra cualquier diálogo abierto, como se espera de un modal. */
+  closeDialogs(): void {
+    this.closeCreateModal();
+    this.closeEditModal();
+    this.closeHistory();
   }
 
   closeHistory(): void {

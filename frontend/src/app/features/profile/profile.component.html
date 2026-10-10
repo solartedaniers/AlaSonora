@@ -1,249 +1,191 @@
-<div class="flex flex-col w-full min-h-screen bg-surface text-on-surface relative">
-  <app-field-backdrop />
+<div class="flex flex-col w-full min-h-dvh bg-surface text-on-surface">
   <app-nav-header />
 
-  <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-8">
-    <!-- Identity card -->
-    <div appBorderGlow class="glass-card rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
-      <div class="absolute -right-20 -top-20 w-80 h-80 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="relative flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-          <div class="relative shrink-0">
-            <div class="w-28 h-28 rounded-xl overflow-hidden shadow-2xl bg-surface-container-high flex items-center justify-center">
-              @if (avatarUrl(); as url) {
-                <img [src]="url" [alt]="user.currentUser()?.fullName ?? ''" class="w-full h-full object-cover" />
-              } @else {
-                <span class="material-symbols-outlined text-5xl text-primary">person</span>
-              }
-            </div>
-            <div class="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg">
-              <span class="material-symbols-outlined text-lg">verified</span>
-            </div>
-          </div>
-          <div class="space-y-2">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-container/30 text-on-primary-container font-data text-xs">
-              <span class="material-symbols-outlined text-xs">hub</span>
-              <span>{{ 'profile.observerTitle' | translate }}</span>
-            </div>
-            <h1 class="font-display text-2xl font-bold tracking-tight">{{ user.currentUser()?.fullName }}</h1>
-            <p class="text-sm text-on-surface-variant flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-sm text-primary">account_balance</span>
-              {{ user.currentUser()?.institution }}
-            </p>
-            @if (user.currentUser()?.orcidId; as orcidId) {
-              <span class="font-data text-xs bg-surface-container px-2 py-0.5 rounded text-on-surface-variant">
-                ORCID: {{ orcidId }}
-              </span>
-            }
-          </div>
-        </div>
+  <main class="w-full max-w-5xl mx-auto px-gutter py-10 flex flex-col gap-14">
+    @if (loadFailed()) {
+      <div role="alert" class="flex items-start gap-3 rounded-xl bg-error-container text-on-error-container px-5 py-4">
+        <span class="material-symbols-outlined shrink-0" aria-hidden="true">cloud_off</span>
+        <p>{{ 'profile.loadError' | translate }}</p>
+      </div>
+    }
 
-        <div class="flex sm:flex-col gap-3 self-stretch sm:self-center">
-          <button
-            type="button"
-            (click)="editing() ? cancelEditing() : startEditing()"
-            class="bio-glow-btn flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-on-primary font-display text-sm font-semibold"
-          >
-            <span class="material-symbols-outlined text-[18px]">edit_square</span>
+    @if (justSaved()) {
+      <div role="status" class="flex items-center gap-3 rounded-xl bg-success-container text-on-success-container px-5 py-4">
+        <span class="material-symbols-outlined shrink-0" aria-hidden="true">check_circle</span>
+        <p>{{ 'profile.savedConfirmation' | translate }}</p>
+      </div>
+    }
+
+    <!-- Identidad del observador -->
+    <section class="profile-identity" aria-labelledby="profile-name">
+      <div class="profile-avatar">
+        @if (avatarUrl(); as url) {
+          <img [src]="url" alt="" />
+        } @else {
+          <span class="material-symbols-outlined text-6xl text-primary" aria-hidden="true">person</span>
+        }
+      </div>
+      <div class="flex flex-col gap-2 min-w-0">
+        <p class="eyebrow-label">{{ 'profile.observerTitle' | translate }}</p>
+        <h1 id="profile-name" class="text-5xl font-extrabold tracking-display break-words">{{ user.currentUser()?.fullName }}</h1>
+        <dl class="profile-facts">
+          @if (user.currentUser()?.institution; as institution) {
+            <div>
+              <dt class="sr-only">{{ 'profile.institution' | translate }}</dt>
+              <dd class="m-0 inline-flex items-center gap-2">
+                <span class="material-symbols-outlined text-xl text-primary" aria-hidden="true">account_balance</span>{{ institution }}
+              </dd>
+            </div>
+          }
+          @if (user.currentUser()?.stationName; as station) {
+            <div>
+              <dt class="sr-only">{{ 'profile.stationName' | translate }}</dt>
+              <dd class="m-0 inline-flex items-center gap-2">
+                <span class="material-symbols-outlined text-xl text-primary" aria-hidden="true">location_on</span>{{ station }}
+              </dd>
+            </div>
+          }
+          @if (user.currentUser()?.orcidId; as orcidId) {
+            <div>
+              <dt class="inline font-data text-sm text-on-surface-variant">{{ 'profile.orcidId' | translate }}</dt>
+              <dd class="inline ms-2 font-data">{{ orcidId }}</dd>
+            </div>
+          }
+        </dl>
+        <div class="flex flex-wrap gap-3 pt-3">
+          <button type="button" class="btn btn--ink" [attr.aria-expanded]="editing()" (click)="editing() ? cancelEditing() : startEditing()">
+            <span class="material-symbols-outlined" aria-hidden="true">{{ editing() ? 'close' : 'edit' }}</span>
             {{ (editing() ? 'common.cancel' : 'profile.editProfile') | translate }}
           </button>
-          <button type="button" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-surface-container-high text-on-surface font-display text-sm font-semibold">
-            <span class="material-symbols-outlined text-[18px]">badge</span>
+          <button type="button" class="btn btn--quiet">
+            <span class="material-symbols-outlined" aria-hidden="true">badge</span>
             {{ 'profile.credential' | translate }}
           </button>
         </div>
       </div>
+    </section>
 
-      @if (editing()) {
-        <form [formGroup]="form" (ngSubmit)="save()" class="relative mt-8 pt-8 border-t border-outline/20 space-y-5">
-          <div class="flex items-center gap-4">
-            <label for="avatarInput" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-container-high text-on-surface font-display text-sm font-semibold cursor-pointer">
-              <span class="material-symbols-outlined text-[18px]">add_a_photo</span>
-              {{ 'profile.changeAvatar' | translate }}
-            </label>
-            <input id="avatarInput" type="file" accept="image/*" class="hidden" (change)="onAvatarSelected($event)" />
-            @if (uploadingAvatar()) {
-              <span class="text-sm text-on-surface-variant">{{ 'common.loading' | translate }}</span>
+    @if (editing()) {
+      <form [formGroup]="form" (ngSubmit)="save()" class="profile-form" [attr.aria-label]="'profile.editProfile' | translate">
+        <div class="flex flex-wrap items-center gap-4">
+          <label class="btn btn--quiet cursor-pointer">
+            <span class="material-symbols-outlined" aria-hidden="true">add_a_photo</span>
+            {{ (uploadingAvatar() ? 'common.uploading' : 'profile.changeAvatar') | translate }}
+            <input type="file" accept="image/*" class="sr-only" (change)="onAvatarSelected($event)" />
+          </label>
+          @if (avatarError()) {
+            <p class="field-error" role="alert">{{ avatarError() }}</p>
+          }
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div class="flex flex-col gap-2">
+            <label for="displayName" class="field-label">{{ 'auth.register.fullName' | translate }}</label>
+            <input
+              id="displayName"
+              type="text"
+              autocomplete="name"
+              formControlName="displayName"
+              appLettersOnly
+              class="field-input"
+              [attr.aria-invalid]="form.controls.displayName.invalid && form.controls.displayName.touched"
+            />
+            @if (form.controls.displayName.errors?.['pattern'] && form.controls.displayName.touched) {
+              <span class="field-error">{{ 'auth.register.fullNameError' | translate }}</span>
             }
           </div>
-          @if (avatarError()) {
-            <p class="text-sm text-error">{{ avatarError() }}</p>
-          }
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="flex flex-col gap-1.5">
-              <label for="displayName" class="text-sm font-semibold text-on-surface">{{ 'auth.register.fullName' | translate }}</label>
-              <input
-                id="displayName"
-                type="text"
-                formControlName="displayName"
-                appLettersOnly
-                class="w-full h-12 px-4 bg-surface-container-lowest text-on-surface rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
-              />
-              @if (form.controls.displayName.errors?.['pattern'] && form.controls.displayName.touched) {
-                <span class="text-xs text-error">{{ 'auth.register.fullNameError' | translate }}</span>
-              }
-            </div>
-
-            <div class="flex flex-col gap-1.5">
-              <label for="role" class="text-sm font-semibold text-on-surface">{{ 'auth.register.role' | translate }}</label>
-              <select
-                id="role"
-                formControlName="role"
-                class="w-full h-12 px-4 bg-surface-container-lowest text-on-surface rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow appearance-none cursor-pointer"
-              >
+          <div class="flex flex-col gap-2">
+            <label for="role" class="field-label">{{ 'auth.register.role' | translate }}</label>
+            <div class="relative">
+              <select id="role" formControlName="role" class="field-input pe-12 appearance-none cursor-pointer">
                 @for (r of roles; track r) {
                   <option [value]="r">{{ ('auth.roles.' + r) | translate }}</option>
                 }
               </select>
-            </div>
-
-            <div class="flex flex-col gap-1.5">
-              <label for="institution" class="text-sm font-semibold text-on-surface">{{ 'profile.institution' | translate }}</label>
-              <input
-                id="institution"
-                type="text"
-                formControlName="institution"
-                class="w-full h-12 px-4 bg-surface-container-lowest text-on-surface rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
-              />
-            </div>
-
-            <div class="flex flex-col gap-1.5">
-              <label for="orcidId" class="text-sm font-semibold text-on-surface">{{ 'profile.orcidId' | translate }}</label>
-              <input
-                id="orcidId"
-                type="text"
-                formControlName="orcidId"
-                class="w-full h-12 px-4 bg-surface-container-lowest text-on-surface rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
-              />
-            </div>
-
-            <div class="flex flex-col gap-1.5 sm:col-span-2">
-              <label for="stationName" class="text-sm font-semibold text-on-surface">{{ 'profile.stationName' | translate }}</label>
-              <input
-                id="stationName"
-                type="text"
-                formControlName="stationName"
-                class="w-full h-12 px-4 bg-surface-container-lowest text-on-surface rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
-              />
+              <span class="material-symbols-outlined pointer-events-none absolute inset-y-0 end-3 my-auto text-on-surface-variant" aria-hidden="true">expand_more</span>
             </div>
           </div>
+          <div class="flex flex-col gap-2">
+            <label for="institution" class="field-label">{{ 'profile.institution' | translate }}</label>
+            <input id="institution" type="text" formControlName="institution" class="field-input" />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label for="orcidId" class="field-label">{{ 'profile.orcidId' | translate }}</label>
+            <input id="orcidId" type="text" formControlName="orcidId" class="field-input font-data" />
+          </div>
+          <div class="flex flex-col gap-2 sm:col-span-2">
+            <label for="stationName" class="field-label">{{ 'profile.stationName' | translate }}</label>
+            <input id="stationName" type="text" formControlName="stationName" class="field-input" />
+          </div>
+        </div>
 
-          <div class="flex justify-end gap-3">
-            <button type="button" (click)="cancelEditing()" class="px-5 py-2.5 rounded-lg bg-surface-container-high text-on-surface font-display text-sm font-semibold">
-              {{ 'common.cancel' | translate }}
+        <div class="flex flex-wrap justify-end gap-3">
+          <button type="button" class="btn btn--quiet" (click)="cancelEditing()">{{ 'common.cancel' | translate }}</button>
+          <button type="submit" class="btn btn--ink" [disabled]="saving()">{{ (saving() ? 'common.loading' : 'common.save') | translate }}</button>
+        </div>
+      </form>
+    }
+
+    <!-- Ajustes: filas sobre filetes, no tarjetas -->
+    <section aria-labelledby="profile-settings" class="flex flex-col">
+      <p class="eyebrow-label">{{ 'profile.settingsEyebrow' | translate }}</p>
+      <h2 id="profile-settings" class="mt-2 mb-6 text-3xl font-extrabold tracking-display">{{ 'profile.systemSettings' | translate }}</h2>
+
+      <div class="profile-setting">
+        <h3 class="text-xl font-extrabold">{{ 'profile.appearance' | translate }}</h3>
+        <div class="segmented" role="group" [attr.aria-label]="'theme.switcherLabel' | translate">
+          @for (opt of themeOptions; track opt.mode) {
+            <button type="button" class="segmented__option" [attr.aria-pressed]="theme.mode() === opt.mode" (click)="theme.setMode(opt.mode)">
+              <span class="material-symbols-outlined" aria-hidden="true">{{ opt.icon }}</span>
+              {{ opt.labelKey | translate }}
             </button>
-            <button type="submit" [disabled]="saving()" class="bio-glow-btn px-5 py-2.5 rounded-lg bg-primary text-on-primary font-display text-sm font-semibold disabled:opacity-50">
-              {{ 'common.save' | translate }}
+          }
+        </div>
+      </div>
+
+      <div class="profile-setting">
+        <h3 class="text-xl font-extrabold">{{ 'profile.languageTaxonomy' | translate }}</h3>
+        <div class="segmented" role="group" [attr.aria-label]="'common.langSwitcherLabel' | translate">
+          @for (lang of langOptions; track lang) {
+            <button type="button" class="segmented__option" [attr.aria-pressed]="i18n.lang() === lang" (click)="i18n.setLang(lang)">
+              {{ ('common.languages.' + lang) | translate }}
             </button>
-          </div>
-        </form>
-      }
-    </div>
-
-    <!-- Settings -->
-    <div class="space-y-6">
-      <div class="flex flex-col gap-1">
-        <span class="eyebrow-label">{{ 'profile.settingsEyebrow' | translate }}</span>
-        <h2 class="font-display text-lg font-semibold">{{ 'profile.systemSettings' | translate }}</h2>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Theme -->
-        <div class="feature-card glass-card rounded-xl p-6 shadow-sm space-y-4">
-          <h3 class="font-display font-semibold flex items-center gap-3">
-            <span class="icon-wrapper icon-wrapper--sm"><span class="material-symbols-outlined text-[20px]">palette</span></span>
-            {{ 'profile.appearance' | translate }}
-          </h3>
-          <div class="grid grid-cols-3 gap-2.5 p-1.5 bg-surface-container rounded-lg">
-            @for (opt of themeOptions; track opt.mode) {
-              <button
-                type="button"
-                (click)="theme.setMode(opt.mode)"
-                class="flex flex-col items-center justify-center gap-1.5 py-3 px-2 rounded-lg transition-all"
-                [class.bg-surface-container-highest]="theme.mode() === opt.mode"
-                [class.text-primary]="theme.mode() === opt.mode"
-                [class.text-on-surface-variant]="theme.mode() !== opt.mode"
-              >
-                <span class="material-symbols-outlined text-xl">{{ opt.icon }}</span>
-                <span class="text-xs font-display font-semibold">{{ opt.labelKey | translate }}</span>
-              </button>
-            }
-          </div>
-        </div>
-
-        <!-- Language -->
-        <div class="feature-card glass-card rounded-xl p-6 shadow-sm space-y-4">
-          <h3 class="font-display font-semibold flex items-center gap-3">
-            <span class="icon-wrapper icon-wrapper--sm"><span class="material-symbols-outlined text-[20px]">translate</span></span>
-            {{ 'profile.languageTaxonomy' | translate }}
-          </h3>
-          <div class="grid grid-cols-2 gap-3">
-            @for (lang of langOptions; track lang) {
-              <button
-                type="button"
-                (click)="i18n.setLang(lang)"
-                class="p-4 rounded-xl text-left transition-all"
-                [class.bg-primary-container]="i18n.lang() === lang"
-                [class.text-on-primary-container]="i18n.lang() === lang"
-                [class.bg-surface-container]="i18n.lang() !== lang"
-              >
-                <span class="font-display text-sm font-semibold block">{{ lang === 'es' ? 'Español' : 'English' }}</span>
-              </button>
-            }
-          </div>
-        </div>
-
-        <!-- Mic gain -->
-        <div class="feature-card glass-card rounded-xl p-6 shadow-sm space-y-4 lg:col-span-2">
-          <h3 class="font-display font-semibold flex items-center gap-3">
-            <span class="icon-wrapper icon-wrapper--sm"><span class="material-symbols-outlined text-[20px]">settings_input_antenna</span></span>
-            {{ 'profile.micHardware' | translate }}
-          </h3>
-          <div class="bg-surface-container p-4 rounded-xl space-y-2">
-            <div class="flex justify-between items-center">
-              <span class="text-xs text-on-surface-variant uppercase tracking-wider inline-flex items-center gap-1">
-                {{ 'recording.gain' | translate }}
-                <span
-                  class="material-symbols-outlined text-[14px] cursor-help"
-                  [title]="'recording.gainHelp' | translate"
-                  [attr.aria-label]="'recording.gainHelp' | translate"
-                  role="img"
-                  >help</span
-                >
-              </span>
-              <span class="font-data text-primary font-bold">+{{ gainDb() }} dB</span>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max="36"
-              [value]="gainDb()"
-              (input)="gainDb.set($any($event.target).valueAsNumber)"
-              class="w-full accent-primary"
-            />
-          </div>
+          }
         </div>
       </div>
-    </div>
 
-    <!-- Logout -->
-    <div class="glass-card rounded-xl p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
-      <div>
-        <h4 class="font-display font-semibold flex items-center gap-2">
-          <span class="material-symbols-outlined text-on-surface-variant text-[20px]">security</span>
-          {{ 'profile.activeSession' | translate }}
-        </h4>
-        <p class="text-sm text-on-surface-variant mt-1">{{ 'profile.logoutConfirm' | translate }}</p>
+      <div class="profile-setting">
+        <div>
+          <h3 class="text-xl font-extrabold">{{ 'profile.micHardware' | translate }}</h3>
+          <p class="mt-1 text-sm text-on-surface-variant">{{ 'recording.gainHelp' | translate }}</p>
+        </div>
+        <div class="flex flex-col gap-2 w-full sm:w-72">
+          <div class="flex items-baseline justify-between">
+            <label for="profile-gain" class="field-label">{{ 'recording.gain' | translate }}</label>
+            <span class="font-data font-semibold text-primary">+{{ gainDb() }} {{ 'units.decibels' | translate }}</span>
+          </div>
+          <input
+            id="profile-gain"
+            type="range"
+            min="0"
+            max="36"
+            class="w-full min-h-touch accent-primary"
+            [value]="gainDb()"
+            (input)="gainDb.set($any($event.target).valueAsNumber)"
+          />
+        </div>
       </div>
-      <button
-        type="button"
-        (click)="logout()"
-        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-error-container text-on-error-container hover:bg-error hover:text-on-error font-display text-sm font-semibold transition-all"
-      >
-        <span class="material-symbols-outlined text-[18px]">logout</span>
-        {{ 'profile.logout' | translate }}
-      </button>
-    </div>
-  </div>
+
+      <div class="profile-setting">
+        <div>
+          <h3 class="text-xl font-extrabold">{{ 'profile.activeSession' | translate }}</h3>
+          <p class="mt-1 text-sm text-on-surface-variant">{{ 'profile.logoutConfirm' | translate }}</p>
+        </div>
+        <button type="button" class="btn profile-logout" (click)="logout()">
+          <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+          {{ 'profile.logout' | translate }}
+        </button>
+      </div>
+    </section>
+  </main>
 </div>

@@ -1,97 +1,103 @@
-<div class="flex flex-col w-full min-h-dvh bg-surface text-on-surface relative">
-  <app-field-backdrop />
+<div class="flex flex-col w-full min-h-dvh bg-surface text-on-surface">
   <app-nav-header />
 
-  <!-- Filter bar -->
-  <section class="relative z-10 w-full glass-card px-4 md:px-8 py-3 shadow-sm">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:flex-wrap md:items-center gap-3">
-      <div class="relative flex-1 flex items-center">
-        <span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none">search</span>
-        <input
-          type="text"
-          [placeholder]="'map.searchPlaceholder' | translate"
-          class="w-full pl-11 pr-4 py-2 bg-surface-container-lowest rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
-        />
-      </div>
-      <button type="button" class="px-3.5 py-2 rounded-lg bg-surface-container-high text-on-surface font-display text-sm flex items-center gap-1.5">
-        <span class="material-symbols-outlined text-[18px] text-primary">filter_alt</span>
+  <!-- Barra de herramientas: el buscador ocupa su propia fila hasta que hay espacio -->
+  <section class="map-toolbar" [attr.aria-label]="'common.filter' | translate">
+    <label class="map-toolbar__search">
+      <span class="sr-only">{{ 'common.search' | translate }}</span>
+      <span class="material-symbols-outlined absolute inset-y-0 start-4 my-auto text-on-surface-variant pointer-events-none" aria-hidden="true">search</span>
+      <input type="search" class="field-input ps-12" [placeholder]="'map.searchPlaceholder' | translate" />
+    </label>
+    <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
+      <button type="button" class="btn btn--quiet min-h-touch px-4">
+        <span class="material-symbols-outlined text-xl" aria-hidden="true">filter_alt</span>
         {{ 'map.filterFamily' | translate }}
       </button>
-      <label class="flex items-center gap-2 text-xs text-on-surface-variant cursor-pointer select-none">
-        <input type="checkbox" [checked]="threatenedOnly()" (change)="threatenedOnly.set($any($event.target).checked)" class="accent-secondary" />
+      <label class="inline-flex items-center gap-2 min-h-touch cursor-pointer select-none">
+        <input type="checkbox" class="w-5 h-5 accent-primary" [checked]="threatenedOnly()" (change)="threatenedOnly.set($any($event.target).checked)" />
         {{ 'map.threatenedOnly' | translate }}
       </label>
-      <label class="flex items-center gap-2 text-xs text-on-surface-variant cursor-pointer select-none">
-        <input type="checkbox" [checked]="heatmapLayer()" (change)="heatmapLayer.set($any($event.target).checked)" class="accent-primary" />
+      <label class="inline-flex items-center gap-2 min-h-touch cursor-pointer select-none">
+        <input type="checkbox" class="w-5 h-5 accent-primary" [checked]="heatmapLayer()" (change)="heatmapLayer.set($any($event.target).checked)" />
         {{ 'map.heatmapLayer' | translate }}
       </label>
       @if (liveSync.activeTabCount() > 1) {
-        <span class="text-xs font-data text-primary flex items-center gap-1">
-          <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+        <span class="inline-flex items-center gap-2 font-data text-sm text-primary" role="status">
+          <span class="w-2 h-2 rounded-full bg-record" aria-hidden="true"></span>
           {{ liveSync.activeTabCount() }} {{ 'map.syncedTabs' | translate }}
         </span>
       }
     </div>
   </section>
 
-  <!-- Map canvas + feed -->
-  <section class="relative z-10 w-full flex-1 min-h-80 bg-surface-container-lowest overflow-hidden">
-    <div #mapContainer class="absolute inset-0 z-0"></div>
+  <main class="map-stage">
+    <div class="map-canvas">
+      <div #mapContainer class="absolute inset-0 z-0" [attr.aria-label]="'map.mapLabel' | translate" role="region"></div>
 
-    <!-- Selected detection popup -->
-    @if (selected(); as d) {
-      <div class="absolute top-4 left-4 sm:left-auto sm:right-4 z-30 w-[92%] sm:w-96 rounded-2xl bg-surface-container-high/95 backdrop-blur-xl p-5 shadow-2xl">
-        <div class="flex items-center gap-2 mb-3">
+      <!-- Etiqueta del avistamiento seleccionado: un rótulo de espécimen, no una tarjeta -->
+      @if (selected(); as d) {
+        <aside class="map-label" aria-live="polite">
           <app-confidence-badge [value]="d.confidence" />
-        </div>
-        <h3 class="font-display text-lg font-semibold">{{ d.species | speciesName }}</h3>
-        <p class="text-sm italic text-primary">{{ d.species.scientificName }}</p>
-        <div class="mt-3 flex items-center gap-2 py-2 px-3 bg-surface-container-lowest/80 rounded-xl text-xs text-on-surface-variant">
-          <span class="material-symbols-outlined text-[16px] text-primary">location_on</span>
-          <span class="truncate">{{ d.location.placeName }}</span>
-        </div>
-      </div>
-    }
-
-    <!-- Live feed dock -->
-    <aside class="hidden xl:flex flex-col absolute top-4 bottom-4 right-4 w-80 bg-surface-container-low/95 backdrop-blur-xl rounded-2xl shadow-2xl p-4 z-20 overflow-hidden">
-      <div class="flex flex-col gap-1 pb-3">
-        <span class="eyebrow-label">{{ 'map.eyebrow' | translate }}</span>
-        <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
-          <h4 class="font-display font-semibold">{{ 'map.liveFeed' | translate }}</h4>
-        </div>
-      </div>
-      @if (feed().length === 0) {
-        <div class="empty-state-banner glass-card rounded-xl flex-1 flex flex-col items-center justify-center gap-2 text-center p-4">
-          <span class="icon-wrapper icon-wrapper--sm"><span class="material-symbols-outlined text-[18px]">sensors_off</span></span>
-          <h5 class="font-display text-sm font-semibold">{{ 'map.emptyFeedTitle' | translate }}</h5>
-          <p class="text-xs text-on-surface-variant">{{ 'map.emptyFeedBody' | translate }}</p>
-        </div>
+          <p class="mt-3 font-display text-2xl font-extrabold leading-tight">{{ d.species | speciesName }}</p>
+          <p class="italic text-on-surface-variant">{{ d.species.scientificName }}</p>
+          <p class="mt-3 font-data text-sm text-on-surface-variant">
+            {{ d.recordedAt | date: 'medium' }}
+            @if (d.location.placeName) {
+              · {{ d.location.placeName }}
+            }
+          </p>
+        </aside>
       }
-      <div class="flex-1 overflow-y-auto space-y-2 pr-1">
-        @for (d of feed(); track d.id) {
-          <button
-            type="button"
-            (click)="select(d)"
-            class="feature-card w-full text-left p-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high shadow-sm"
-          >
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs text-on-surface-variant">{{ d.recordedAt | date: 'shortTime' }}</span>
-              <span class="text-xs text-on-surface-variant">{{ d.confidence | number: '1.0-0' }}% {{ 'map.aiSuffix' | translate }}</span>
-            </div>
-            <div class="font-display text-sm truncate">{{ d.species | speciesName }}</div>
-            <div class="text-[11px] text-on-surface-variant truncate">{{ d.observerName }}</div>
-          </button>
-        }
+    </div>
+
+    <!-- Feed en vivo: sobre el mapa en pantallas anchas, debajo en el resto -->
+    <aside class="map-feed" aria-labelledby="map-feed-title">
+      <div class="flex items-center gap-3">
+        <span class="map-feed__live" aria-hidden="true"></span>
+        <h2 id="map-feed-title" class="text-xl font-extrabold">{{ 'map.liveFeed' | translate }}</h2>
       </div>
-      <button
-        type="button"
-        class="bio-glow-btn mt-3 w-full py-3 rounded-xl bg-primary text-on-primary font-display font-semibold flex items-center justify-center gap-2"
-      >
-        <span class="material-symbols-outlined text-[20px]">mic</span>
+
+      @switch (loadState()) {
+        @case ('loading') {
+          <app-loading-state />
+        }
+        @case ('error') {
+          <div class="py-8 flex flex-col items-center gap-3 text-center" role="alert">
+            <span class="material-symbols-outlined text-5xl text-error" aria-hidden="true">cloud_off</span>
+            <p class="font-display font-bold">{{ 'map.errorTitle' | translate }}</p>
+            <p class="text-sm text-on-surface-variant">{{ 'map.errorBody' | translate }}</p>
+          </div>
+        }
+        @case ('ready') {
+          @if (feed().length === 0) {
+            <div class="py-8 flex flex-col items-center gap-3 text-center">
+              <span class="material-symbols-outlined text-5xl text-on-surface-variant" aria-hidden="true">sensors_off</span>
+              <p class="font-display font-bold">{{ 'map.emptyFeedTitle' | translate }}</p>
+              <p class="text-sm text-on-surface-variant">{{ 'map.emptyFeedBody' | translate }}</p>
+            </div>
+          } @else {
+            <ol class="map-feed__list">
+              @for (d of feed(); track d.id) {
+                <li>
+                  <button type="button" class="map-feed__item" data-glow [attr.aria-pressed]="selected()?.id === d.id" (click)="select(d)">
+                    <span class="font-data text-xs text-on-surface-variant">{{ d.recordedAt | date: 'shortTime' }}</span>
+                    <span class="min-w-0">
+                      <span class="block font-display font-bold truncate">{{ d.species | speciesName }}</span>
+                      <span class="block text-sm text-on-surface-variant truncate">{{ d.observerName }}</span>
+                    </span>
+                    <span class="font-data text-sm font-semibold">{{ d.confidence | number: '1.0-0' }}{{ 'units.percent' | translate }}</span>
+                  </button>
+                </li>
+              }
+            </ol>
+          }
+        }
+      }
+
+      <a routerLink="/record" class="btn btn--ink w-full">
+        <span class="material-symbols-outlined" aria-hidden="true">mic</span>
         {{ 'map.contribute' | translate }}
-      </button>
+      </a>
     </aside>
-  </section>
+  </main>
 </div>

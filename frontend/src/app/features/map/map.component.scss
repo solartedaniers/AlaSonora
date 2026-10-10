@@ -1,0 +1,137 @@
+// Barra: el buscador tiene su propia fila hasta que hay espacio para todo (arregla el corte en 768 px).
+.map-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--space-unit) * 3) calc(var(--space-unit) * 6);
+  padding: calc(var(--space-unit) * 4) var(--space-gutter);
+  border-block-end: 1px solid var(--color-outline-variant);
+  background: var(--color-surface-container-lowest);
+}
+
+.map-toolbar__search {
+  position: relative;
+  flex: 1 1 100%;
+
+  @screen xl {
+    flex: 1 1 20rem;
+  }
+}
+
+// Mapa + feed: en pantallas anchas el feed flota a la derecha; en el resto va debajo.
+.map-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  @screen xl {
+    position: relative;
+  }
+}
+
+.map-canvas {
+  position: relative;
+  height: 60dvh;
+  min-height: calc(var(--space-unit) * 80);
+  background: var(--color-surface-container);
+
+  @screen xl {
+    flex: 1;
+    height: auto;
+  }
+}
+
+.map-label {
+  position: absolute;
+  z-index: 30;
+  inset-inline: var(--space-gutter);
+  // En móvil va al pie del mapa para no tapar los controles de zoom.
+  bottom: calc(var(--space-unit) * 4);
+  max-width: 24rem;
+  padding: calc(var(--space-unit) * 5);
+  border-inline-start: calc(var(--space-unit) * 1.5) solid var(--color-sulfur);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-container-lowest);
+  box-shadow: var(--shadow-xl);
+
+  @screen sm {
+    inset-inline-start: auto;
+    top: calc(var(--space-unit) * 4);
+    bottom: auto;
+  }
+
+  @screen xl {
+    inset-inline-end: calc(var(--space-unit) * 96);
+  }
+}
+
+.map-feed {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-unit) * 4);
+  padding: calc(var(--space-unit) * 6) var(--space-gutter);
+  background: var(--color-surface);
+
+  @screen xl {
+    position: absolute;
+    z-index: 20;
+    inset-block: calc(var(--space-unit) * 4);
+    inset-inline-end: calc(var(--space-unit) * 4);
+    width: calc(var(--space-unit) * 88);
+    padding: calc(var(--space-unit) * 5);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-outline-variant);
+    box-shadow: var(--shadow-xl);
+  }
+}
+
+// Indicador "en vivo": rojo bromelia, el único uso fuera de grabar.
+.map-feed__live {
+  width: calc(var(--space-unit) * 2.5);
+  height: calc(var(--space-unit) * 2.5);
+  border-radius: var(--radius-full);
+  background: var(--color-record);
+  animation: map-live 2s var(--ease-in-out) infinite;
+}
+
+@keyframes map-live {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.map-feed__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  border-block-start: 1px solid var(--color-outline-variant);
+
+  @screen xl {
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+.map-feed__item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: calc(var(--space-unit) * 12) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: calc(var(--space-unit) * 3);
+  min-height: var(--touch-target);
+  padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 2);
+  text-align: start;
+  border-block-end: 1px solid var(--color-outline-variant);
+  border-inline-start: 4px solid transparent;
+  transition: background-color var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    background: var(--color-surface-container-low);
+  }
+
+  &[aria-pressed='true'] {
+    border-inline-start-color: var(--color-sulfur);
+    background: var(--color-surface-container-low);
+  }
+}

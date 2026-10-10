@@ -1,10 +1,11 @@
 import { Component, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { LoadingStateComponent } from '../../shared/components/loading-state/loading-state.component';
+import { CountUpComponent } from '../../shared/components/count-up/count-up.component';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
-import { OfflineBannerComponent } from '../../shared/components/offline-banner/offline-banner.component';
-import { FieldBackdropComponent } from '../../shared/components/field-backdrop/field-backdrop.component';
+import { SonogramGlyphComponent } from '../../shared/components/sonogram-glyph/sonogram-glyph.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
 import { DetectionsService } from '../../core/services/detections.service';
@@ -12,22 +13,23 @@ import { Detection, SyncStatus } from '../../core/models';
 
 type HistoryView = 'gallery' | 'list';
 type StatusFilter = 'all' | SyncStatus;
+type HistoryLoadState = 'loading' | 'ready' | 'error';
 
 @Component({
   selector: 'app-history',
   standalone: true,
-  imports: [
+  imports: [CountUpComponent, LoadingStateComponent, 
     RouterLink,
     DatePipe,
     NavHeaderComponent,
     ConfidenceBadgeComponent,
-    OfflineBannerComponent,
-    FieldBackdropComponent,
+    SonogramGlyphComponent,
     TranslatePipe,
     SpeciesNamePipe,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './history.component.html',
+  styleUrl: './history.component.scss',
 })
 export class HistoryComponent implements OnInit {
   private readonly detectionsService = inject(DetectionsService);
@@ -36,6 +38,18 @@ export class HistoryComponent implements OnInit {
   readonly view = signal<HistoryView>('gallery');
   readonly statusFilter = signal<StatusFilter>('all');
   readonly searchTerm = signal('');
+  /** Solo estado de vista: distingue "cargando" y "error de red" de un historial realmente vacío. */
+  readonly loadState = signal<HistoryLoadState>('loading');
+
+  readonly views: { id: HistoryView; icon: string; labelKey: string }[] = [
+    { id: 'gallery', icon: 'grid_view', labelKey: 'history.viewGallery' },
+    { id: 'list', icon: 'format_list_bulleted', labelKey: 'history.viewList' },
+  ];
+  readonly statusFilters: { id: StatusFilter; labelKey: string }[] = [
+    { id: 'all', labelKey: 'history.statusAll' },
+    { id: 'synced', labelKey: 'history.statusValidated' },
+    { id: 'pending-sync', labelKey: 'history.statusPending' },
+  ];
 
   readonly stats = computed(() => {
     const all = this.all();
@@ -63,7 +77,13 @@ export class HistoryComponent implements OnInit {
   });
 
   async ngOnInit(): Promise<void> {
-    this.all.set(await this.detectionsService.getMine());
+    try {
+      this.all.set(await this.detectionsService.getMine());
+      this.loadState.set('ready');
+    } catch (error) {
+      console.error('History load failed', error);
+      this.loadState.set('error');
+    }
   }
 
   setView(view: HistoryView): void {
