@@ -83,7 +83,7 @@
       "totalDetections": "Public detections",
       "species": "Cataloged species",
       "observers": "Observers in the field",
-      "accuracy": "Validated accuracy"
+      "accuracy": "Average AI confidence"
     },
     "how": {
       "eyebrow": "Identification Process",

@@ -83,7 +83,7 @@
       "totalDetections": "Detecciones públicas",
       "species": "Especies catalogadas",
       "observers": "Observadores en campo",
-      "accuracy": "Precisión validada"
+      "accuracy": "Confianza promedio de la IA"
     },
     "how": {
       "eyebrow": "Proceso de Identificación",
