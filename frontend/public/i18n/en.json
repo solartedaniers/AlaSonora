@@ -46,7 +46,13 @@
     "high": "High",
     "medium": "Medium",
     "low": "Low",
-    "langSwitcherLabel": "Language switcher"
+    "langSwitcherLabel": "Language switcher",
+    "confidenceTier": {
+      "high": "High confidence",
+      "medium": "Medium confidence",
+      "low": "Low confidence"
+    },
+    "noValue": "—"
   },
   "iucn": {
     "lc": "Least Concern",
@@ -216,10 +222,10 @@
     }
   },
   "dashboard": {
-    "welcome": "Welcome to the field",
+    "welcome": "Your field notebook",
     "subtitle": "Real-time bioacoustics for the preservation of neotropical birdlife.",
-    "recordCta": "+ New Field Recording",
-    "recordCtaBody": "Continuous passive capture with vocal frequency isolation",
+    "recordCta": "New field recording",
+    "recordCtaBody": "Record a song with your microphone and let the AI identify it.",
     "uploadCta": "Upload Audio File",
     "uploadCtaBody": "WAV, FLAC, MP3 up to 500MB",
     "metricsEyebrow": "Metrics",
@@ -230,8 +236,19 @@
       "streak": "Field Streak",
       "confidence": "Average Confidence"
     },
-    "lastDetection": "Latest Algorithmic Detection",
-    "speciesSpotlight": "Species Spotlight"
+    "lastDetection": "Your latest detection",
+    "speciesSpotlight": "Species Spotlight",
+    "lastDetectionEmpty": "You have not saved any detections yet. Record your first song and it will show up here.",
+    "spotlight": {
+      "eyebrow": "Light table",
+      "region": "Featured species carousel",
+      "of": "of",
+      "previous": "Previous species",
+      "next": "Next species",
+      "goTo": "Go to",
+      "emptyTitle": "Your light table is waiting",
+      "emptyBody": "When you save detections of species with a photo, they will spin here."
+    }
   },
   "recording": {
     "tabLive": "Record Live",
@@ -241,14 +258,11 @@
     "fieldTipTitle": "Field Tip",
     "fieldTipBody": "Aim toward the mid-to-upper canopy layer and avoid crosswind gusts to keep harmonics above the noise floor.",
     "samplingTime": "Sampling Time",
-    "listening": "AI Listening…",
     "classifying": "AI Analyzing Sample…",
     "gain": "Preamp Gain",
     "gainHelp": "Amplifies the microphone signal before recording. Raise it in quiet settings or when the bird is far away; lower it if the audio sounds clipped.",
     "highPassFilter": "High-Pass (Anti-Wind) Filter",
     "highPassFilterHelp": "Attenuates very low frequencies (wind, traffic, footsteps) without affecting bird calls, which are usually higher-pitched.",
-    "candidates": "Candidates Being Heard",
-    "pause": "Pause Capture",
     "stopAndClassify": "Stop & Classify Sample",
     "dropzoneTitle": "Drag your audio here or browse files",
     "dropzoneBody": "Supports WAV, MP3, and FLAC up to 500MB.",
@@ -256,7 +270,16 @@
     "notSignedIn": "Your session is still loading. Wait a moment and try again.",
     "classifyError": "Could not classify the audio. Check your connection and try again.",
     "savedOffline": "You're offline: the recording was saved on this device and will be classified and saved (as private) automatically once you're back online.",
-    "noSpeciesIdentified": "No species could be identified in this recording — try a clearer recording, closer to the bird's song."
+    "noSpeciesIdentified": "No species could be identified in this recording — try a clearer recording, closer to the bird's song.",
+    "eyebrow": "Listening station",
+    "title": "Record a song",
+    "tabsLabel": "Capture mode",
+    "micDeniedTitle": "We could not use the microphone",
+    "micDeniedBody": "Permission was denied or no microphone is available. Allow it from the padlock in the address bar, or upload an audio file instead.",
+    "recLabel": "Recording",
+    "idleHint": "Press the red button and the sonogram of what you hear will appear here in real time.",
+    "peakFrequency": "Peak frequency",
+    "level": "Signal level"
   },
   "result": {
     "completedTitle": "Bioacoustic Identification Complete",
@@ -410,6 +433,7 @@
   "units": {
     "khz": "kHz",
     "seconds": "s",
-    "percent": "%"
+    "percent": "%",
+    "decibels": "dB"
   }
 }

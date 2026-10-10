@@ -7,6 +7,7 @@ import { SiteFooterComponent } from '../../shared/components/site-footer/site-fo
 import { CountUpComponent } from '../../shared/components/count-up/count-up.component';
 import { SpectrogramViewComponent } from '../../shared/components/spectrogram-view/spectrogram-view.component';
 import { SongSonogramComponent } from '../../shared/components/song-sonogram/song-sonogram.component';
+import { FrequencyAxisComponent } from '../../shared/components/frequency-axis/frequency-axis.component';
 import { SyntheticSongSignal } from '../../shared/sonogram/synthetic-song-signal';
 import { PHRASE_MAX_KHZ } from '../../shared/sonogram/song-phrase';
 import { NetworkStatsService } from '../../core/services/network-stats.service';
@@ -23,12 +24,12 @@ const HERO_COLUMNS = 160;
 const PIPELINE_COLUMNS = 96;
 const PIPELINE_STEP_COUNT = 4;
 const PIPELINE_INTERVAL_MS = 3200;
-const FREQ_LABELS_KHZ = [2, 4, 6, 8, 10];
+const FREQ_STEP_KHZ = 2;
 
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [RouterLink, NgTemplateOutlet, TranslatePipe, NavHeaderComponent, SiteFooterComponent, CountUpComponent, SpectrogramViewComponent, SongSonogramComponent],
+  imports: [RouterLink, NgTemplateOutlet, TranslatePipe, NavHeaderComponent, SiteFooterComponent, CountUpComponent, SpectrogramViewComponent, SongSonogramComponent, FrequencyAxisComponent],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.scss',
@@ -57,7 +58,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   readonly heroInitialColumns = this.heroSignal.backfill(HERO_COLUMNS);
   readonly heroFrame = () => this.heroSignal.nextFrame();
   readonly maxKhz = PHRASE_MAX_KHZ;
-  readonly freqLabels = FREQ_LABELS_KHZ;
+  readonly freqStepKhz = FREQ_STEP_KHZ;
   readonly windowSeconds = HERO_COLUMNS / SyntheticSongSignal.COLUMNS_PER_SECOND;
   readonly timeLabels = Array.from({ length: Math.floor(this.windowSeconds) + 1 }, (_, i) => Math.floor(this.windowSeconds) - i);
 

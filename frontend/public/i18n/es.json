@@ -46,7 +46,13 @@
     "high": "Alta",
     "medium": "Media",
     "low": "Baja",
-    "langSwitcherLabel": "Selector de idioma"
+    "langSwitcherLabel": "Selector de idioma",
+    "confidenceTier": {
+      "high": "Certeza alta",
+      "medium": "Certeza media",
+      "low": "Certeza baja"
+    },
+    "noValue": "—"
   },
   "iucn": {
     "lc": "Preocupación Menor",
@@ -216,10 +222,10 @@
     }
   },
   "dashboard": {
-    "welcome": "Bienvenida al campo",
+    "welcome": "Tu cuaderno de campo",
     "subtitle": "Bioacústica activa para la preservación de avifauna neotropical en tiempo real.",
-    "recordCta": "+ Nueva Grabación en Campo",
-    "recordCtaBody": "Captura pasiva continua con aislamiento de frecuencia vocal",
+    "recordCta": "Nueva grabación en campo",
+    "recordCtaBody": "Graba un canto con el micrófono y deja que la IA lo identifique.",
     "uploadCta": "Subir Archivo de Audio",
     "uploadCtaBody": "WAV, FLAC, MP3 hasta 500MB",
     "metricsEyebrow": "Métricas",
@@ -230,8 +236,19 @@
       "streak": "Racha de Campo",
       "confidence": "Confianza Promedio"
     },
-    "lastDetection": "Última Detección Algorítmica",
-    "speciesSpotlight": "Especies Destacadas"
+    "lastDetection": "Tu última detección",
+    "speciesSpotlight": "Especies Destacadas",
+    "lastDetectionEmpty": "Aún no has guardado detecciones. Graba tu primer canto y aparecerá aquí.",
+    "spotlight": {
+      "eyebrow": "Mesa de luz",
+      "region": "Carrusel de especies destacadas",
+      "of": "de",
+      "previous": "Especie anterior",
+      "next": "Especie siguiente",
+      "goTo": "Ir a",
+      "emptyTitle": "Tu mesa de luz está esperando",
+      "emptyBody": "Cuando guardes detecciones de especies con foto, girarán aquí."
+    }
   },
   "recording": {
     "tabLive": "Grabar en Vivo",
@@ -241,14 +258,11 @@
     "fieldTipTitle": "Consejo de Campo",
     "fieldTipBody": "Apunta hacia el estrato medio-alto del dosel y evita ráfagas de viento cruzado para conservar la claridad de los armónicos.",
     "samplingTime": "Tiempo de Muestreo",
-    "listening": "IA Escuchando…",
     "classifying": "IA Analizando la Muestra…",
     "gain": "Ganancia Preamplificador",
     "gainHelp": "Amplifica la señal del micrófono antes de grabarla. Súbela en ambientes silenciosos o si el ave está lejos; bájala si el audio suena saturado.",
     "highPassFilter": "Filtro Pasa-Altos (Anti-Viento)",
     "highPassFilterHelp": "Atenúa frecuencias muy bajas (viento, tráfico, pasos) sin afectar los cantos de aves, que suelen ser más agudos.",
-    "candidates": "Candidatos en Escucha",
-    "pause": "Pausar Captura",
     "stopAndClassify": "Detener y Clasificar Muestra",
     "dropzoneTitle": "Arrastra tu audio aquí o examina archivos",
     "dropzoneBody": "Soporta WAV, MP3 y FLAC de hasta 500MB.",
@@ -256,7 +270,16 @@
     "notSignedIn": "Tu sesión aún se está cargando. Espera un momento e inténtalo de nuevo.",
     "classifyError": "No se pudo clasificar el audio. Revisa tu conexión e inténtalo de nuevo.",
     "savedOffline": "Sin conexión: la grabación quedó guardada en este dispositivo y se clasificará y guardará sola (como privada) cuando vuelva la señal.",
-    "noSpeciesIdentified": "No se pudo identificar ninguna especie en esta grabación — intenta con un audio más claro o más cercano al canto del ave."
+    "noSpeciesIdentified": "No se pudo identificar ninguna especie en esta grabación — intenta con un audio más claro o más cercano al canto del ave.",
+    "eyebrow": "Estación de escucha",
+    "title": "Graba un canto",
+    "tabsLabel": "Modo de captura",
+    "micDeniedTitle": "No pudimos usar el micrófono",
+    "micDeniedBody": "El permiso fue denegado o no hay un micrófono disponible. Habilítalo desde el candado de la barra de direcciones o sube un archivo de audio.",
+    "recLabel": "Grabando",
+    "idleHint": "Pulsa el botón rojo y el sonograma de lo que escuchas aparecerá aquí en tiempo real.",
+    "peakFrequency": "Frecuencia pico",
+    "level": "Nivel de la señal"
   },
   "result": {
     "completedTitle": "Identificación Bioacústica Completada",
@@ -410,6 +433,7 @@
   "units": {
     "khz": "kHz",
     "seconds": "s",
-    "percent": "%"
+    "percent": "%",
+    "decibels": "dB"
   }
 }

@@ -52,6 +52,16 @@
     color: var(--color-on-sulfur);
   }
 
+  // Si la fuente de iconos aún no carga (o no hay conexión), la ligadura se ve como
+  // su palabra ("notifications"); la caja de 1em evita que esa palabra desborde.
+  .material-symbols-outlined {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
   :focus-visible {
     outline: var(--focus-ring-width) solid var(--color-focus);
     outline-offset: var(--focus-ring-offset);
@@ -112,6 +122,14 @@
   }
   .field-error {
     @apply text-sm text-error;
+  }
+
+  // Lecturas tipo instrumento: cifra grande sobre su etiqueta, separadas por marcas de regla.
+  .readings {
+    @apply grid grid-cols-2 lg:grid-cols-4 gap-x-0 gap-y-8;
+  }
+  .readings__item {
+    @apply flex flex-col-reverse gap-1 ps-4 border-s-2 border-outline-variant;
   }
 
   // Pantallas de acceso: placa petróleo con el sonograma + formulario sobre papel.

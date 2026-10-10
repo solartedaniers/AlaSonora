@@ -24,12 +24,7 @@
       </div>
 
       <figure class="landing-hero__plate">
-        <div class="landing-hero__freq-axis" aria-hidden="true">
-          @for (khz of freqLabels; track khz) {
-            <span class="landing-hero__freq-label" [style.bottom.%]="(khz / maxKhz) * 100">{{ khz }}</span>
-          }
-          <span class="landing-hero__freq-label text-primary font-semibold" [style.bottom.%]="100">{{ 'units.khz' | translate }}</span>
-        </div>
+        <app-frequency-axis [maxKhz]="maxKhz" [stepKhz]="freqStepKhz" />
 
         <div class="landing-hero__screen">
           <!-- El servidor y "reduced motion" muestran el sonograma estático; el navegador lo cambia por el canvas vivo. -->
@@ -82,9 +77,9 @@
         <section class="chrome" aria-labelledby="readings-title">
           <div class="max-w-7xl mx-auto px-gutter py-14 flex flex-col gap-10">
             <h2 id="readings-title" class="eyebrow-label">{{ 'landing.readingsTitle' | translate }}</h2>
-            <dl class="landing-readings__list">
+            <dl class="readings">
               @for (reading of readings(); track reading.labelKey) {
-                <div class="landing-readings__item">
+                <div class="readings__item">
                   <dt class="text-sm text-on-surface-variant">{{ reading.labelKey | translate }}</dt>
                   <dd class="m-0 font-data text-5xl font-semibold leading-none">
                     <app-count-up [value]="reading.value" [suffix]="reading.suffixKey ? (reading.suffixKey | translate) : ''" />

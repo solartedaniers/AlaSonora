@@ -43,20 +43,6 @@
   grid-template-rows: minmax(0, 1fr) auto auto;
 }
 
-.landing-hero__freq-axis {
-  position: relative;
-  width: calc(var(--space-unit) * 12);
-  font-family: var(--font-data);
-  font-size: var(--text-xs);
-  color: var(--color-on-surface-variant);
-}
-
-.landing-hero__freq-label {
-  position: absolute;
-  inset-inline-end: calc(var(--space-unit) * 2);
-  transform: translateY(50%);
-}
-
 .landing-hero__screen {
   position: relative;
   height: calc(var(--space-unit) * 60);
@@ -128,25 +114,6 @@
 .landing-hero__caption {
   grid-column: 2;
   padding-inline-end: var(--space-gutter);
-}
-
-// --- Banda de lecturas reales de la red.
-.landing-readings__list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: calc(var(--space-unit) * 8) 0;
-
-  @screen lg {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-.landing-readings__item {
-  display: flex;
-  flex-direction: column-reverse;
-  gap: calc(var(--space-unit) * 1);
-  padding-inline-start: calc(var(--space-unit) * 4);
-  border-inline-start: 2px solid var(--color-chrome-line);
 }
 
 // --- Pasos: tres "notas" que suben de grave a agudo.
