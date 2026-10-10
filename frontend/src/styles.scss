@@ -1,29 +1,64 @@
+@use 'app/theme/tokens';
+@use 'app/theme/typography';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import 'app/theme/tokens.scss';
-@import 'app/theme/typography.scss';
+@layer base {
+  html {
+    font-family: var(--font-body);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
 
-html,
-body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    transition:
+      background-color var(--duration-base) var(--ease-standard),
+      color var(--duration-base) var(--ease-standard);
+  }
+
+  // Títulos en Bricolage; `balance` evita cortes feos como "al / campo".
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-family: var(--font-display);
+    letter-spacing: var(--tracking-tight);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::placeholder {
+    color: var(--color-outline);
+    opacity: 1;
+  }
+
+  ::selection {
+    background-color: var(--color-sulfur);
+    color: var(--color-on-sulfur);
+  }
+
+  :focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-focus);
+    outline-offset: var(--focus-ring-offset);
+  }
 }
 
-body {
-  font-family: var(--font-body);
-  background-color: var(--color-surface);
-  color: var(--color-on-surface);
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-// Respect reduced-motion preference across the app
+// Respeto global de reduced motion (los tokens de duración ya bajan a ~0).
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -35,7 +70,12 @@ body {
   }
 }
 
-// Halo que sigue al puntero — aplicado vía [appGlowCursor] (PointerGlowDirective).
+// ---------------------------------------------------------------------------
+// Utilidades heredadas aún usadas por las pantallas. Ya leen tokens; cada una
+// se reemplaza por el lenguaje «Sonograma de campo» en la fase de su pantalla.
+// ---------------------------------------------------------------------------
+
+// Halo que sigue al puntero — [appGlowCursor] (PointerGlowDirective).
 .glow-cursor {
   position: relative;
   isolation: isolate;
@@ -46,10 +86,10 @@ body {
   inset: 0;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--duration-base) var(--ease-standard);
   background: radial-gradient(
-    280px circle at var(--glow-x, 50%) var(--glow-y, 50%),
-    color-mix(in srgb, var(--color-primary) 22%, transparent),
+    calc(var(--space-unit) * 70) circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    color-mix(in srgb, var(--color-sulfur) 18%, transparent),
     transparent 70%
   );
 }
@@ -57,7 +97,7 @@ body {
   opacity: 1;
 }
 
-// Borde que sigue al puntero — aplicado vía [appBorderGlow] (PointerGlowDirective).
+// Borde que sigue al puntero — [appBorderGlow] (PointerGlowDirective).
 .border-glow {
   position: relative;
   isolation: isolate;
@@ -70,9 +110,13 @@ body {
   padding: 1.5px;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.3s ease;
-  background: radial-gradient(180px circle at var(--glow-x, 50%) var(--glow-y, 50%), var(--color-primary), transparent 70%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  transition: opacity var(--duration-base) var(--ease-standard);
+  background: radial-gradient(
+    calc(var(--space-unit) * 45) circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    var(--color-primary),
+    transparent 70%
+  );
+  -webkit-mask: linear-gradient(var(--color-on-surface) 0 0) content-box, linear-gradient(var(--color-on-surface) 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
 }
@@ -80,81 +124,40 @@ body {
   opacity: 1;
 }
 
-// Titulares con profundidad 3D — usados en la hero de landing.
-// Se apoyan en los mismos tokens de color que el resto de la app (tokens.scss)
-// para que la sombra/gradiente se adapte igual en modo claro y oscuro.
-.hero-title-3d {
-  text-shadow:
-    0 1px 0 color-mix(in srgb, var(--color-on-surface) 55%, transparent),
-    0 2px 0 color-mix(in srgb, var(--color-on-surface) 35%, transparent),
-    0 10px 24px color-mix(in srgb, var(--color-primary) 35%, transparent);
-  letter-spacing: -0.03em;
-  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), text-shadow 0.3s ease;
-}
-.hero-title-3d:hover {
-  transform: translateY(-3px);
-  text-shadow:
-    0 1px 0 color-mix(in srgb, var(--color-on-surface) 55%, transparent),
-    0 2px 0 color-mix(in srgb, var(--color-on-surface) 35%, transparent),
-    0 16px 32px color-mix(in srgb, var(--color-primary) 55%, transparent);
+// Superficie sólida con filete fino (antes vidrio con blur).
+.glass-card {
+  background: var(--color-surface-container-lowest);
+  border: 1px solid var(--color-outline-variant);
 }
 
-.gradient-3d-text {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-tertiary) 65%, var(--color-primary-fixed) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 4px 12px color-mix(in srgb, var(--color-primary) 35%, transparent));
-}
-
-// Halo bioacústico permanente + elevación al hover — usado en el botón
-// principal del login (a diferencia de .border-glow, no depende del cursor).
+// Acción principal: sin halo luminoso, solo elevación difusa.
 .bio-glow-btn {
-  box-shadow:
-    0 10px 25px -4px color-mix(in srgb, var(--color-primary) 45%, transparent),
-    0 0 20px color-mix(in srgb, var(--color-primary-fixed) 35%, transparent);
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-md);
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
 }
 .bio-glow-btn:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 14px 30px -3px color-mix(in srgb, var(--color-primary) 55%, transparent),
-    0 0 28px color-mix(in srgb, var(--color-primary-fixed) 55%, transparent);
-}
-.bio-glow-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 6px 16px -2px color-mix(in srgb, var(--color-primary) 40%, transparent);
+  transform: translateY(calc(var(--space-unit) * -0.5));
+  box-shadow: var(--shadow-lg);
 }
 
-// Tarjeta translúcida glassmorphic (monitor bioacústico de la hero).
-.glass-card {
-  background: color-mix(in srgb, var(--color-surface-container-lowest) 82%, transparent);
-  backdrop-filter: blur(20px);
-  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 60%, transparent);
-}
-
-// Elevación al pasar el cursor sobre las tarjetas de "cómo funciona".
-// La sombra vive en una custom property para que el ciclo automático de abajo
-// pueda reproducir exactamente el mismo realce sin duplicar el valor.
 .feature-card {
-  --feature-card-lift-shadow: 0 20px 35px -8px color-mix(in srgb, var(--color-primary) 30%, transparent);
-  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+  --feature-card-lift-shadow: var(--shadow-lg);
+  transition:
+    transform var(--duration-slow) var(--ease-out),
+    box-shadow var(--duration-slow) var(--ease-out);
 }
 .feature-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(calc(var(--space-unit) * -1.5));
   box-shadow: var(--feature-card-lift-shadow);
 }
 
-// Carrusel automático de atención — recorre las tarjetas hermanas realzando
-// una por turno exactamente como el hover manual (elevación + sombra + borde
-// luminoso). Dos @keyframes comparten el mismo animation-delay escalonado a
-// un tercio del total, así que a cada instante solo una tarjeta está "activa"
-// (SpotlightCarouselDirective pausa/reinicia el grupo desde el host
-// .spotlight-group al entrar/salir el cursor, dejando el :hover manual al mando).
+// Ciclo de foco de las tarjetas de la landing (SpotlightCarouselDirective).
 .spotlight-cycle {
   position: relative;
   isolation: isolate;
-  animation: spotlight-lift 9s ease-in-out infinite;
+  animation: spotlight-lift 9s var(--ease-in-out) infinite;
 }
 .spotlight-cycle::after {
   content: '';
@@ -165,10 +168,10 @@ body {
   pointer-events: none;
   opacity: 0;
   background: radial-gradient(120% 120% at 50% 50%, var(--color-primary), transparent 70%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask: linear-gradient(var(--color-on-surface) 0 0) content-box, linear-gradient(var(--color-on-surface) 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  animation: spotlight-glow 9s ease-in-out infinite;
+  animation: spotlight-glow 9s var(--ease-in-out) infinite;
 }
 .spotlight-cycle:nth-child(2),
 .spotlight-cycle:nth-child(2)::after {
@@ -178,8 +181,6 @@ body {
 .spotlight-cycle:nth-child(3)::after {
   animation-delay: 6s;
 }
-// El grupo pausado (cursor dentro) apaga el ciclo automático por completo y
-// deja que el :hover manual de .feature-card/.border-glow tome el control.
 .spotlight-group.is-paused .spotlight-cycle,
 .spotlight-group.is-paused .spotlight-cycle::after {
   animation: none;
@@ -192,7 +193,7 @@ body {
   }
   8%,
   25% {
-    transform: translateY(-8px);
+    transform: translateY(calc(var(--space-unit) * -1.5));
     box-shadow: var(--feature-card-lift-shadow);
   }
   33% {
@@ -205,9 +206,7 @@ body {
   100% {
     opacity: 0;
   }
-  8% {
-    opacity: 1;
-  }
+  8%,
   25% {
     opacity: 1;
   }
@@ -216,53 +215,49 @@ body {
   }
 }
 
-// Kicker en mayúsculas que antecede a un título de sección — aporta
-// jerarquía visual sin depender de un tamaño de fuente extra.
+// Antetítulo: lectura de instrumento (Plex Condensed) con una marca azufre
+// como la de una regla de kHz; sin mayúsculas sostenidas.
 .eyebrow-label {
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
-  font-family: var(--font-display);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  gap: calc(var(--space-unit) * 2);
+  font-family: var(--font-data);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
   color: var(--color-primary);
 }
+.eyebrow-label::before {
+  content: '';
+  width: calc(var(--space-unit) * 4);
+  height: calc(var(--space-unit) * 1);
+  border-radius: var(--radius-xs);
+  background: var(--color-sulfur);
+}
 
-// Contenedor cuadrado tras un ícono — usado en cards de métricas/ajustes
-// para darle peso visual sin depender de un tamaño de ícono extra grande.
 .icon-wrapper {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 0.875rem;
-  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  width: var(--touch-target);
+  height: var(--touch-target);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
   color: var(--color-primary);
   flex-shrink: 0;
 }
-// Variante compacta — íconos junto a un título de sección (h3), donde el
-// tamaño por defecto de .icon-wrapper resulta demasiado grande.
 .icon-wrapper--sm {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 0.625rem;
+  width: calc(var(--space-unit) * 9);
+  height: calc(var(--space-unit) * 9);
+  border-radius: var(--radius-md);
 }
 
-// Layout base de una tarjeta de resumen numérico (ícono + valor + etiqueta).
-// Se combina con .feature-card para el hover-lift y con .glass-card para el
-// fondo, en vez de definir su propio elevado/fondo por separado.
 .stat-card {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: calc(var(--space-unit) * 4);
 }
 
-// Tarjeta de estado vacío con banda de gradiente superior — mismo gradiente
-// que ya usan los formularios de auth, para que un estado "sin datos" se
-// lea como parte del mismo lenguaje visual en vez de un error.
 .empty-state-banner {
   position: relative;
   overflow: hidden;
@@ -270,9 +265,7 @@ body {
 .empty-state-banner::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 0.375rem;
-  background: linear-gradient(to right, var(--color-primary-container), var(--color-primary), var(--color-secondary));
+  inset: 0 0 auto;
+  height: calc(var(--space-unit) * 1.5);
+  background: linear-gradient(to right, var(--color-primary), var(--color-sulfur));
 }
