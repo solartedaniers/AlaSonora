@@ -3,11 +3,11 @@
   <app-nav-header />
   <app-offline-banner class="relative z-10" />
 
-  <div class="relative z-10 w-full px-gutter-mobile md:px-8 py-8 flex flex-col gap-8 max-w-7xl mx-auto">
+  <div class="relative z-10 w-full px-gutter md:px-8 py-8 flex flex-col gap-8 max-w-7xl mx-auto">
     <!-- Welcome + coordinates -->
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 glass-card p-6 rounded-2xl shadow-sm">
       <div class="flex flex-col gap-1">
-        <h1 class="font-display text-2xl font-bold tracking-tight hero-title-3d">
+        <h1 class="font-display text-2xl font-bold tracking-tight">
           {{ 'dashboard.welcome' | translate }}, {{ user.currentUser()?.fullName }}
         </h1>
         <p class="text-sm text-on-surface-variant">{{ 'dashboard.subtitle' | translate }}</p>
@@ -27,7 +27,7 @@
         class="bio-glow-btn md:col-span-8 group relative flex items-center justify-between px-6 py-6 bg-primary hover:opacity-95 text-on-primary rounded-2xl overflow-hidden"
       >
         <div class="flex items-center gap-5 z-10">
-          <div class="flex items-center justify-center w-14 h-14 rounded-full bg-black/10">
+          <div class="flex items-center justify-center w-14 h-14 rounded-full bg-on-primary/15">
             <span class="material-symbols-outlined text-[30px] animate-pulse">mic</span>
           </div>
           <div class="flex flex-col text-left">

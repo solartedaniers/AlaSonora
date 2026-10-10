@@ -7,7 +7,7 @@
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
         <span class="eyebrow-label">{{ 'history.eyebrow' | translate }}</span>
-        <h1 class="font-display text-2xl font-bold tracking-tight hero-title-3d">{{ 'history.title' | translate }}</h1>
+        <h1 class="font-display text-2xl font-bold tracking-tight">{{ 'history.title' | translate }}</h1>
         <p class="text-sm text-on-surface-variant mt-1">{{ 'history.subtitle' | translate }}</p>
       </div>
       <button
@@ -104,7 +104,7 @@
           <button
             type="button"
             (click)="setStatusFilter($any(status.key))"
-            class="px-3 py-1.5 rounded-full font-mono text-xs font-semibold transition-colors"
+            class="px-3 py-1.5 rounded-full font-data text-xs font-semibold transition-colors"
             [class.bg-primary-container]="statusFilter() === status.key"
             [class.text-on-primary-container]="statusFilter() === status.key"
             [class.bg-surface-container]="statusFilter() !== status.key"
