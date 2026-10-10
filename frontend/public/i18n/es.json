@@ -74,9 +74,7 @@
     "wingSound": "Sonido de alas (no vocal)"
   },
   "landing": {
-    "badge": "Modelo Bioacústico Activo",
-    "title": "Descubre qué ave canta en tu entorno en segundos con Inteligencia Artificial",
-    "subtitle": "Una herramienta de ciencia ciudadana y monitoreo ecológico para biólogos, guardaparques y entusiastas de la naturaleza. Identificación acústica instantánea a partir de cantos, reclamos y trinos en campo abierto.",
+    "subtitle": "Graba el canto con tu celular o sube un audio. AlaSonora lo convierte en sonograma y la IA BirdNET te dice qué especie es y con cuánta confianza.",
     "ctaPrimary": "Comenzar a Identificar Gratis",
     "ctaSecondary": "Ver Mapa de Avistamientos",
     "stats": {
@@ -106,12 +104,28 @@
       "step3Title": "Red Neuronal",
       "step3Body": "El motor de IA (BirdNET) compara ese patrón contra millones de cantos de referencia para reconocer la firma acústica del ave.",
       "step4Title": "Resultado",
-      "step4Body": "La especie con mayor probabilidad se confirma con un puntaje de confianza y queda registrada en tu historial y el mapa colectivo."
+      "step4Body": "La especie con mayor probabilidad se confirma con un puntaje de confianza y queda registrada en tu historial y el mapa colectivo.",
+      "tablistLabel": "Etapas del análisis",
+      "illustrationLabel": "Ilustración del proceso: no muestra datos reales.",
+      "anatomy": {
+        "species": "Especie más probable",
+        "scientificName": "Nombre científico",
+        "confidence": "Confianza de la IA",
+        "candidates": "Otros candidatos"
+      }
     },
-    "liveMonitorTitle": "Monitoreo Bioacústico en Vivo",
-    "liveMonitorSpecs": "96kHz / 24-bit",
-    "demoSpeciesName": "Zorzal Chiguanco",
-    "demoAiBadge": "98.4% IA"
+    "eyebrow": "BirdNET · Ciencia ciudadana desde Pasto, Nariño",
+    "titleLead": "¿Quién está",
+    "titleAccent": "cantando?",
+    "readingsTitle": "Lecturas de la red",
+    "demo": {
+      "label": "Ejemplo: señal sintética generada por la app, no es una grabación ni una detección real.",
+      "plateLabel": "Sonograma de ejemplo con una señal sintética; no es una grabación real.",
+      "now": "ahora"
+    },
+    "closing": {
+      "title": "La próxima vez que escuches un canto, sabrás de quién es."
+    }
   },
   "auth": {
     "togglePassword": "Mostrar u ocultar contraseña",
@@ -135,7 +149,14 @@
       "submit": "Crear Cuenta de Campo",
       "haveAccount": "¿Ya tienes una cuenta activa?",
       "goToLogin": "Iniciar Sesión en Campo",
-      "errorBody": "No se pudo crear la cuenta. Es posible que el correo ya esté registrado; verifica tus datos."
+      "errorBody": "No se pudo crear la cuenta. Es posible que el correo ya esté registrado; verifica tus datos.",
+      "strength": {
+        "empty": "Sin clave",
+        "weak": "Débil",
+        "medium": "Media",
+        "strong": "Fuerte",
+        "excellent": "Excelente"
+      }
     },
     "login": {
       "title": "Bienvenido de vuelta al campo",
@@ -187,6 +208,11 @@
       "biologist": "Biólogo de Campo",
       "hobbyist": "Observador Aficionado",
       "student": "Estudiante / Investigador Junior"
+    },
+    "passwordPlaceholder": "••••••••",
+    "panel": {
+      "title": "Tu cuaderno de campo te espera.",
+      "body": "Grabaciones, detecciones y avistamientos sincronizados, también cuando no hay señal en el bosque."
     }
   },
   "dashboard": {
@@ -382,6 +408,8 @@
     "admin": "Administración"
   },
   "units": {
-    "khz": "kHz"
+    "khz": "kHz",
+    "seconds": "s",
+    "percent": "%"
   }
 }

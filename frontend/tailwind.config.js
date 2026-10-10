@@ -131,22 +131,10 @@ module.exports = {
       spin: 'spin var(--duration-spin) linear infinite',
       ping: 'ping var(--duration-spin) var(--ease-out) infinite',
       pulse: 'pulse var(--duration-pulse) var(--ease-in-out) infinite',
-      float: 'float var(--duration-float) var(--ease-in-out) infinite',
-      scan: 'scan var(--duration-sweep) linear infinite',
     },
     extend: {
       ringColor: { DEFAULT: 'var(--color-focus)' },
       borderColor: { DEFAULT: 'var(--color-outline-variant)' },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(calc(var(--space-unit) * -2))' },
-        },
-        scan: {
-          '0%': { left: '8%' },
-          '100%': { left: '92%' },
-        },
-      },
     },
   },
   plugins: [
