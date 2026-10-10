@@ -1,0 +1,59 @@
+// Acción principal: banda de tinta con la frase del canto de fondo.
+.dashboard-record {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space-unit) * 6);
+  min-height: calc(var(--space-unit) * 36);
+  padding: calc(var(--space-unit) * 8);
+  border-radius: var(--radius-3xl);
+  border: 1px solid var(--color-chrome-line);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  transition: box-shadow var(--duration-base) var(--ease-out);
+
+  &:hover {
+    box-shadow: var(--shadow-xl);
+  }
+}
+
+.dashboard-record__sonogram {
+  --sonogram-ink-opacity: 0.3;
+  --sonogram-harmonic-opacity: 0.12;
+  position: absolute;
+  inset-inline-end: calc(var(--space-unit) * -8);
+  bottom: calc(var(--space-unit) * -6);
+  width: min(36rem, 70%);
+  color: var(--color-on-chrome);
+  pointer-events: none;
+}
+
+.dashboard-upload {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space-unit) * 4);
+  padding: calc(var(--space-unit) * 8);
+  border-radius: var(--radius-3xl);
+  border: 1px solid var(--color-outline-variant);
+  background: var(--color-surface-container-lowest);
+  transition: border-color var(--duration-base) var(--ease-out);
+
+  &:hover {
+    border-color: var(--color-primary);
+  }
+}
+
+// Última detección: una línea de lectura entre dos filetes, no una tarjeta.
+.dashboard-latest {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--space-unit) * 4);
+  padding-block: calc(var(--space-unit) * 6);
+  border-block: 1px solid var(--color-outline-variant);
+}
+
+a.dashboard-latest:hover {
+  border-color: var(--color-primary);
+}

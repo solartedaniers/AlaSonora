@@ -1,133 +1,103 @@
-<div class="flex flex-col w-full min-h-screen bg-surface text-on-surface relative">
+<div class="flex flex-col w-full min-h-dvh bg-surface text-on-surface relative">
   <app-field-backdrop />
   <app-nav-header />
   <app-offline-banner class="relative z-10" />
 
-  <div class="relative z-10 w-full px-gutter md:px-8 py-8 flex flex-col gap-8 max-w-7xl mx-auto">
-    <!-- Welcome + coordinates -->
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 glass-card p-6 rounded-2xl shadow-sm">
-      <div class="flex flex-col gap-1">
-        <h1 class="font-display text-2xl font-bold tracking-tight">
-          {{ 'dashboard.welcome' | translate }}, {{ user.currentUser()?.fullName }}
-        </h1>
-        <p class="text-sm text-on-surface-variant">{{ 'dashboard.subtitle' | translate }}</p>
-      </div>
-      <div class="flex items-center gap-3 bg-surface-container p-3 rounded-xl">
-        <span class="material-symbols-outlined text-secondary text-xl">location_on</span>
-        <div class="flex flex-col">
-          <span class="text-xs text-on-surface-variant">{{ user.currentUser()?.stationName }}</span>
-        </div>
-      </div>
-    </div>
+  <main class="relative z-10 w-full max-w-7xl mx-auto px-gutter py-12 flex flex-col gap-16">
+    <!-- Saludo: tipografía grande, sin caja -->
+    <header class="flex flex-col gap-3">
+      <p class="eyebrow-label">{{ 'dashboard.welcome' | translate }}</p>
+      <h1 class="text-5xl font-extrabold tracking-display break-words">{{ user.currentUser()?.fullName }}</h1>
+      <p class="max-w-2xl text-lg text-on-surface-variant">{{ 'dashboard.subtitle' | translate }}</p>
+      @if (user.currentUser()?.stationName; as station) {
+        <p class="inline-flex items-center gap-2 text-on-surface-variant">
+          <span class="material-symbols-outlined text-xl text-primary" aria-hidden="true">location_on</span>
+          {{ station }}
+        </p>
+      }
+    </header>
 
-    <!-- Action row -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-      <a
-        routerLink="/record"
-        class="bio-glow-btn md:col-span-8 group relative flex items-center justify-between px-6 py-6 bg-primary hover:opacity-95 text-on-primary rounded-2xl overflow-hidden"
-      >
-        <div class="flex items-center gap-5 z-10">
-          <div class="flex items-center justify-center w-14 h-14 rounded-full bg-on-primary/15">
-            <span class="material-symbols-outlined text-[30px] animate-pulse">mic</span>
-          </div>
-          <div class="flex flex-col text-left">
-            <span class="text-lg font-display font-bold tracking-tight">{{ 'dashboard.recordCta' | translate }}</span>
-            <span class="text-sm opacity-90">{{ 'dashboard.recordCtaBody' | translate }}</span>
-          </div>
-        </div>
-        <span class="material-symbols-outlined hidden sm:block">arrow_forward</span>
+    <!-- Acción principal: una banda de tinta con la frase del canto -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-4" [attr.aria-label]="'nav.record' | translate">
+      <a routerLink="/record" class="dashboard-record chrome lg:col-span-8">
+        <app-song-sonogram class="dashboard-record__sonogram" [band]="false" />
+        <span class="relative grid place-items-center w-16 h-16 shrink-0 rounded-full bg-sulfur text-on-sulfur">
+          <span class="material-symbols-outlined text-3xl" aria-hidden="true">mic</span>
+        </span>
+        <span class="relative flex flex-col gap-1">
+          <span class="font-display text-2xl font-extrabold">{{ 'dashboard.recordCta' | translate }}</span>
+          <span class="text-on-surface-variant">{{ 'dashboard.recordCtaBody' | translate }}</span>
+        </span>
+        <span class="relative material-symbols-outlined ms-auto hidden sm:block text-3xl text-primary" aria-hidden="true">arrow_forward</span>
       </a>
 
-      <a
-        routerLink="/record"
-        class="feature-card md:col-span-4 flex items-center gap-3 px-6 py-6 glass-card hover:bg-surface-container-low/40 text-on-surface rounded-2xl shadow-sm"
-      >
-        <div class="p-2.5 rounded-xl bg-surface-container-high text-tertiary">
-          <span class="material-symbols-outlined text-[24px]">upload_file</span>
-        </div>
-        <div class="flex flex-col text-left">
-          <span class="font-display font-semibold">{{ 'dashboard.uploadCta' | translate }}</span>
-          <span class="text-xs text-on-surface-variant">{{ 'dashboard.uploadCtaBody' | translate }}</span>
-        </div>
+      <a routerLink="/record" class="dashboard-upload lg:col-span-4">
+        <span class="material-symbols-outlined text-3xl text-primary" aria-hidden="true">upload_file</span>
+        <span class="flex flex-col gap-1">
+          <span class="font-display text-lg font-extrabold">{{ 'dashboard.uploadCta' | translate }}</span>
+          <span class="text-sm text-on-surface-variant font-data">{{ 'dashboard.uploadCtaBody' | translate }}</span>
+        </span>
       </a>
-    </div>
+    </section>
 
-    <!-- Metrics -->
+    <!-- Lecturas personales -->
     @if (stats(); as s) {
-      <div class="flex flex-col gap-1">
-        <span class="eyebrow-label">{{ 'dashboard.metricsEyebrow' | translate }}</span>
-        <h2 class="font-display text-lg font-semibold">{{ 'dashboard.personalStatsTitle' | translate }}</h2>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div appBorderGlow class="stat-card feature-card glass-card p-5 rounded-xl shadow-sm">
-          <span class="icon-wrapper"><span class="material-symbols-outlined">flutter_dash</span></span>
-          <div class="flex flex-col gap-1">
-            <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.species' | translate }}</span>
-            <span class="font-display text-3xl font-bold"><app-count-up [value]="s.distinctSpecies" /></span>
-          </div>
+      <section aria-labelledby="dashboard-metrics-title" class="flex flex-col gap-6">
+        <div>
+          <p class="eyebrow-label">{{ 'dashboard.metricsEyebrow' | translate }}</p>
+          <h2 id="dashboard-metrics-title" class="mt-2 text-3xl font-extrabold tracking-display">{{ 'dashboard.personalStatsTitle' | translate }}</h2>
         </div>
-        <div appBorderGlow class="stat-card feature-card glass-card p-5 rounded-xl shadow-sm">
-          <span class="icon-wrapper"><span class="material-symbols-outlined">graphic_eq</span></span>
-          <div class="flex flex-col gap-1">
-            <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.recordings' | translate }}</span>
-            <span class="font-display text-3xl font-bold"><app-count-up [value]="s.totalRecordings" /></span>
-          </div>
-        </div>
-        <div appBorderGlow class="stat-card feature-card glass-card p-5 rounded-xl shadow-sm">
-          <span class="icon-wrapper"><span class="material-symbols-outlined">local_fire_department</span></span>
-          <div class="flex flex-col gap-1">
-            <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.streak' | translate }}</span>
-            <span class="font-display text-3xl font-bold text-secondary"><app-count-up [value]="s.activeStreakDays" /></span>
-          </div>
-        </div>
-        <div appBorderGlow class="stat-card feature-card glass-card p-5 rounded-xl shadow-sm">
-          <span class="icon-wrapper"><span class="material-symbols-outlined">timer</span></span>
-          <div class="flex flex-col gap-1">
-            <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'dashboard.metrics.confidence' | translate }}</span>
-            <span class="font-display text-3xl font-bold"><app-count-up [value]="s.averageConfidence" suffix="%" /></span>
-          </div>
-        </div>
-      </div>
+        <dl class="readings">
+          @for (reading of readings(); track reading.labelKey) {
+            <div class="readings__item">
+              <dt class="text-sm text-on-surface-variant">{{ reading.labelKey | translate }}</dt>
+              <dd class="m-0 font-data text-5xl font-semibold leading-none">
+                <app-count-up [value]="reading.value" [suffix]="reading.suffixKey ? (reading.suffixKey | translate) : ''" />
+              </dd>
+            </div>
+          }
+        </dl>
+      </section>
     }
 
-    <!-- Last detection -->
-    @if (latest(); as d) {
-      <div class="flex flex-col gap-3">
-        <h2 class="font-display text-lg font-semibold flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">auto_awesome</span>
-          {{ 'dashboard.lastDetection' | translate }}
-        </h2>
-        <a
-          [routerLink]="['/result', d.id]"
-          class="feature-card glass-card p-6 rounded-2xl shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-surface-container-low/40"
-        >
-          <div class="flex items-center gap-4">
-            <div class="w-14 h-14 rounded-xl bg-surface-container-high flex items-center justify-center text-primary shrink-0">
-              <span class="material-symbols-outlined text-[26px]">flutter_dash</span>
-            </div>
-            <div>
-              <div class="flex items-center gap-2 flex-wrap">
-                <h3 class="font-display font-bold">{{ d.species | speciesName }}</h3>
-                <app-confidence-badge [value]="d.confidence" />
-              </div>
-              <p class="text-sm italic text-on-surface-variant">{{ d.species.scientificName }}</p>
-            </div>
-          </div>
-          <span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+    <!-- Última detección -->
+    <section aria-labelledby="dashboard-latest-title" class="flex flex-col gap-4">
+      <h2 id="dashboard-latest-title" class="text-3xl font-extrabold tracking-display">{{ 'dashboard.lastDetection' | translate }}</h2>
+      @if (latest(); as d) {
+        <a [routerLink]="['/result', d.id]" class="dashboard-latest">
+          <span class="flex flex-col gap-1 min-w-0">
+            <span class="font-display text-2xl font-extrabold truncate">{{ d.species | speciesName }}</span>
+            <span class="italic text-on-surface-variant truncate">{{ d.species.scientificName }}</span>
+          </span>
+          <span class="flex flex-wrap items-center gap-3">
+            <app-confidence-badge [value]="d.confidence" />
+            <span class="material-symbols-outlined text-primary hidden sm:inline" aria-hidden="true">chevron_right</span>
+          </span>
         </a>
-      </div>
-    }
+      } @else {
+        <p class="dashboard-latest">
+          <span class="text-on-surface-variant">{{ 'dashboard.lastDetectionEmpty' | translate }}</span>
+          <a routerLink="/record" class="btn btn--ink shrink-0">{{ 'nav.record' | translate }}</a>
+        </p>
+      }
+    </section>
 
-    <!-- Species spotlight -->
-    @if (spiralItems().length > 0) {
-      <div class="flex flex-col gap-3">
-        <h2 class="font-display text-lg font-semibold flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">flutter_dash</span>
-          {{ 'dashboard.speciesSpotlight' | translate }}
-        </h2>
-        <app-infinite-spiral [items]="spiralItems()" />
+    <!-- Especies destacadas: el carrusel 3D sobre la mesa de luz -->
+    <section aria-labelledby="dashboard-spotlight-title" class="flex flex-col gap-6">
+      <div>
+        <p class="eyebrow-label">{{ 'dashboard.spotlight.eyebrow' | translate }}</p>
+        <h2 id="dashboard-spotlight-title" class="mt-2 text-3xl font-extrabold tracking-display">{{ 'dashboard.speciesSpotlight' | translate }}</h2>
       </div>
-    }
-
-  </div>
+      <app-infinite-spiral [items]="spiralItems()">
+        <div spiralEmpty class="flex flex-col items-center gap-4">
+          <p class="font-display text-2xl font-extrabold">{{ 'dashboard.spotlight.emptyTitle' | translate }}</p>
+          <p class="text-on-surface-variant">{{ 'dashboard.spotlight.emptyBody' | translate }}</p>
+          <a routerLink="/record" class="btn btn--sulfur">
+            <span class="material-symbols-outlined" aria-hidden="true">mic</span>
+            {{ 'nav.record' | translate }}
+          </a>
+        </div>
+      </app-infinite-spiral>
+    </section>
+  </main>
 </div>
