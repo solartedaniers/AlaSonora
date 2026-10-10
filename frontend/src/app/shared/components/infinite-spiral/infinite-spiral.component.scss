@@ -213,6 +213,8 @@
   display: flex;
   align-items: flex-end;
   overflow-x: auto;
+  // Sigue siendo deslizable con el dedo; la barra no aporta en una fila de marcas.
+  scrollbar-width: none;
 }
 
 // Cada indicador es una marca de regla; el objetivo táctil es de 44 px aunque la marca sea fina.

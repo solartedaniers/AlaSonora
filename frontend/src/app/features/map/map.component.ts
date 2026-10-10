@@ -56,6 +56,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly selected = signal<Detection | null>(null);
   /** Solo estado de vista: un fallo de red no debe leerse como "no hay avistamientos". */
   readonly loadState = signal<MapLoadState>('loading');
+  /** Solo estado de vista: filtros plegados en el celular. */
+  readonly filtersOpen = signal(false);
 
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private leaflet?: typeof Leaflet;

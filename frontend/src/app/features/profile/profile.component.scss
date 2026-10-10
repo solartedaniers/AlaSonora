@@ -10,8 +10,14 @@
 }
 
 .profile-avatar {
-  width: calc(var(--space-unit) * 36);
-  height: calc(var(--space-unit) * 36);
+  width: calc(var(--space-unit) * 24);
+  height: calc(var(--space-unit) * 24);
+
+  @screen md {
+    width: calc(var(--space-unit) * 36);
+    height: calc(var(--space-unit) * 36);
+  }
+
   display: grid;
   place-items: center;
   border-radius: var(--radius-full);

@@ -11,7 +11,12 @@
 
 .map-toolbar__search {
   position: relative;
-  flex: 1 1 100%;
+  flex: 1 1 0;
+  min-width: 0;
+
+  @screen md {
+    flex: 1 1 100%;
+  }
 
   @screen xl {
     flex: 1 1 20rem;
@@ -31,7 +36,7 @@
 
 .map-canvas {
   position: relative;
-  height: 60dvh;
+  height: 62dvh;
   min-height: calc(var(--space-unit) * 80);
   background: var(--color-surface-container);
 

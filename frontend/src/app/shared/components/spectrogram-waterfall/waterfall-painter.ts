@@ -19,6 +19,9 @@ const HORIZON = 0.08; // altura del horizonte desde arriba
 const FRONT = 0.86; // línea base de la fila del frente
 const RIDGE = 0.42; // altura máxima de un relieve en la fila del frente
 const SIDE_MARGIN = 0.07;
+// Bajo este ancho (px) la cascada se aligera: una de cada dos filas, para que respire en el celular.
+const COMPACT_WIDTH = 640;
+const COMPACT_ROW_STRIDE = 2;
 const LABEL_GAP = 6;
 // Las líneas en silencio se pintan con tinta, nunca del color del papel.
 const MIN_LINE_INTENSITY = 0.32;
@@ -40,6 +43,8 @@ export class WaterfallPainter {
   private readonly tickColor: string;
   private width = 0;
   private height = 0;
+  private leftPad = 0;
+  private rightPad = 0;
 
   constructor(private readonly canvas: HTMLCanvasElement) {
     this.ctx = canvas.getContext('2d');
@@ -73,10 +78,13 @@ export class WaterfallPainter {
     ctx.fillStyle = this.ramp.floor;
     ctx.fillRect(0, 0, this.width, this.height);
 
+    this.measurePads(ctx, axis);
+    const stride = this.width < COMPACT_WIDTH ? COMPACT_ROW_STRIDE : 1;
     // De atrás hacia adelante: la fila más nueva está en el horizonte.
     for (let i = rows.length - 1; i >= 0; i--) {
       // Filas detrás de la más nueva; con `advance` todas se deslizan hacia el frente.
       const behindNewest = rows.length - 1 - i;
+      if (behindNewest % stride !== 0) continue;
       const depth = 1 - (behindNewest + advance) / Math.max(1, rowCount - 1);
       this.drawRidge(ctx, rows[i], depth, intensity);
     }
@@ -163,15 +171,25 @@ export class WaterfallPainter {
     }
   }
 
+  /** Side room for the axis labels, measured from their real width so nothing gets clipped. */
+  private measurePads(ctx: CanvasRenderingContext2D, axis: WaterfallAxis): void {
+    ctx.font = this.font;
+    const timeLabel = axis.secondsAgo.replace('{n}', String(axis.windowSeconds));
+    const unitLabel = `${axis.maxKhz} ${axis.khzUnit}`;
+    const minimum = this.width * SIDE_MARGIN;
+    this.leftPad = Math.max(minimum, ctx.measureText(timeLabel).width + LABEL_GAP * 2);
+    this.rightPad = Math.max(minimum, ctx.measureText(unitLabel).width / 2 + LABEL_GAP);
+  }
+
   /** Screen geometry of a row at `depth` (0 = front, 1 = back). */
   private project(depth: number): { left: number; right: number; baseline: number; scale: number } {
     const scale = 1 / (1 + depth * DEPTH);
     const backScale = 1 / (1 + DEPTH);
     const toward = (scale - backScale) / (1 - backScale);
     const baseline = HORIZON * this.height + (FRONT - HORIZON) * this.height * toward;
-    const frontWidth = this.width * (1 - 2 * SIDE_MARGIN);
+    const frontWidth = this.width - this.leftPad - this.rightPad;
     const rowWidth = frontWidth * scale;
-    const center = this.width / 2;
+    const center = this.leftPad + frontWidth / 2;
     return { left: center - rowWidth / 2, right: center + rowWidth / 2, baseline, scale };
   }
 }

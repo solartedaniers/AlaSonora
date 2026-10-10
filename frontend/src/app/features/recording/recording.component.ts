@@ -6,6 +6,7 @@ import { NavHeaderComponent } from '../../shared/components/nav-header/nav-heade
 import { SpectrogramViewComponent } from '../../shared/components/spectrogram-view/spectrogram-view.component';
 import { FrequencyAxisComponent } from '../../shared/components/frequency-axis/frequency-axis.component';
 import { SongSonogramComponent } from '../../shared/components/song-sonogram/song-sonogram.component';
+import { SpectrogramWaterfallComponent } from '../../shared/components/spectrogram-waterfall/spectrogram-waterfall.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { AudioCaptureService } from '../../core/services/audio-capture.service';
 import { ClassificationService } from '../../core/services/classification.service';
@@ -16,6 +17,7 @@ import { FALLBACK_LOCATION, PendingRecordingsSyncService } from '../../core/serv
 import { GeoLocation } from '../../core/models';
 
 type RecordingTab = 'live' | 'upload';
+type SonogramView = 'flat' | 'waterfall';
 
 // Texto exacto que DetectionClassificationService.runClassification lanza
 // cuando BirdNET no encuentra ninguna especie con confianza suficiente (422
@@ -40,6 +42,7 @@ const PLATE_MAX_KHZ = 12;
     SpectrogramViewComponent,
     FrequencyAxisComponent,
     SongSonogramComponent,
+    SpectrogramWaterfallComponent,
     TranslatePipe,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -67,6 +70,12 @@ export class RecordingComponent {
   // tenga que re-renderizarse en cada frame de audio.
   readonly getLatestFrame = () => this.capture.latestFrame();
   readonly liveColumns = LIVE_COLUMNS;
+  /** Solo cambia cómo se pinta el audio en vivo: el plano es el predeterminado por legibilidad. */
+  readonly sonogramView = signal<SonogramView>('flat');
+  readonly sonogramViews: { id: SonogramView; labelKey: string }[] = [
+    { id: 'flat', labelKey: 'recording.viewFlat' },
+    { id: 'waterfall', labelKey: 'recording.viewWaterfall' },
+  ];
 
   /** Top of the live spectrogram: the worker's FFT spans 0 Hz up to half the device sample rate. */
   private readonly nyquistKhz = isPlatformBrowser(inject(PLATFORM_ID)) ? RecordingComponent.deviceNyquistKhz() : null;

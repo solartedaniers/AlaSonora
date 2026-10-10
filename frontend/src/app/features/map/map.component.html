@@ -8,7 +8,18 @@
       <span class="material-symbols-outlined absolute inset-y-0 start-4 my-auto text-on-surface-variant pointer-events-none" aria-hidden="true">search</span>
       <input type="search" class="field-input ps-12" [placeholder]="'map.searchPlaceholder' | translate" />
     </label>
-    <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
+    <!-- En el celular los filtros se pliegan para que el mapa aparezca enseguida. -->
+    <button
+      type="button"
+      class="btn btn--quiet min-h-touch px-4 md:hidden"
+      aria-controls="map-filters"
+      [attr.aria-expanded]="filtersOpen()"
+      (click)="filtersOpen.set(!filtersOpen())"
+    >
+      <span class="material-symbols-outlined text-xl" aria-hidden="true">filter_alt</span>
+      {{ 'common.filter' | translate }}
+    </button>
+    <div id="map-filters" class="md:flex flex-wrap items-center gap-x-5 gap-y-2" [class.hidden]="!filtersOpen()" [class.flex]="filtersOpen()">
       <button type="button" class="btn btn--quiet min-h-touch px-4">
         <span class="material-symbols-outlined text-xl" aria-hidden="true">filter_alt</span>
         {{ 'map.filterFamily' | translate }}

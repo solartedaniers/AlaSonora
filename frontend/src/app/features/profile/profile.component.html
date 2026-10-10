@@ -1,7 +1,7 @@
 <div class="flex flex-col w-full min-h-dvh bg-surface text-on-surface">
   <app-nav-header />
 
-  <main class="w-full max-w-5xl mx-auto px-gutter py-10 flex flex-col gap-14">
+  <main class="w-full max-w-5xl mx-auto px-gutter py-6 sm:py-10 flex flex-col gap-10 sm:gap-14">
     @if (loadFailed()) {
       <div role="alert" class="flex items-start gap-3 rounded-xl bg-error-container text-on-error-container px-5 py-4">
         <span class="material-symbols-outlined shrink-0" aria-hidden="true">cloud_off</span>
@@ -133,11 +133,18 @@
 
       <div class="profile-setting">
         <h3 class="text-xl font-extrabold">{{ 'profile.appearance' | translate }}</h3>
-        <div class="segmented" role="group" [attr.aria-label]="'theme.switcherLabel' | translate">
+        <div class="segmented segmented--fill" role="group" [attr.aria-label]="'theme.switcherLabel' | translate">
           @for (opt of themeOptions; track opt.mode) {
-            <button type="button" class="segmented__option" [attr.aria-pressed]="theme.mode() === opt.mode" (click)="theme.setMode(opt.mode)">
+            <button
+              type="button"
+              class="segmented__option"
+              [attr.aria-pressed]="theme.mode() === opt.mode"
+              [attr.aria-label]="opt.labelKey | translate"
+              (click)="theme.setMode(opt.mode)"
+            >
               <span class="material-symbols-outlined" aria-hidden="true">{{ opt.icon }}</span>
-              {{ opt.labelKey | translate }}
+              <!-- En el celular bastan los íconos; el nombre sigue en aria-label. -->
+              <span class="hidden sm:inline" aria-hidden="true">{{ opt.labelKey | translate }}</span>
             </button>
           }
         </div>
@@ -145,7 +152,7 @@
 
       <div class="profile-setting">
         <h3 class="text-xl font-extrabold">{{ 'profile.languageTaxonomy' | translate }}</h3>
-        <div class="segmented" role="group" [attr.aria-label]="'common.langSwitcherLabel' | translate">
+        <div class="segmented segmented--fill" role="group" [attr.aria-label]="'common.langSwitcherLabel' | translate">
           @for (lang of langOptions; track lang) {
             <button type="button" class="segmented__option" [attr.aria-pressed]="i18n.lang() === lang" (click)="i18n.setLang(lang)">
               {{ ('common.languages.' + lang) | translate }}

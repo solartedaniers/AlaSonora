@@ -1,14 +1,15 @@
 <div class="flex flex-col w-full min-h-dvh bg-surface text-on-surface">
   <app-nav-header />
 
-  <main class="w-full max-w-7xl mx-auto px-gutter py-10 flex flex-col gap-10">
+  <main class="w-full max-w-7xl mx-auto px-gutter py-6 sm:py-10 flex flex-col gap-8 sm:gap-10">
     <header class="flex flex-wrap items-end justify-between gap-6">
       <div>
         <p class="eyebrow-label">{{ 'history.eyebrow' | translate }}</p>
         <h1 class="mt-2 text-5xl font-extrabold tracking-display">{{ 'history.title' | translate }}</h1>
-        <p class="mt-3 max-w-xl text-lg text-on-surface-variant">{{ 'history.subtitle' | translate }}</p>
+        <p class="mt-3 max-w-xl sm:text-lg text-on-surface-variant">{{ 'history.subtitle' | translate }}</p>
       </div>
-      <button type="button" class="btn btn--quiet">
+      <!-- Exportar aún no tiene función: en el celular no ocupa espacio. -->
+      <button type="button" class="btn btn--quiet hidden sm:inline-flex">
         <span class="material-symbols-outlined" aria-hidden="true">file_download</span>
         {{ 'history.export' | translate }}
       </button>
@@ -42,7 +43,7 @@
             (input)="searchTerm.set($any($event.target).value)"
           />
         </label>
-        <div class="segmented" role="group" [attr.aria-label]="'common.filter' | translate">
+        <div class="segmented segmented--fill" role="group" [attr.aria-label]="'common.filter' | translate">
           @for (status of statusFilters; track status.id) {
             <button type="button" class="segmented__option" [attr.aria-pressed]="statusFilter() === status.id" (click)="setStatusFilter(status.id)">
               {{ status.labelKey | translate }}

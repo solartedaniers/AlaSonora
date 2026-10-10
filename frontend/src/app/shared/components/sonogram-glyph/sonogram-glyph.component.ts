@@ -18,18 +18,21 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
       transform-box: fill-box;
       transform-origin: center bottom;
     }
-    // Al pasar sobre el enlace o botón que lo contiene, las tres notas saltan en secuencia.
-    :host-context(a:hover) path,
-    :host-context(button:hover) path {
-      animation: glyph-sing var(--duration-slow) var(--ease-out);
-    }
-    :host-context(a:hover) path:nth-child(2),
-    :host-context(button:hover) path:nth-child(2) {
-      animation-delay: 80ms;
-    }
-    :host-context(a:hover) path:nth-child(3),
-    :host-context(button:hover) path:nth-child(3) {
-      animation-delay: 160ms;
+    // Al pasar sobre el enlace o botón que lo contiene, las tres notas saltan en secuencia
+    // (solo con puntero real: en táctil el :hover se queda pegado tras el toque).
+    @media (hover: hover) {
+      :host-context(a:hover) path,
+      :host-context(button:hover) path {
+        animation: glyph-sing var(--duration-slow) var(--ease-out);
+      }
+      :host-context(a:hover) path:nth-child(2),
+      :host-context(button:hover) path:nth-child(2) {
+        animation-delay: 80ms;
+      }
+      :host-context(a:hover) path:nth-child(3),
+      :host-context(button:hover) path:nth-child(3) {
+        animation-delay: 160ms;
+      }
     }
     @keyframes glyph-sing {
       40% {

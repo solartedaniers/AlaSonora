@@ -18,11 +18,13 @@ import { I18nService } from '../../../core/services/i18n.service';
 import { MotionPreferenceService } from '../../../core/services/motion-preference.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { LIVE_INTENSITY_GAIN } from '../spectrogram-view/spectrogram-scale';
+import { SpectrogramPainter } from '../spectrogram-view/spectrogram-painter';
 import { WaterfallAxis, WaterfallPainter } from './waterfall-painter';
 
 // Suavizado del periodo entre columnas: estima cuánto avanzar entre una y otra.
 const PERIOD_SMOOTHING = 0.15;
 const DEFAULT_PERIOD_MS = 20;
+const MS_PER_SECOND = 1000;
 
 /**
  * 3D waterfall view of spectrogram frames.
@@ -46,7 +48,10 @@ export class SpectrogramWaterfallComponent implements AfterViewInit, OnDestroy {
   readonly rows = input(56);
   readonly maxKhz = input.required<number>();
   readonly stepKhz = input(2);
-  readonly windowSeconds = input.required<number>();
+  /** Seconds shown front to back; without it, derived from the measured frame rate (live audio). */
+  readonly windowSeconds = input<number | null>(null);
+  /** Share of the spectrum drawn, from 0 Hz up (display-only crop). */
+  readonly visibleFraction = input(1);
   readonly stepSeconds = input(1);
   readonly ariaLabelKey = input('common.spectrogramLabel');
 
@@ -58,6 +63,7 @@ export class SpectrogramWaterfallComponent implements AfterViewInit, OnDestroy {
 
   private painter?: WaterfallPainter;
   private history: Float32Array[] = [];
+  private lastFrame: SpectrogramFrame | null = null;
   private rafId?: number;
   private lastPushAt = 0;
   private periodMs = DEFAULT_PERIOD_MS;
@@ -113,7 +119,11 @@ export class SpectrogramWaterfallComponent implements AfterViewInit, OnDestroy {
 
   private loop = (now: number): void => {
     const frame = this.getFrame()();
-    if (frame) this.push(frame.magnitudes, now);
+    // Una fila por frame nuevo: el audio en vivo devuelve el mismo frame hasta que llega otro.
+    if (frame && frame !== this.lastFrame) {
+      this.lastFrame = frame;
+      this.push(frame.magnitudes, now);
+    }
     const advance = Math.min(1, (now - this.lastPushAt) / this.periodMs);
     this.paint(advance);
     this.rafId = requestAnimationFrame(this.loop);
@@ -127,14 +137,15 @@ export class SpectrogramWaterfallComponent implements AfterViewInit, OnDestroy {
   }
 
   private paint(advance: number): void {
-    this.painter?.draw(this.history, this.rows(), advance, (magnitude) => magnitude * LIVE_INTENSITY_GAIN, this.axis());
+    const visible = SpectrogramPainter.cropToFraction(this.history, this.visibleFraction());
+    this.painter?.draw(visible, this.rows(), advance, (magnitude) => magnitude * LIVE_INTENSITY_GAIN, this.axis());
   }
 
   private axis(): WaterfallAxis {
     return {
       maxKhz: this.maxKhz(),
       stepKhz: this.stepKhz(),
-      windowSeconds: this.windowSeconds(),
+      windowSeconds: this.windowSeconds() ?? Math.max(1, Math.floor((this.rows() * this.periodMs) / MS_PER_SECOND)),
       stepSeconds: this.stepSeconds(),
       khzUnit: this.i18n.translate('units.khz'),
       secondsAgo: this.i18n.translate('units.secondsAgo'),

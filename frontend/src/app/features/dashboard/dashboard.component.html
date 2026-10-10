@@ -2,7 +2,7 @@
   <app-field-backdrop />
   <app-nav-header />
 
-  <main class="relative z-10 w-full max-w-7xl mx-auto px-gutter py-12 flex flex-col gap-16">
+  <main class="relative z-10 w-full max-w-7xl mx-auto px-gutter py-8 sm:py-12 flex flex-col gap-12 sm:gap-16">
     <!-- Saludo: tipografía grande, sin caja -->
     <header class="flex flex-col gap-3">
       <p class="eyebrow-label">{{ 'dashboard.welcome' | translate }}</p>
@@ -20,11 +20,11 @@
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-4" [attr.aria-label]="'nav.record' | translate">
       <a routerLink="/record" class="dashboard-record chrome sing-on-hover lg:col-span-8" data-glow>
         <app-song-sonogram class="dashboard-record__sonogram" [band]="false" />
-        <span class="relative grid place-items-center w-16 h-16 shrink-0 rounded-full bg-sulfur text-on-sulfur">
+        <span class="relative grid place-items-center w-12 h-12 sm:w-16 sm:h-16 shrink-0 rounded-full bg-sulfur text-on-sulfur">
           <span class="material-symbols-outlined text-3xl" aria-hidden="true">mic</span>
         </span>
         <span class="relative flex flex-col gap-1">
-          <span class="font-display text-2xl font-extrabold">{{ 'dashboard.recordCta' | translate }}</span>
+          <span class="font-display text-xl sm:text-2xl font-extrabold">{{ 'dashboard.recordCta' | translate }}</span>
           <span class="text-on-surface-variant">{{ 'dashboard.recordCtaBody' | translate }}</span>
         </span>
         <span class="relative material-symbols-outlined ms-auto hidden sm:block text-3xl text-primary" aria-hidden="true">arrow_forward</span>

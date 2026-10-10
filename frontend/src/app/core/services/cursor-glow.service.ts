@@ -19,6 +19,8 @@ export class CursorGlowService {
 
   /** Call once in the browser. */
   start(): void {
+    // Sin puntero con hover (táctil) no hay brillo que seguir: no escucho nada.
+    if (!this.document.defaultView?.matchMedia('(hover: hover)').matches) return;
     // Fuera de la zona: mover el puntero nunca debe disparar detección de cambios.
     this.zone.runOutsideAngular(() => this.document.addEventListener('pointermove', this.onPointerMove, { passive: true }));
   }

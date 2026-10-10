@@ -1,14 +1,14 @@
 <div class="flex flex-col w-full min-h-dvh bg-surface text-on-surface">
   <app-nav-header />
 
-  <main class="w-full max-w-7xl mx-auto px-gutter py-10 flex flex-col gap-8">
+  <main class="w-full max-w-7xl mx-auto px-gutter py-6 sm:py-10 flex flex-col gap-6 sm:gap-8">
     <header class="flex flex-wrap items-end justify-between gap-6">
       <div>
         <p class="eyebrow-label">{{ 'recording.eyebrow' | translate }}</p>
         <h1 class="mt-2 text-5xl font-extrabold tracking-display">{{ 'recording.title' | translate }}</h1>
       </div>
 
-      <div class="segmented" role="tablist" [attr.aria-label]="'recording.tabsLabel' | translate">
+      <div class="segmented segmented--fill" role="tablist" [attr.aria-label]="'recording.tabsLabel' | translate">
         @for (tab of tabs; track tab.id) {
           <button
             type="button"
@@ -19,7 +19,7 @@
             [attr.aria-selected]="activeTab() === tab.id"
             (click)="setTab(tab.id)"
           >
-            <span class="material-symbols-outlined text-xl" aria-hidden="true">{{ tab.icon }}</span>
+            <span class="material-symbols-outlined text-xl hidden sm:inline-block" aria-hidden="true">{{ tab.icon }}</span>
             {{ tab.labelKey | translate }}
           </button>
         }
@@ -52,13 +52,26 @@
 
     @if (activeTab() === 'live') {
       <section id="record-panel-live" role="tabpanel" aria-labelledby="record-tab-live" class="flex flex-col gap-8">
-        <!-- Placa del sonograma en vivo: el visualizador real es el protagonista -->
-        <figure class="record-plate">
-          @if (plateMaxKhz) {
+        <!-- Placa del sonograma en vivo: el visualizador real es el protagonista, plano o en cascada 3D -->
+        <div class="flex justify-end">
+          <div class="segmented" role="group" [attr.aria-label]="'recording.viewLabel' | translate">
+            @for (option of sonogramViews; track option.id) {
+              <button type="button" class="segmented__option text-sm" [attr.aria-pressed]="sonogramView() === option.id" (click)="sonogramView.set(option.id)">
+                {{ option.labelKey | translate }}
+              </button>
+            }
+          </div>
+        </div>
+        <figure class="record-plate" [class.record-plate--waterfall]="sonogramView() === 'waterfall'">
+          @if (plateMaxKhz && sonogramView() === 'flat') {
             <app-frequency-axis class="record-plate__axis" [maxKhz]="plateMaxKhz" [stepKhz]="2" />
           }
           <div class="record-plate__screen">
-            <app-spectrogram-view class="block w-full h-full" [getFrame]="getLatestFrame" [columns]="liveColumns" [visibleFraction]="visibleFraction" growFrom="end" />
+            @if (sonogramView() === 'flat') {
+              <app-spectrogram-view class="block w-full h-full" [getFrame]="getLatestFrame" [columns]="liveColumns" [visibleFraction]="visibleFraction" growFrom="end" />
+            } @else if (plateMaxKhz) {
+              <app-spectrogram-waterfall class="w-full h-full" [getFrame]="getLatestFrame" [visibleFraction]="visibleFraction" [maxKhz]="plateMaxKhz" />
+            }
             @if (capture.isRecording()) {
               <span class="record-plate__playhead" aria-hidden="true"></span>
               <span class="record-plate__rec">

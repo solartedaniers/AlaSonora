@@ -18,6 +18,11 @@
   grid-column: 1;
 }
 
+// En 3D los ejes los dibuja la propia cascada: la pantalla ocupa todo el ancho.
+.record-plate--waterfall .record-plate__screen {
+  grid-column: 1 / -1;
+}
+
 .record-plate__screen {
   grid-column: 2;
   position: relative;
