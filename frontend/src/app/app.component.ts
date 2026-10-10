@@ -4,6 +4,7 @@ import { RouterOutlet } from '@angular/router';
 import { KhzRulerComponent } from './shared/components/khz-ruler/khz-ruler.component';
 import { ThemeService } from './core/services/theme.service';
 import { PendingRecordingsSyncService } from './core/services/pending-recordings-sync.service';
+import { CursorGlowService } from './core/services/cursor-glow.service';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,9 @@ export class AppComponent {
     // Lo inyecto aquí para que el tema se aplique al arrancar, aunque ninguna pantalla lo use.
     inject(ThemeService);
     // IndexedDB, Service Worker y eventos de red solo existen en el navegador.
-    if (isPlatformBrowser(inject(PLATFORM_ID))) inject(PendingRecordingsSyncService).start();
+    if (isPlatformBrowser(inject(PLATFORM_ID))) {
+      inject(PendingRecordingsSyncService).start();
+      inject(CursorGlowService).start();
+    }
   }
 }

@@ -6,7 +6,7 @@ import { AudioWorkerOutboundMessage, RecordingSpectrogramRequest } from '../../w
 const FFT_SIZE = 512;
 const COLUMN_COUNT = 160;
 // BirdNET analyzes 0–15 kHz; bins above that are only noise on screen.
-const MAX_DISPLAY_FREQUENCY_HZ = 15_000;
+export const MAX_DISPLAY_FREQUENCY_HZ = 15_000;
 // Any sample rate works here: decodeAudioData keeps the file's own rate.
 const DECODER_SAMPLE_RATE = 44_100;
 

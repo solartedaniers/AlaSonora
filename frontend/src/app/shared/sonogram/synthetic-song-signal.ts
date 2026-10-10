@@ -1,12 +1,13 @@
 import { SpectrogramFrame } from '../../core/services/audio-capture.service';
+import { LIVE_INTENSITY_GAIN } from '../components/spectrogram-view/spectrogram-scale';
 import { PHRASE_MAX_KHZ, PHRASE_WIDTH, SONG_PHRASE, SongNote, controlKhz } from './song-phrase';
 
 const BINS = 128;
 const COLUMNS_PER_SECOND = 50;
 const PHRASE_SECONDS = 2.4;
 const SILENCE_SECONDS = 1.0;
-// La vista en vivo multiplica las magnitudes ×6; este tope equivale a intensidad 1.
-const FULL_SCALE = 1 / 6;
+// Magnitud que, tras la ganancia de las vistas, equivale a intensidad 1.
+const FULL_SCALE = 1 / LIVE_INTENSITY_GAIN;
 const QUIET_NOTE_LEVEL = 0.62;
 const HARMONIC_LEVEL = 0.32;
 const BAND_SIGMA_BINS = 2.4;
@@ -24,16 +25,19 @@ export class SyntheticSongSignal {
   private columnIndex = 0;
   private lastColumnAt = -Infinity;
 
+  /** @param columnsPerSecond cadencia de columnas (menos columnas = ventana de tiempo más larga). */
+  constructor(private readonly columnsPerSecond = COLUMNS_PER_SECOND) {}
+
   /** Next column when one is due (fixed rate, independent of the screen refresh). */
   nextFrame(now = performance.now()): SpectrogramFrame | null {
-    if (now - this.lastColumnAt < 1000 / COLUMNS_PER_SECOND) return null;
+    if (now - this.lastColumnAt < 1000 / this.columnsPerSecond) return null;
     this.lastColumnAt = now;
-    return this.frameAt(this.columnIndex++ / COLUMNS_PER_SECOND);
+    return this.frameAt(this.columnIndex++ / this.columnsPerSecond);
   }
 
   /** The first `count` columns at once, so a view can start already full; streaming continues after them. */
   backfill(count: number): Float32Array[] {
-    return Array.from({ length: count }, () => this.frameAt(this.columnIndex++ / COLUMNS_PER_SECOND).magnitudes);
+    return Array.from({ length: count }, () => this.frameAt(this.columnIndex++ / this.columnsPerSecond).magnitudes);
   }
 
   /** Column at `seconds` into the looping phrase (phrase + silence). */
