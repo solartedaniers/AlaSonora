@@ -1,5 +1,6 @@
 import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { BrandMarkComponent } from '../brand-mark/brand-mark.component';
 import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
 import { LangToggleComponent } from '../lang-toggle/lang-toggle.component';
 import { TranslatePipe } from '../../pipes/translate.pipe';
@@ -9,116 +10,60 @@ import { NotificationsService } from '../../../core/services/notifications.servi
 import { AdminAccessService } from '../../../core/services/admin-access.service';
 import { environment } from '../../../../environments/environment';
 
+interface NavItem {
+  path: string;
+  labelKey: string;
+  protected: boolean;
+  adminOnly: boolean;
+}
+
+/**
+ * App header, shared by every screen. Lives in the `.chrome` token scope (the
+ * ink axis of the sonogram); signed-out visitors get a login call to action.
+ */
 @Component({
   selector: 'app-nav-header',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, ThemeToggleComponent, LangToggleComponent, TranslatePipe, SpeciesNamePipe],
+  imports: [RouterLink, RouterLinkActive, BrandMarkComponent, ThemeToggleComponent, LangToggleComponent, TranslatePipe, SpeciesNamePipe],
   changeDetection: ChangeDetectionStrategy.Eager,
-  // The host is the stacking context that bounds the notifications dropdown:
-  // it must sit above the page sections that follow it in the DOM (which use
-  // relative z-10 over the aurora background), or they paint over the panel.
-  host: { class: 'relative z-40' },
-  template: `
-    <header class="w-full bg-surface-container-low/90 backdrop-blur-md sticky top-0 z-40 px-4 sm:px-8 py-3 flex items-center justify-between shadow-sm">
-      <a routerLink="/" class="flex items-center gap-2.5 shrink-0">
-        <span class="material-symbols-outlined text-primary text-[26px]">graphic_eq</span>
-        <span class="font-display font-bold text-on-surface tracking-tight text-lg leading-none">
-          Ala<span class="text-primary">Sonora</span>
-        </span>
-      </a>
-
-      <nav class="hidden lg:flex items-center gap-1">
-        @for (item of navItems(); track item.path) {
-          <a
-            [routerLink]="item.path"
-            routerLinkActive="bg-surface-container-high text-primary shadow-inner"
-            class="px-3 py-2 rounded-lg font-display text-sm text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5"
-          >
-            <span class="material-symbols-outlined text-[18px]">{{ item.icon }}</span>
-            <span>{{ item.labelKey | translate }}</span>
-          </a>
-        }
-      </nav>
-
-      <div class="flex items-center gap-3">
-        <app-lang-toggle class="hidden sm:block" />
-        <app-theme-toggle class="hidden sm:block" />
-
-        <button
-          type="button"
-          class="lg:hidden w-9 h-9 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors"
-          [attr.aria-label]="'nav.menu' | translate"
-          (click)="mobileMenuOpen.update((open) => !open)"
-        >
-          <span class="material-symbols-outlined text-on-surface-variant text-[22px]">
-            {{ mobileMenuOpen() ? 'close' : 'menu' }}
-          </span>
-        </button>
-
-        <div class="relative">
-          <button
-            type="button"
-            class="relative w-9 h-9 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors"
-            [attr.aria-label]="'notifications.title' | translate"
-            (click)="toggleNotifications()"
-          >
-            <span class="material-symbols-outlined text-on-surface-variant text-[22px]">notifications</span>
-            @if (notifications.unseenCount() > 0) {
-              <span class="absolute top-0.5 right-0.5 min-w-[16px] h-[16px] px-1 rounded-full bg-error text-on-error text-[10px] leading-[16px] font-bold text-center">
-                {{ notifications.unseenCount() }}
-              </span>
-            }
-          </button>
-
-          @if (notificationsOpen()) {
-            <div class="absolute right-0 mt-2 w-72 max-h-96 overflow-y-auto bg-surface-container-low rounded-xl shadow-lg ring-1 ring-outline-variant/30 z-50">
-              <p class="px-4 py-2.5 font-display font-semibold text-sm border-b border-outline-variant/20">
-                {{ 'notifications.title' | translate }}
-              </p>
-              @if (notifications.notifications().length === 0) {
-                <p class="px-4 py-6 text-sm text-on-surface-variant text-center">
-                  {{ 'notifications.empty' | translate }}
-                </p>
-              } @else {
-                @for (item of notifications.notifications(); track item.id) {
-                  <div class="px-4 py-2.5 border-b border-outline-variant/10 last:border-0">
-                    <p class="text-sm font-medium">{{ item.species | speciesName }}</p>
-                    <p class="text-xs text-on-surface-variant">{{ item.observerName }} · {{ item.location.placeName }}</p>
-                  </div>
-                }
-              }
-            </div>
-          }
-        </div>
-
-        <img
-          [src]="user.currentUser()?.avatarUrl || 'assets/avatars/default.jpg'"
-          [alt]="user.currentUser()?.fullName ?? ''"
-          class="w-9 h-9 rounded-full object-cover shadow-sm ring-2 ring-primary/30 hidden sm:block"
-          onerror="this.style.display='none'"
-        />
-      </div>
-    </header>
-
-    @if (mobileMenuOpen()) {
-      <nav class="lg:hidden w-full bg-surface-container-low border-t border-outline-variant/20 px-4 py-2 sticky top-[60px] z-30 shadow-sm">
-        @for (item of navItems(); track item.path) {
-          <a
-            [routerLink]="item.path"
-            routerLinkActive="bg-surface-container-high text-primary"
-            class="px-3 py-2.5 rounded-lg font-display text-sm text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-2.5"
-            (click)="mobileMenuOpen.set(false)"
-          >
-            <span class="material-symbols-outlined text-[18px]">{{ item.icon }}</span>
-            <span>{{ item.labelKey | translate }}</span>
-          </a>
-        }
-        <!-- On phones the header row can't fit both toggles, so they live here instead. -->
-        <div class="sm:hidden flex items-center gap-3 px-3 py-2.5">
-          <app-lang-toggle />
-          <app-theme-toggle />
-        </div>
-      </nav>
+  // The host is the sticky stacking context: it must sit above the page
+  // sections (relative z-10 over the backdrop) or they paint over the menus.
+  host: {
+    class: 'chrome sticky top-0 z-40 block w-full border-b',
+    '(document:keydown.escape)': 'closeMenus()',
+  },
+  templateUrl: './nav-header.component.html',
+  styles: `
+    .notifications-panel {
+      max-width: calc(100vw - var(--space-gutter) * 2);
+    }
+    .header-scale {
+      position: relative;
+      height: calc(var(--space-unit) * 1.5);
+      background: repeating-linear-gradient(
+        to right,
+        var(--color-on-chrome-variant) 0 1px,
+        transparent 1px calc(var(--space-unit) * 4)
+      );
+    }
+    .header-scale__reading {
+      position: absolute;
+      inset: 0;
+      background: var(--color-sulfur);
+      transform-origin: left;
+      transform: scaleX(0);
+      animation: header-reading linear both;
+      animation-timeline: scroll(root block);
+    }
+    @keyframes header-reading {
+      to {
+        transform: scaleX(1);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .header-scale__reading {
+        animation: none;
+      }
     }
   `,
 })
@@ -129,18 +74,17 @@ export class NavHeaderComponent {
 
   readonly notificationsOpen = signal(false);
   readonly mobileMenuOpen = signal(false);
+  readonly avatarFailed = signal(false);
 
-  private readonly allNavItems = [
-    { path: '/dashboard', icon: 'home', labelKey: 'nav.dashboard', protected: true, adminOnly: false },
-    { path: '/record', icon: 'graphic_eq', labelKey: 'nav.record', protected: true, adminOnly: false },
+  private readonly allNavItems: NavItem[] = [
+    { path: '/dashboard', labelKey: 'nav.dashboard', protected: true, adminOnly: false },
+    { path: '/record', labelKey: 'nav.record', protected: true, adminOnly: false },
     // Hidden intentionally — see environment.photoIdentificationEnabled.
-    ...(environment.photoIdentificationEnabled
-      ? [{ path: '/photo-id', icon: 'add_a_photo', labelKey: 'nav.photoId', protected: true, adminOnly: false }]
-      : []),
-    { path: '/history', icon: 'library_music', labelKey: 'nav.history', protected: true, adminOnly: false },
-    { path: '/map', icon: 'map', labelKey: 'nav.map', protected: false, adminOnly: false },
-    { path: '/profile', icon: 'person', labelKey: 'nav.profile', protected: true, adminOnly: false },
-    { path: '/admin', icon: 'shield_person', labelKey: 'nav.admin', protected: true, adminOnly: true },
+    ...(environment.photoIdentificationEnabled ? [{ path: '/photo-id', labelKey: 'nav.photoId', protected: true, adminOnly: false }] : []),
+    { path: '/history', labelKey: 'nav.history', protected: true, adminOnly: false },
+    { path: '/map', labelKey: 'nav.map', protected: false, adminOnly: false },
+    { path: '/profile', labelKey: 'nav.profile', protected: true, adminOnly: false },
+    { path: '/admin', labelKey: 'nav.admin', protected: true, adminOnly: true },
   ];
 
   readonly navItems = computed(() =>
@@ -153,5 +97,10 @@ export class NavHeaderComponent {
   toggleNotifications(): void {
     this.notificationsOpen.update((open) => !open);
     if (this.notificationsOpen()) this.notifications.markSeen();
+  }
+
+  closeMenus(): void {
+    this.notificationsOpen.set(false);
+    this.mobileMenuOpen.set(false);
   }
 }

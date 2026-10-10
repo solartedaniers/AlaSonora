@@ -1,0 +1,119 @@
+<header class="h-header px-gutter flex items-center justify-between gap-2">
+  <app-brand-mark />
+
+  <nav class="hidden xl:flex items-center gap-1 h-full" [attr.aria-label]="'nav.menu' | translate">
+    @for (item of navItems(); track item.path) {
+      <a
+        [routerLink]="item.path"
+        routerLinkActive
+        ariaCurrentWhenActive="page"
+        class="sono-link h-full px-3 inline-flex items-center font-display text-sm font-semibold text-on-surface-variant hover:text-on-surface current:text-on-surface transition-colors"
+      >
+        {{ item.labelKey | translate }}
+      </a>
+    }
+  </nav>
+
+  <div class="flex items-center gap-1 sm:gap-2">
+    <app-lang-toggle class="hidden sm:inline-flex" />
+    <app-theme-toggle class="hidden sm:inline-flex" />
+
+    @if (user.currentUser(); as currentUser) {
+      <div class="relative">
+        <button
+          type="button"
+          class="relative w-touch h-touch grid place-items-center rounded-full text-on-surface-variant hover:text-on-surface transition-colors"
+          [attr.aria-label]="'notifications.title' | translate"
+          [attr.aria-expanded]="notificationsOpen()"
+          aria-controls="app-notifications"
+          (click)="toggleNotifications()"
+        >
+          <span class="material-symbols-outlined text-2xl" aria-hidden="true">notifications</span>
+          @if (notifications.unseenCount() > 0) {
+            <span class="absolute top-1.5 end-1.5 min-w-5 h-5 px-1 grid place-items-center rounded-full bg-sulfur text-on-sulfur font-data text-xs font-semibold">
+              {{ notifications.unseenCount() }}
+            </span>
+          }
+        </button>
+
+        @if (notificationsOpen()) {
+          <div
+            id="app-notifications"
+            class="absolute end-0 mt-2 w-72 notifications-panel max-h-96 overflow-y-auto rounded-xl bg-surface-container shadow-xl ring-1 ring-outline-variant z-50"
+          >
+            <p class="px-4 py-3 font-display font-semibold text-sm border-b">{{ 'notifications.title' | translate }}</p>
+            @for (item of notifications.notifications(); track item.id) {
+              <div class="px-4 py-3 border-b last:border-0">
+                <p class="text-sm font-semibold">{{ item.species | speciesName }}</p>
+                <p class="text-xs text-on-surface-variant">{{ item.observerName }} · {{ item.location.placeName }}</p>
+              </div>
+            } @empty {
+              <p class="px-4 py-6 text-sm text-on-surface-variant text-center">{{ 'notifications.empty' | translate }}</p>
+            }
+          </div>
+        }
+      </div>
+
+      <a
+        routerLink="/profile"
+        class="hidden sm:grid w-touch h-touch place-items-center rounded-full"
+        [attr.aria-label]="'nav.profile' | translate"
+      >
+        @if (currentUser.avatarUrl && !avatarFailed()) {
+          <img
+            [src]="currentUser.avatarUrl"
+            alt=""
+            class="w-9 h-9 rounded-full object-cover ring-2 ring-sulfur"
+            (error)="avatarFailed.set(true)"
+          />
+        } @else {
+          <span class="w-9 h-9 grid place-items-center rounded-full bg-chrome-raised ring-2 ring-sulfur" aria-hidden="true">
+            <span class="material-symbols-outlined text-xl">person</span>
+          </span>
+        }
+      </a>
+    } @else {
+      <a
+        routerLink="/login"
+        routerLinkActive="hidden"
+        class="h-touch px-3 sm:px-5 inline-flex items-center rounded-full bg-sulfur text-on-sulfur font-display text-sm font-bold whitespace-nowrap hover:shadow-md transition-shadow"
+      >
+        {{ 'nav.login' | translate }}
+      </a>
+    }
+
+    <button
+      type="button"
+      class="xl:hidden w-touch h-touch grid place-items-center rounded-full text-on-surface hover:bg-chrome-raised transition-colors"
+      [attr.aria-label]="'nav.menu' | translate"
+      [attr.aria-expanded]="mobileMenuOpen()"
+      aria-controls="app-mobile-menu"
+      (click)="mobileMenuOpen.update((open) => !open)"
+    >
+      <span class="material-symbols-outlined text-2xl" aria-hidden="true">{{ mobileMenuOpen() ? 'close' : 'menu' }}</span>
+    </button>
+  </div>
+</header>
+
+<!-- En móvil y tablet el borde de la cabecera hace de regla: marcas + línea de lectura. -->
+<div class="header-scale lg:hidden" aria-hidden="true"><span class="header-scale__reading"></span></div>
+
+@if (mobileMenuOpen()) {
+  <nav id="app-mobile-menu" class="xl:hidden border-t px-gutter py-2 flex flex-col" [attr.aria-label]="'nav.menu' | translate">
+    @for (item of navItems(); track item.path) {
+      <a
+        [routerLink]="item.path"
+        routerLinkActive
+        ariaCurrentWhenActive="page"
+        class="min-h-touch px-3 flex items-center border-s-4 border-transparent current:border-sulfur font-display text-base font-semibold text-on-surface-variant hover:text-on-surface current:text-on-surface transition-colors"
+        (click)="mobileMenuOpen.set(false)"
+      >
+        {{ item.labelKey | translate }}
+      </a>
+    }
+    <div class="sm:hidden flex flex-wrap items-center gap-3 px-3 py-3">
+      <app-lang-toggle />
+      <app-theme-toggle />
+    </div>
+  </nav>
+}

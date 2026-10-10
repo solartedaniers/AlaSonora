@@ -8,14 +8,11 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
   imports: [TranslatePipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   template: `
-    <div class="flex items-center bg-surface-container-lowest p-1 rounded-full" role="group" [attr.aria-label]="'common.langSwitcherLabel' | translate">
+    <div class="inline-flex items-center rounded-full ring-1 ring-outline-variant" role="group" [attr.aria-label]="'common.langSwitcherLabel' | translate">
       @for (option of options; track option) {
         <button
           type="button"
-          class="px-2.5 py-1 rounded-full font-data text-[11px] font-semibold transition-all"
-          [class.bg-surface-container-high]="i18n.lang() === option"
-          [class.text-primary]="i18n.lang() === option"
-          [class.text-on-surface-variant]="i18n.lang() !== option"
+          class="min-w-touch h-touch px-2 rounded-full font-data text-sm font-semibold transition-colors text-on-surface-variant hover:text-on-surface aria-pressed:bg-sulfur aria-pressed:text-on-sulfur"
           [attr.aria-pressed]="i18n.lang() === option"
           (click)="i18n.setLang(option)"
         >

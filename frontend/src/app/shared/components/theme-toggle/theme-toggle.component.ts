@@ -8,19 +8,17 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
   imports: [TranslatePipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   template: `
-    <div class="flex items-center bg-surface-container-lowest p-1 rounded-full" role="group" [attr.aria-label]="'theme.switcherLabel' | translate">
+    <div class="inline-flex items-center rounded-full ring-1 ring-outline-variant" role="group" [attr.aria-label]="'theme.switcherLabel' | translate">
       @for (option of options; track option.mode) {
         <button
           type="button"
-          class="p-1.5 rounded-full transition-colors"
-          [class.bg-surface-container-high]="theme.mode() === option.mode"
-          [class.text-primary]="theme.mode() === option.mode"
-          [class.text-on-surface-variant]="theme.mode() !== option.mode"
+          class="w-touch h-touch grid place-items-center rounded-full transition-colors text-on-surface-variant hover:text-on-surface aria-pressed:bg-sulfur aria-pressed:text-on-sulfur"
           [attr.aria-pressed]="theme.mode() === option.mode"
+          [attr.aria-label]="option.labelKey | translate"
           [title]="option.labelKey | translate"
           (click)="theme.setMode(option.mode)"
         >
-          <span class="material-symbols-outlined text-[18px] block">{{ option.icon }}</span>
+          <span class="material-symbols-outlined text-xl" aria-hidden="true">{{ option.icon }}</span>
         </button>
       }
     </div>
