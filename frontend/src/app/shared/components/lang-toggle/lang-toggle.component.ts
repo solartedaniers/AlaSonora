@@ -12,7 +12,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
       @for (option of options; track option) {
         <button
           type="button"
-          class="px-2.5 py-1 rounded-full font-mono text-[11px] font-semibold transition-all"
+          class="px-2.5 py-1 rounded-full font-data text-[11px] font-semibold transition-all"
           [class.bg-surface-container-high]="i18n.lang() === option"
           [class.text-primary]="i18n.lang() === option"
           [class.text-on-surface-variant]="i18n.lang() !== option"

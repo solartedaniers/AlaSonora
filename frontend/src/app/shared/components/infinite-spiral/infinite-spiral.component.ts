@@ -58,7 +58,7 @@ export interface SpiralItem {
       transform: rotateY(calc(var(--i) * (360deg / var(--count)))) translateZ(220px);
       border-radius: 1rem;
       overflow: hidden;
-      box-shadow: 0 12px 30px rgb(0 0 0 / 25%);
+      box-shadow: var(--shadow-xl);
     }
     .spiral-item img {
       width: 100%;

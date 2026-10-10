@@ -8,7 +8,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
   changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <span
-      class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-mono text-[11px] font-semibold"
+      class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-data text-[11px] font-semibold"
       [class]="tierClasses()"
     >
       <span class="w-1.5 h-1.5 rounded-full" [class]="dotClasses()"></span>
