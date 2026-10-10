@@ -4,11 +4,16 @@ import {
   ElementRef,
   NgZone,
   OnDestroy,
+  PLATFORM_ID,
   ViewChild,
+  effect,
+  inject,
   input,
   ChangeDetectionStrategy
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { SpectrogramFrame } from '../../../core/services/audio-capture.service';
+import { ThemeService } from '../../../core/services/theme.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { SpectrogramPainter } from './spectrogram-painter';
 
@@ -40,24 +45,40 @@ const LIVE_INTENSITY_GAIN = 6;
   imports: [TranslatePipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   template: `
-    <canvas #canvas class="w-full h-full block" [attr.aria-label]="'common.spectrogramLabel' | translate"></canvas>
+    <canvas #canvas class="w-full h-full block" role="img" [attr.aria-label]="ariaLabelKey() | translate"></canvas>
   `,
 })
 export class SpectrogramViewComponent implements AfterViewInit, OnDestroy {
   readonly getFrame = input.required<() => SpectrogramFrame | null>();
+  /** Visible columns: fewer = wider, more legible bars. */
+  readonly columns = input(48);
+  /** Where new columns appear until the view fills: centered, or at the right edge like a scrolling sonogram. */
+  readonly growFrom = input<'center' | 'end'>('center');
+  readonly ariaLabelKey = input('common.spectrogramLabel');
+  /** Columns already on screen when the view starts (e.g. a demo that opens full). */
+  readonly initialColumns = input<Float32Array[]>([]);
 
   @ViewChild('canvas') private canvasRef!: ElementRef<HTMLCanvasElement>;
 
   private painter?: SpectrogramPainter;
   private rafId?: number;
   private history: Float32Array[] = [];
-  // Menos columnas = barras más anchas y visibles (antes 200, casi ilegibles).
-  private readonly maxColumns = 48;
+  // En SSR/prerender no hay canvas real: no se pinta nada.
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-  constructor(private readonly zone: NgZone) {}
+  constructor(private readonly zone: NgZone) {
+    // Al cambiar de tema, el pintor vuelve a leer los tokens y repinta lo que ya tenía.
+    const theme = inject(ThemeService);
+    effect(() => {
+      theme.resolvedTheme();
+      if (this.isBrowser && this.canvasRef) this.resetPainter();
+    });
+  }
 
   ngAfterViewInit(): void {
-    this.painter = new SpectrogramPainter(this.canvasRef.nativeElement);
+    if (!this.isBrowser) return;
+    this.history = this.initialColumns().slice(-this.columns());
+    this.resetPainter();
     // El bucle de dibujo no necesita disparar detección de cambios de
     // Angular en cada frame — corre fuera de la zona.
     this.zone.runOutsideAngular(() => this.loop());
@@ -75,10 +96,20 @@ export class SpectrogramViewComponent implements AfterViewInit, OnDestroy {
 
   private pushAndDraw(frame: SpectrogramFrame): void {
     this.history.push(frame.magnitudes);
-    if (this.history.length > this.maxColumns) this.history.shift();
-    // Mientras no se ha llenado el historial, las columnas nacen centradas en
-    // el visualizador y crecen hacia los bordes.
-    const firstSlot = Math.floor((this.maxColumns - this.history.length) / 2);
-    this.painter?.draw(this.history, (magnitude) => magnitude * LIVE_INTENSITY_GAIN, this.maxColumns, firstSlot);
+    if (this.history.length > this.columns()) this.history.shift();
+    this.draw();
+  }
+
+  private resetPainter(): void {
+    this.painter = new SpectrogramPainter(this.canvasRef.nativeElement);
+    this.draw();
+  }
+
+  private draw(): void {
+    const maxColumns = this.columns();
+    const free = maxColumns - this.history.length;
+    // Mientras no se llena el historial, las columnas nacen centradas o en el borde derecho.
+    const firstSlot = this.growFrom() === 'end' ? free : Math.floor(free / 2);
+    this.painter?.draw(this.history, (magnitude) => magnitude * LIVE_INTENSITY_GAIN, maxColumns, firstSlot);
   }
 }
