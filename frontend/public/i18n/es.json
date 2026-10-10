@@ -380,5 +380,8 @@
     "map": "Mapa Público",
     "profile": "Mi Perfil",
     "admin": "Administración"
+  },
+  "units": {
+    "khz": "kHz"
   }
 }

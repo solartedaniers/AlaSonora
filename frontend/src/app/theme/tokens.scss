@@ -68,6 +68,16 @@
   --color-focus: #0f4c5c;
   --color-shadow: #0b1d22;
   --color-scrim: #0b1d22;
+
+  // Marco de la app (cabecera + regla de kHz): los ejes del sonograma en tinta.
+  --color-chrome: #0f4c5c;
+  --color-chrome-raised: #17606f;
+  --color-on-chrome: #ffffff;
+  --color-on-chrome-variant: #c4dce2;
+  --color-chrome-line: #3a7686;
+
+  // Intensidad de la banda azufre del fondo sonograma.
+  --backdrop-band-opacity: 0.16;
 }
 
 @mixin dark-palette {
@@ -127,6 +137,14 @@
   --color-focus: #f2c230;
   --color-shadow: #000000;
   --color-scrim: #000000;
+
+  --color-chrome: #0b1418;
+  --color-chrome-raised: #17242a;
+  --color-on-chrome: #e6eef0;
+  --color-on-chrome-variant: #9db0b6;
+  --color-chrome-line: #3a5059;
+
+  --backdrop-band-opacity: 0.06;
 }
 
 :root,
@@ -178,6 +196,10 @@
   --space-gutter: clamp(1rem, 0.5rem + 2.5vw, 3rem);
   --space-section: clamp(3rem, 1.5rem + 6vw, 8rem);
   --touch-target: 2.75rem;
+
+  // Marco: alto de cabecera y ancho de la regla de kHz (solo en escritorio).
+  --header-height: 4rem;
+  --ruler-size: 2.75rem;
 
   // Radios: esquinas cortas, casi sin cajas.
   --radius-none: 0;

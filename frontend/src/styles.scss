@@ -58,6 +58,64 @@
   }
 }
 
+// En escritorio la regla de kHz ocupa el borde izquierdo de la ventana.
+@screen lg {
+  body {
+    padding-inline-start: var(--ruler-size);
+  }
+}
+
+@layer components {
+  // Marco de la app (cabecera, regla): redefino los tokens en este ámbito para
+  // que cualquier componente hijo (toggles, menús) se adapte sin variantes.
+  .chrome {
+    --color-surface: var(--color-chrome);
+    --color-surface-container-lowest: var(--color-chrome-raised);
+    --color-surface-container-low: var(--color-chrome);
+    --color-surface-container: var(--color-chrome-raised);
+    --color-surface-container-high: var(--color-chrome-raised);
+    --color-on-surface: var(--color-on-chrome);
+    --color-on-surface-variant: var(--color-on-chrome-variant);
+    --color-outline-variant: var(--color-chrome-line);
+    --color-focus: var(--color-sulfur);
+    background-color: var(--color-chrome);
+    color: var(--color-on-chrome);
+  }
+
+  // Subrayado sonograma: una onda azufre bajo el enlace. Activo = visible;
+  // al pasar el cursor la onda "vibra" desplazándose.
+  .sono-link {
+    position: relative;
+  }
+  .sono-link::after {
+    content: '';
+    position: absolute;
+    inset-inline: calc(var(--space-unit) * 3);
+    bottom: calc(var(--space-unit) * 1);
+    height: calc(var(--space-unit) * 1.5);
+    background-color: var(--color-sulfur);
+    // La máscara solo aporta la forma de la onda; su color no se pinta.
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 6'%3E%3Cpath d='M0 3 Q3 0 6 3 T12 3' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E")
+      0 0 / calc(var(--space-unit) * 3) 100% repeat-x;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+  .sono-link:hover::after,
+  .sono-link[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+  .sono-link:hover::after {
+    animation: sono-vibrate var(--duration-slow) linear infinite;
+  }
+}
+
+@keyframes sono-vibrate {
+  to {
+    mask-position: calc(var(--space-unit) * 3) 0;
+  }
+}
+
 // Respeto global de reduced motion (los tokens de duración ya bajan a ~0).
 @media (prefers-reduced-motion: reduce) {
   *,

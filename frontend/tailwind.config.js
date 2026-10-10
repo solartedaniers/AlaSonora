@@ -17,6 +17,7 @@ const COLOR_TOKENS = [
   'surface-container-high', 'surface-container-highest',
   'outline', 'outline-variant',
   'sulfur', 'on-sulfur', 'record', 'on-record', 'focus', 'scrim',
+  'chrome', 'chrome-raised', 'on-chrome', 'on-chrome-variant', 'chrome-line',
 ];
 
 // Opacity modifiers (`bg-primary/20`) can't be applied to a bare var(), so they
@@ -61,6 +62,8 @@ module.exports = {
       gutter: 'var(--space-gutter)',
       section: 'var(--space-section)',
       touch: 'var(--touch-target)',
+      header: 'var(--header-height)',
+      ruler: 'var(--ruler-size)',
     },
     borderRadius: {
       none: 'var(--radius-none)',
@@ -146,5 +149,8 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // `current:` styles the active route link through its aria-current attribute.
+    ({ addVariant }) => addVariant('current', '&[aria-current="page"]'),
+  ],
 };
