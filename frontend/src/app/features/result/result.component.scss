@@ -1,0 +1,125 @@
+// Titular asimétrico: la especie a la izquierda, sus láminas a la derecha.
+.result-hero {
+  display: grid;
+  gap: calc(var(--space-unit) * 10);
+
+  @screen lg {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    align-items: start;
+  }
+}
+
+.result-plates {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-unit) * 4);
+}
+
+// Lámina impresa: foto con pie, sin sombra dura.
+.result-print {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: var(--color-surface-container-high);
+  box-shadow: var(--shadow-lg);
+  outline: calc(var(--space-unit) * 1.5) solid var(--color-surface-container-lowest);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  figcaption {
+    position: absolute;
+    inset-inline-start: calc(var(--space-unit) * 3);
+    bottom: calc(var(--space-unit) * 3);
+    padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 3);
+    border-radius: var(--radius-full);
+    background: var(--color-surface-container-lowest);
+    color: var(--color-on-surface);
+    font-family: var(--font-data);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+  }
+}
+
+.result-print--observer figcaption {
+  background: var(--color-sulfur);
+  color: var(--color-on-sulfur);
+}
+
+.result-play {
+  width: calc(var(--space-unit) * 14);
+  height: calc(var(--space-unit) * 14);
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  box-shadow: var(--shadow-md);
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Placa del sonograma de la grabación (misma escala 0–12 kHz que Grabar).
+.result-plate {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.result-plate__screen {
+  position: relative;
+  height: clamp(calc(var(--space-unit) * 52), 36dvh, calc(var(--space-unit) * 88));
+  background: var(--color-spectro-floor);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.result-columns {
+  display: grid;
+  gap: calc(var(--space-unit) * 14);
+
+  @screen lg {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+// Candidato: nombre · medidor · porcentaje, sobre un filete.
+.result-candidate {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) calc(var(--space-unit) * 24) calc(var(--space-unit) * 12);
+  align-items: center;
+  gap: calc(var(--space-unit) * 4);
+  padding-block: calc(var(--space-unit) * 4);
+  border-block-end: 1px solid var(--color-outline-variant);
+}
+
+.result-candidate__meter {
+  height: calc(var(--space-unit) * 2);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-container-highest);
+  overflow: hidden;
+
+  > span {
+    display: block;
+    height: 100%;
+    background: var(--color-primary);
+  }
+}
+
+.result-notebook {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-unit) * 10);
+  max-width: 48rem;
+}

@@ -1,6 +1,5 @@
 <div class="flex flex-col w-full min-h-dvh bg-surface text-on-surface">
   <app-nav-header />
-  <app-offline-banner />
 
   <main class="w-full max-w-7xl mx-auto px-gutter py-10 flex flex-col gap-8">
     <header class="flex flex-wrap items-end justify-between gap-6">
@@ -9,12 +8,12 @@
         <h1 class="mt-2 text-5xl font-extrabold tracking-display">{{ 'recording.title' | translate }}</h1>
       </div>
 
-      <div class="record-tabs" role="tablist" [attr.aria-label]="'recording.tabsLabel' | translate">
+      <div class="segmented" role="tablist" [attr.aria-label]="'recording.tabsLabel' | translate">
         @for (tab of tabs; track tab.id) {
           <button
             type="button"
             role="tab"
-            class="record-tabs__tab"
+            class="segmented__option"
             [id]="'record-tab-' + tab.id"
             [attr.aria-controls]="'record-panel-' + tab.id"
             [attr.aria-selected]="activeTab() === tab.id"
@@ -55,11 +54,11 @@
       <section id="record-panel-live" role="tabpanel" aria-labelledby="record-tab-live" class="flex flex-col gap-8">
         <!-- Placa del sonograma en vivo: el visualizador real es el protagonista -->
         <figure class="record-plate">
-          @if (maxKhz) {
-            <app-frequency-axis class="record-plate__axis" [maxKhz]="maxKhz" />
+          @if (plateMaxKhz) {
+            <app-frequency-axis class="record-plate__axis" [maxKhz]="plateMaxKhz" [stepKhz]="2" />
           }
           <div class="record-plate__screen">
-            <app-spectrogram-view class="block w-full h-full" [getFrame]="getLatestFrame" [columns]="liveColumns" growFrom="end" />
+            <app-spectrogram-view class="block w-full h-full" [getFrame]="getLatestFrame" [columns]="liveColumns" [visibleFraction]="visibleFraction" growFrom="end" />
             @if (capture.isRecording()) {
               <span class="record-plate__playhead" aria-hidden="true"></span>
               <span class="record-plate__rec">

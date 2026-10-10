@@ -3,7 +3,6 @@ import { DecimalPipe, isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
-import { OfflineBannerComponent } from '../../shared/components/offline-banner/offline-banner.component';
 import { SpectrogramViewComponent } from '../../shared/components/spectrogram-view/spectrogram-view.component';
 import { FrequencyAxisComponent } from '../../shared/components/frequency-axis/frequency-axis.component';
 import { SongSonogramComponent } from '../../shared/components/song-sonogram/song-sonogram.component';
@@ -29,6 +28,8 @@ const NO_SPECIES_IDENTIFIED_DETAIL = 'No bird species were identified in this re
 const LIVE_COLUMNS = 120;
 const LEVEL_FLOOR_DB = -60;
 const HZ_PER_KHZ = 1000;
+// La placa muestra 0–12 kHz, la banda del canto; el audio analizado no se recorta.
+const PLATE_MAX_KHZ = 12;
 
 @Component({
   selector: 'app-recording',
@@ -36,7 +37,6 @@ const HZ_PER_KHZ = 1000;
   imports: [
     DecimalPipe,
     NavHeaderComponent,
-    OfflineBannerComponent,
     SpectrogramViewComponent,
     FrequencyAxisComponent,
     SongSonogramComponent,
@@ -69,7 +69,10 @@ export class RecordingComponent {
   readonly liveColumns = LIVE_COLUMNS;
 
   /** Top of the live spectrogram: the worker's FFT spans 0 Hz up to half the device sample rate. */
-  readonly maxKhz = isPlatformBrowser(inject(PLATFORM_ID)) ? RecordingComponent.deviceNyquistKhz() : null;
+  private readonly nyquistKhz = isPlatformBrowser(inject(PLATFORM_ID)) ? RecordingComponent.deviceNyquistKhz() : null;
+  readonly plateMaxKhz = this.nyquistKhz ? Math.min(PLATE_MAX_KHZ, this.nyquistKhz) : null;
+  /** Share of the FFT bins drawn so the plate spans 0…plateMaxKhz. */
+  readonly visibleFraction = this.nyquistKhz && this.plateMaxKhz ? this.plateMaxKhz / this.nyquistKhz : 1;
 
   /** Live readings straight from the worker's last frame (null while idle). */
   readonly peakKhz = computed(() => {
