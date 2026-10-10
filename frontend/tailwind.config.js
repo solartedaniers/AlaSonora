@@ -1,93 +1,143 @@
+/**
+ * Tailwind is only a helper here: every value comes from the CSS variables in
+ * src/app/theme/tokens.scss. The default palette, spacing, radii, shadows and
+ * type scale are replaced (not extended), so classes like `bg-white` or
+ * `text-gray-700` simply don't exist.
+ */
+
+const COLOR_TOKENS = [
+  'primary', 'on-primary', 'primary-container', 'on-primary-container',
+  'secondary', 'on-secondary', 'secondary-container', 'on-secondary-container',
+  'tertiary', 'on-tertiary', 'tertiary-container', 'on-tertiary-container',
+  'error', 'on-error', 'error-container', 'on-error-container',
+  'success', 'on-success', 'success-container', 'on-success-container',
+  'warning', 'warning-container', 'on-warning-container',
+  'surface', 'on-surface', 'on-surface-variant',
+  'surface-container-lowest', 'surface-container-low', 'surface-container',
+  'surface-container-high', 'surface-container-highest',
+  'outline', 'outline-variant',
+  'sulfur', 'on-sulfur', 'record', 'on-record', 'focus', 'scrim',
+];
+
+// Opacity modifiers (`bg-primary/20`) can't be applied to a bare var(), so they
+// are resolved with color-mix against the same token.
+const tokenColor = (name) => ({ opacityValue }) => {
+  const color = `var(--color-${name})`;
+  if (opacityValue === undefined) return color;
+  const numeric = Number(opacityValue);
+  const amount = Number.isNaN(numeric) ? `calc(${opacityValue} * 100%)` : `${numeric * 100}%`;
+  return `color-mix(in srgb, ${color} ${amount}, transparent)`;
+};
+
+const SPACING_STEPS = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 72, 80, 96];
+
+const scale = (prefix, keys) => Object.fromEntries(keys.map((key) => [key, `var(--${prefix}-${key})`]));
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/**/*.{html,ts}'],
-  darkMode: 'class', // toggled via .theme-dark / .theme-light on <html>
+  darkMode: ['class', '.theme-dark'],
+  // The color functions above already handle opacity, so the legacy
+  // `--tw-*-opacity` plumbing is unnecessary.
+  corePlugins: {
+    backgroundOpacity: false,
+    textOpacity: false,
+    borderOpacity: false,
+    divideOpacity: false,
+    placeholderOpacity: false,
+    ringOpacity: false,
+  },
   theme: {
+    colors: {
+      transparent: 'transparent',
+      current: 'currentColor',
+      inherit: 'inherit',
+      ...Object.fromEntries(COLOR_TOKENS.map((name) => [name, tokenColor(name)])),
+    },
+    spacing: {
+      0: '0',
+      px: '1px',
+      ...Object.fromEntries(SPACING_STEPS.map((step) => [step, `calc(var(--space-unit) * ${step})`])),
+      gutter: 'var(--space-gutter)',
+      section: 'var(--space-section)',
+      touch: 'var(--touch-target)',
+    },
+    borderRadius: {
+      none: 'var(--radius-none)',
+      xs: 'var(--radius-xs)',
+      sm: 'var(--radius-sm)',
+      DEFAULT: 'var(--radius-sm)',
+      md: 'var(--radius-md)',
+      lg: 'var(--radius-lg)',
+      xl: 'var(--radius-xl)',
+      '2xl': 'var(--radius-2xl)',
+      '3xl': 'var(--radius-3xl)',
+      full: 'var(--radius-full)',
+    },
+    boxShadow: {
+      none: 'none',
+      sm: 'var(--shadow-sm)',
+      DEFAULT: 'var(--shadow-md)',
+      md: 'var(--shadow-md)',
+      lg: 'var(--shadow-lg)',
+      xl: 'var(--shadow-xl)',
+      '2xl': 'var(--shadow-xl)',
+      inner: 'var(--shadow-inner)',
+    },
+    fontFamily: {
+      display: 'var(--font-display)',
+      body: 'var(--font-body)',
+      data: ['var(--font-data)', { fontFeatureSettings: '"tnum"' }],
+    },
+    fontSize: {
+      xs: ['var(--text-xs)', { lineHeight: 'var(--leading-snug)' }],
+      sm: ['var(--text-sm)', { lineHeight: 'var(--leading-normal)' }],
+      base: ['var(--text-base)', { lineHeight: 'var(--leading-normal)' }],
+      lg: ['var(--text-lg)', { lineHeight: 'var(--leading-normal)' }],
+      xl: ['var(--text-xl)', { lineHeight: 'var(--leading-snug)' }],
+      '2xl': ['var(--text-2xl)', { lineHeight: 'var(--leading-snug)' }],
+      '3xl': ['var(--text-3xl)', { lineHeight: 'var(--leading-tight)' }],
+      '4xl': ['var(--text-4xl)', { lineHeight: 'var(--leading-tight)' }],
+      '5xl': ['var(--text-5xl)', { lineHeight: 'var(--leading-tight)' }],
+      '6xl': ['var(--text-6xl)', { lineHeight: 'var(--leading-tight)' }],
+    },
+    fontWeight: {
+      normal: 'var(--weight-regular)',
+      medium: 'var(--weight-medium)',
+      semibold: 'var(--weight-semibold)',
+      bold: 'var(--weight-bold)',
+      extrabold: 'var(--weight-black)',
+    },
+    lineHeight: scale('leading', ['none', 'tight', 'snug', 'normal', 'relaxed']),
+    letterSpacing: {
+      display: 'var(--tracking-display)',
+      tight: 'var(--tracking-tight)',
+      normal: 'var(--tracking-normal)',
+      wide: 'var(--tracking-wide)',
+      wider: 'var(--tracking-wider)',
+      widest: 'var(--tracking-wider)',
+    },
+    transitionDuration: { DEFAULT: 'var(--duration-base)', ...scale('duration', ['instant', 'fast', 'base', 'slow']) },
+    transitionTimingFunction: {
+      DEFAULT: 'var(--ease-standard)',
+      linear: 'linear',
+      ...scale('ease', ['standard', 'in', 'out', 'in-out']),
+    },
+    animation: {
+      none: 'none',
+      spin: 'spin var(--duration-spin) linear infinite',
+      ping: 'ping var(--duration-spin) var(--ease-out) infinite',
+      pulse: 'pulse var(--duration-pulse) var(--ease-in-out) infinite',
+      float: 'float var(--duration-float) var(--ease-in-out) infinite',
+      scan: 'scan var(--duration-sweep) linear infinite',
+    },
     extend: {
-      colors: {
-        primary: 'var(--color-primary)',
-        'on-primary': 'var(--color-on-primary)',
-        'primary-container': 'var(--color-primary-container)',
-        'on-primary-container': 'var(--color-on-primary-container)',
-        'primary-fixed': 'var(--color-primary-fixed)',
-        'primary-fixed-dim': 'var(--color-primary-fixed-dim)',
-        'on-primary-fixed': 'var(--color-on-primary-fixed)',
-        'on-primary-fixed-variant': 'var(--color-on-primary-fixed-variant)',
-
-        secondary: 'var(--color-secondary)',
-        'on-secondary': 'var(--color-on-secondary)',
-        'secondary-container': 'var(--color-secondary-container)',
-        'on-secondary-container': 'var(--color-on-secondary-container)',
-        'secondary-fixed': 'var(--color-secondary-fixed)',
-        'secondary-fixed-dim': 'var(--color-secondary-fixed-dim)',
-        'on-secondary-fixed': 'var(--color-on-secondary-fixed)',
-        'on-secondary-fixed-variant': 'var(--color-on-secondary-fixed-variant)',
-
-        tertiary: 'var(--color-tertiary)',
-        'on-tertiary': 'var(--color-on-tertiary)',
-        'tertiary-container': 'var(--color-tertiary-container)',
-        'on-tertiary-container': 'var(--color-on-tertiary-container)',
-        'tertiary-fixed': 'var(--color-tertiary-fixed)',
-        'tertiary-fixed-dim': 'var(--color-tertiary-fixed-dim)',
-        'on-tertiary-fixed': 'var(--color-on-tertiary-fixed)',
-        'on-tertiary-fixed-variant': 'var(--color-on-tertiary-fixed-variant)',
-
-        error: 'var(--color-error)',
-        'on-error': 'var(--color-on-error)',
-        'error-container': 'var(--color-error-container)',
-        'on-error-container': 'var(--color-on-error-container)',
-
-        background: 'var(--color-background)',
-        'on-background': 'var(--color-on-background)',
-        surface: 'var(--color-surface)',
-        'on-surface': 'var(--color-on-surface)',
-        'surface-variant': 'var(--color-surface-variant)',
-        'on-surface-variant': 'var(--color-on-surface-variant)',
-        'surface-dim': 'var(--color-surface-dim)',
-        'surface-bright': 'var(--color-surface-bright)',
-        'surface-container-lowest': 'var(--color-surface-container-lowest)',
-        'surface-container-low': 'var(--color-surface-container-low)',
-        'surface-container': 'var(--color-surface-container)',
-        'surface-container-high': 'var(--color-surface-container-high)',
-        'surface-container-highest': 'var(--color-surface-container-highest)',
-
-        outline: 'var(--color-outline)',
-        'outline-variant': 'var(--color-outline-variant)',
-        'inverse-surface': 'var(--color-inverse-surface)',
-        'inverse-on-surface': 'var(--color-inverse-on-surface)',
-        'inverse-primary': 'var(--color-inverse-primary)',
-        'surface-tint': 'var(--color-surface-tint)',
-      },
-      fontFamily: {
-        display: ['var(--font-display)'],
-        body: ['var(--font-body)'],
-        mono: ['var(--font-mono)'],
-      },
-      spacing: {
-        'space-3xl': '4rem',
-        'space-2xl': '3rem',
-        'space-xl': '2rem',
-        'space-lg': '1.5rem',
-        'space-md': '1rem',
-        'space-sm': '0.75rem',
-        'space-xs': '0.5rem',
-        'space-2xs': '0.25rem',
-        'touch-target-min': '3rem',
-      },
-      borderRadius: {
-        DEFAULT: '0.25rem',
-        lg: '0.5rem',
-        xl: '0.75rem',
-        '2xl': '1rem',
-      },
-      animation: {
-        float: 'float 5s ease-in-out infinite',
-        scan: 'scan 3s linear infinite',
-      },
+      ringColor: { DEFAULT: 'var(--color-focus)' },
+      borderColor: { DEFAULT: 'var(--color-outline-variant)' },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-8px)' },
+          '50%': { transform: 'translateY(calc(var(--space-unit) * -2))' },
         },
         scan: {
           '0%': { left: '8%' },
