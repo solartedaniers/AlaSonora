@@ -2,9 +2,9 @@ import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy, 
 import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
-import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme-toggle.component';
-import { LangToggleComponent } from '../../shared/components/lang-toggle/lang-toggle.component';
-import { SoftAuroraComponent } from '../../shared/components/soft-aurora/soft-aurora.component';
+import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
+import { SiteFooterComponent } from '../../shared/components/site-footer/site-footer.component';
+import { FieldBackdropComponent } from '../../shared/components/field-backdrop/field-backdrop.component';
 import { CountUpComponent } from '../../shared/components/count-up/count-up.component';
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
 import { SpectrogramViewComponent } from '../../shared/components/spectrogram-view/spectrogram-view.component';
@@ -20,9 +20,9 @@ import { SpectrogramFrame } from '../../core/services/audio-capture.service';
   imports: [
     RouterLink,
     TranslatePipe,
-    ThemeToggleComponent,
-    LangToggleComponent,
-    SoftAuroraComponent,
+    NavHeaderComponent,
+    SiteFooterComponent,
+    FieldBackdropComponent,
     CountUpComponent,
     ConfidenceBadgeComponent,
     SpectrogramViewComponent,

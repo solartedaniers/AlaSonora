@@ -1,16 +1,8 @@
-<div class="min-h-dvh w-full flex flex-col items-center bg-surface px-4 py-3 sm:py-5 relative overflow-hidden">
-  <app-soft-aurora />
+<div class="min-h-dvh w-full flex flex-col bg-surface relative">
+  <app-field-backdrop />
+  <app-nav-header />
 
-  <div class="w-full max-w-md flex items-center justify-between mb-3 z-10">
-    <a routerLink="/" class="flex items-center gap-2 text-on-surface">
-      <span class="material-symbols-outlined text-primary">graphic_eq</span>
-      <span class="font-display font-bold">AlaSonora</span>
-    </a>
-    <div class="flex items-center gap-2">
-      <app-lang-toggle />
-      <app-theme-toggle />
-    </div>
-  </div>
+  <main class="relative z-10 flex-1 w-full flex flex-col items-center px-4 py-3 sm:py-5">
 
   <div class="w-full max-w-md flex-1 flex items-center z-10">
   <div appBorderGlow class="glass-card w-full rounded-2xl shadow-xl p-5 sm:p-7 relative overflow-hidden">
@@ -103,7 +95,7 @@
   </div>
   </div>
 
-  <footer class="w-full max-w-md pt-3 text-center text-xs sm:text-sm z-10">
-    <span class="text-on-surface-variant">© 2026 AlaSonora — {{ 'footer.rights' | translate }}</span>
-  </footer>
+  </main>
+
+  <app-site-footer />
 </div>

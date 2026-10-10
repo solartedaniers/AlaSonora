@@ -2,11 +2,11 @@ import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@a
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
-import { ThemeToggleComponent } from '../../../shared/components/theme-toggle/theme-toggle.component';
-import { LangToggleComponent } from '../../../shared/components/lang-toggle/lang-toggle.component';
+import { NavHeaderComponent } from '../../../shared/components/nav-header/nav-header.component';
+import { SiteFooterComponent } from '../../../shared/components/site-footer/site-footer.component';
 import { LettersOnlyDirective } from '../../../shared/directives/letters-only.directive';
 import { PointerGlowDirective } from '../../../shared/directives/pointer-glow.directive';
-import { SoftAuroraComponent } from '../../../shared/components/soft-aurora/soft-aurora.component';
+import { FieldBackdropComponent } from '../../../shared/components/field-backdrop/field-backdrop.component';
 import { UserService } from '../../../core/services/user.service';
 import { nameValidator } from '../../../core/validators/name.validator';
 import { ObserverRole } from '../../../core/models';
@@ -20,11 +20,11 @@ type PasswordTier = 'empty' | 'weak' | 'medium' | 'strong' | 'excellent';
     ReactiveFormsModule,
     RouterLink,
     TranslatePipe,
-    ThemeToggleComponent,
-    LangToggleComponent,
+    NavHeaderComponent,
+    SiteFooterComponent,
     LettersOnlyDirective,
     PointerGlowDirective,
-    SoftAuroraComponent,
+    FieldBackdropComponent,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './register.component.html',

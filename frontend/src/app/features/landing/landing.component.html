@@ -1,33 +1,9 @@
 <div class="flex flex-col w-full min-h-screen bg-surface text-on-surface">
-  <!-- Header -->
-  <header class="w-full px-6 lg:px-12 py-4 bg-surface-container-low/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <span class="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-tertiary text-on-primary flex items-center justify-center shadow-md shrink-0">
-          <span class="material-symbols-outlined text-[24px]">graphic_eq</span>
-        </span>
-        <div class="flex flex-col">
-          <span class="font-display font-bold text-on-surface tracking-tight text-lg leading-none">
-            Ala<span class="text-primary">Sonora</span>
-          </span>
-          <span class="font-data text-[10px] tracking-widest text-on-surface-variant uppercase">
-            {{ 'app.tagline' | translate }}
-          </span>
-        </div>
-      </div>
-      <div class="flex flex-wrap items-center gap-3 sm:gap-4">
-        <app-lang-toggle />
-        <app-theme-toggle />
-        <a routerLink="/login" class="font-display text-sm font-semibold text-primary hover:text-on-surface transition-colors whitespace-nowrap">
-          {{ 'nav.login' | translate }}
-        </a>
-      </div>
-    </div>
-  </header>
+  <app-nav-header />
 
   <!-- Hero -->
   <section appGlowCursor class="relative w-full px-6 lg:px-12 pt-12 pb-20 lg:pt-16 lg:pb-28 overflow-hidden">
-    <app-soft-aurora />
+    <app-field-backdrop />
 
     <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
       <div class="lg:col-span-6 flex flex-col items-start text-left">
@@ -318,8 +294,5 @@
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="w-full bg-surface-container-low px-6 lg:px-12 py-8 text-center">
-    <span class="text-sm text-on-surface-variant">© 2026 AlaSonora — {{ 'footer.rights' | translate }}</span>
-  </footer>
+  <app-site-footer />
 </div>

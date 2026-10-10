@@ -3,9 +3,9 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { isAuthApiError } from '@supabase/supabase-js';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
-import { ThemeToggleComponent } from '../../../shared/components/theme-toggle/theme-toggle.component';
-import { LangToggleComponent } from '../../../shared/components/lang-toggle/lang-toggle.component';
-import { SoftAuroraComponent } from '../../../shared/components/soft-aurora/soft-aurora.component';
+import { NavHeaderComponent } from '../../../shared/components/nav-header/nav-header.component';
+import { SiteFooterComponent } from '../../../shared/components/site-footer/site-footer.component';
+import { FieldBackdropComponent } from '../../../shared/components/field-backdrop/field-backdrop.component';
 import { PointerGlowDirective } from '../../../shared/directives/pointer-glow.directive';
 import { UserService } from '../../../core/services/user.service';
 import { ProfileService } from '../../../core/services/profile.service';
@@ -19,9 +19,9 @@ type LoginError = 'invalid-credentials' | 'email-not-confirmed';
     ReactiveFormsModule,
     RouterLink,
     TranslatePipe,
-    ThemeToggleComponent,
-    LangToggleComponent,
-    SoftAuroraComponent,
+    NavHeaderComponent,
+    SiteFooterComponent,
+    FieldBackdropComponent,
     PointerGlowDirective,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
