@@ -1,96 +1,170 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  NgZone,
+  OnDestroy,
+  PLATFORM_ID,
+  computed,
+  inject,
+  input,
+  signal,
+  viewChild,
+} from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { TranslatePipe } from '../../pipes/translate.pipe';
+import { SonogramGlyphComponent } from '../sonogram-glyph/sonogram-glyph.component';
+import { I18nService } from '../../../core/services/i18n.service';
+import { MotionPreferenceService } from '../../../core/services/motion-preference.service';
 
 export interface SpiralItem {
   imageUrl: string;
-  caption: string;
+  commonName: string;
+  scientificName: string;
 }
 
+const FULL_TURN_DEG = 360;
+const SEEK_DURATION_MS = 480;
+// Separación extra entre marcos, en fracciones del ancho del marco.
+const RING_GAP_FACTOR = 0.3;
+const MIN_RADIUS_FACTOR = 0.75;
+const EMPTY_FRAME_COUNT = 5;
+
 /**
- * Galería en espiral 3D (rotación CSS, no WebGL/ogl: unos pocos <figure>
- * girando en un círculo no justifican una lib de render). Pensada para
- * destacar especies/avistamientos recientes.
+ * 3D species ring ("Especies destacadas"). The spin itself is the original CSS
+ * animation (rotateY + translateZ + perspective); this class only reads and
+ * seeks that same animation through the Web Animations API to know which
+ * species faces the viewer and to move to a chosen one.
  */
 @Component({
   selector: 'app-infinite-spiral',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.Eager,
-  template: `
-    <div class="spiral-scene">
-      <div class="spiral-track" [style.--count]="items().length">
-        @for (item of items(); track item.imageUrl; let i = $index) {
-          <figure class="spiral-item" [style.--i]="i" tabindex="0">
-            <img [src]="item.imageUrl" [alt]="item.caption" loading="lazy" />
-            <figcaption>{{ item.caption }}</figcaption>
-          </figure>
-        }
-      </div>
-    </div>
-  `,
-  styles: `
-    .spiral-scene {
-      perspective: 1200px;
-      height: 320px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .spiral-track {
-      position: relative;
-      width: 180px;
-      height: 180px;
-      transform-style: preserve-3d;
-      animation: spiral-spin 24s linear infinite;
-    }
-    /* Pause only while a single photo is hovered or focused (click/tap or
-       Tab focuses it; clicking anywhere else blurs it and resumes the spin) —
-       not while the cursor is merely somewhere over the whole scene. */
-    .spiral-track:has(.spiral-item:hover, .spiral-item:focus) {
-      animation-play-state: paused;
-    }
-    .spiral-item:focus-visible {
-      outline: 2px solid var(--color-primary);
-      outline-offset: 2px;
-    }
-    .spiral-item {
-      position: absolute;
-      inset: 0;
-      margin: 0;
-      transform: rotateY(calc(var(--i) * (360deg / var(--count)))) translateZ(220px);
-      border-radius: 1rem;
-      overflow: hidden;
-      box-shadow: var(--shadow-xl);
-    }
-    .spiral-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .spiral-item figcaption {
-      position: absolute;
-      inset-inline: 0;
-      bottom: 0;
-      padding: 0.5rem 0.75rem;
-      background: linear-gradient(to top, color-mix(in srgb, var(--color-on-surface) 70%, transparent), transparent);
-      color: var(--color-surface);
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-    @keyframes spiral-spin {
-      from {
-        transform: rotateY(0deg);
-      }
-      to {
-        transform: rotateY(360deg);
-      }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .spiral-track {
-        animation: none;
-      }
-    }
-  `,
+  imports: [TranslatePipe, SonogramGlyphComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './infinite-spiral.component.html',
+  styleUrl: './infinite-spiral.component.scss',
 })
-export class InfiniteSpiralComponent {
+export class InfiniteSpiralComponent implements AfterViewInit, OnDestroy {
   readonly items = input.required<SpiralItem[]>();
+  readonly labelKey = input('dashboard.spotlight.region');
+
+  readonly motion = inject(MotionPreferenceService);
+  private readonly i18n = inject(I18nService);
+  private readonly zone = inject(NgZone);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly track = viewChild<ElementRef<HTMLElement>>('track');
+
+  readonly frontIndex = signal(0);
+  readonly announcement = signal('');
+
+  readonly isEmpty = computed(() => this.items().length === 0);
+  /** Empty state keeps the ring spinning with blank frames: never invented species. */
+  readonly frameCount = computed(() => (this.isEmpty() ? EMPTY_FRAME_COUNT : this.items().length));
+  readonly emptyFrames = Array.from({ length: EMPTY_FRAME_COUNT }, (_, i) => i);
+  readonly front = computed(() => this.items()[this.frontIndex()] ?? null);
+  /** Radius so frames never overlap: r = w / (2·tan(π/n)), plus a gap. */
+  readonly radiusFactor = computed(() => {
+    const n = this.frameCount();
+    return n < 3 ? MIN_RADIUS_FACTOR : 1 / (2 * Math.tan(Math.PI / n)) + RING_GAP_FACTOR;
+  });
+
+  private watchFrameId?: number;
+  private seekFrameId?: number;
+
+  ngAfterViewInit(): void {
+    if (!this.isBrowser) return;
+    // Leer el ángulo en cada frame no necesita detección de cambios de Angular.
+    this.zone.runOutsideAngular(() => this.watchFront());
+  }
+
+  ngOnDestroy(): void {
+    if (this.watchFrameId) cancelAnimationFrame(this.watchFrameId);
+    if (this.seekFrameId) cancelAnimationFrame(this.seekFrameId);
+  }
+
+  next(): void {
+    this.goTo(this.frontIndex() + 1);
+  }
+
+  previous(): void {
+    this.goTo(this.frontIndex() - 1);
+  }
+
+  goTo(index: number): void {
+    const n = this.items().length;
+    if (n === 0) return;
+    const target = ((index % n) + n) % n;
+    const animation = this.spinAnimation();
+    if (animation) this.seek(animation, target);
+    this.frontIndex.set(target);
+    this.announce(target);
+  }
+
+  onKeydown(event: KeyboardEvent): void {
+    const actions: Record<string, () => void> = {
+      ArrowRight: () => this.next(),
+      ArrowLeft: () => this.previous(),
+      Home: () => this.goTo(0),
+      End: () => this.goTo(this.items().length - 1),
+    };
+    const action = actions[event.key];
+    if (!action) return;
+    event.preventDefault();
+    action();
+  }
+
+  private announce(index: number): void {
+    const item = this.items()[index];
+    const position = `${index + 1} ${this.i18n.translate('dashboard.spotlight.of')} ${this.items().length}`;
+    this.announcement.set(`${position}: ${item.commonName}, ${item.scientificName}`);
+  }
+
+  /** The ring's running CSS animation; absent with reduced motion or before render. */
+  private spinAnimation(): Animation | null {
+    if (this.motion.reduced()) return null;
+    return this.track()?.nativeElement.getAnimations()[0] ?? null;
+  }
+
+  private watchFront = (): void => {
+    const animation = this.spinAnimation();
+    const n = this.items().length;
+    if (animation && n > 0) {
+      const index = this.indexFacingViewer(animation, n);
+      if (index !== this.frontIndex()) this.zone.run(() => this.frontIndex.set(index));
+    }
+    this.watchFrameId = requestAnimationFrame(this.watchFront);
+  };
+
+  private indexFacingViewer(animation: Animation, n: number): number {
+    const duration = this.durationOf(animation);
+    const angle = ((Number(animation.currentTime) % duration) / duration) * FULL_TURN_DEG;
+    return Math.round(angle / (FULL_TURN_DEG / n)) % n;
+  }
+
+  /** Smoothly moves the same CSS animation to the time where `index` faces the viewer. */
+  private seek(animation: Animation, index: number): void {
+    const duration = this.durationOf(animation);
+    const step = FULL_TURN_DEG / this.items().length;
+    const targetTime = ((index * step) / FULL_TURN_DEG) * duration;
+    const from = Number(animation.currentTime) % duration;
+    let delta = targetTime - from;
+    // Siempre por el camino más corto alrededor del anillo.
+    if (delta > duration / 2) delta -= duration;
+    if (delta < -duration / 2) delta += duration;
+
+    if (this.seekFrameId) cancelAnimationFrame(this.seekFrameId);
+    const startedAt = performance.now();
+    const tick = (now: number): void => {
+      const progress = Math.min(1, (now - startedAt) / SEEK_DURATION_MS);
+      const eased = 1 - (1 - progress) ** 3;
+      animation.currentTime = (from + delta * eased + duration) % duration;
+      if (progress < 1) this.seekFrameId = requestAnimationFrame(tick);
+    };
+    this.zone.runOutsideAngular(() => (this.seekFrameId = requestAnimationFrame(tick)));
+  }
+
+  private durationOf(animation: Animation): number {
+    return Number(animation.effect?.getComputedTiming().duration);
+  }
 }

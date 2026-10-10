@@ -1,0 +1,74 @@
+<section
+  class="spiral-stage"
+  [class.is-still]="motion.reduced()"
+  [style.--count]="frameCount()"
+  [style.--radius-factor]="radiusFactor()"
+  aria-roledescription="carousel"
+  [attr.aria-label]="labelKey() | translate"
+  [attr.tabindex]="isEmpty() ? null : 0"
+  (keydown)="onKeydown($event)"
+>
+  <!-- Mesa de luz: luz desde abajo, horizonte de frecuencia y sombra del anillo -->
+  <span class="spiral-stage__horizon" aria-hidden="true"></span>
+  <span class="spiral-stage__floor" aria-hidden="true"></span>
+
+  <div class="spiral-scene" [attr.aria-hidden]="isEmpty() ? 'true' : null">
+    <div class="spiral-track" #track>
+      @if (isEmpty()) {
+        @for (frame of emptyFrames; track frame) {
+          <div class="spiral-item spiral-item--empty" [style.--i]="frame">
+            <app-sonogram-glyph class="spiral-item__glyph" />
+          </div>
+        }
+      } @else {
+        @for (item of items(); track item.imageUrl + $index; let i = $index) {
+          <figure class="spiral-item" [style.--i]="i" [class.is-front]="i === frontIndex()">
+            <img [src]="item.imageUrl" [alt]="item.commonName" loading="lazy" />
+            <figcaption class="spiral-item__label">{{ item.commonName }}</figcaption>
+          </figure>
+        }
+      }
+    </div>
+  </div>
+
+  @if (isEmpty()) {
+    <div class="spiral-stage__empty">
+      <ng-content select="[spiralEmpty]" />
+    </div>
+  } @else {
+    @if (front(); as current) {
+      <div class="spiral-stage__caption" aria-hidden="true">
+        <p class="font-data text-sm font-semibold text-primary">
+          {{ frontIndex() + 1 }} {{ 'dashboard.spotlight.of' | translate }} {{ items().length }}
+        </p>
+        <p class="mt-1 font-display text-3xl font-extrabold tracking-display">{{ current.commonName }}</p>
+        <p class="mt-1 text-lg italic text-on-surface-variant">{{ current.scientificName }}</p>
+      </div>
+    }
+
+    <div class="spiral-stage__controls">
+      <button type="button" class="spiral-stage__arrow" [attr.aria-label]="'dashboard.spotlight.previous' | translate" (click)="previous()">
+        <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+      </button>
+
+      <!-- Indicadores como marcas de una regla: la del frente es más alta y azufre -->
+      <div class="spiral-stage__ticks">
+        @for (item of items(); track item.imageUrl + $index; let i = $index) {
+          <button
+            type="button"
+            class="spiral-stage__tick"
+            [attr.aria-label]="('dashboard.spotlight.goTo' | translate) + ' ' + item.commonName"
+            [attr.aria-current]="i === frontIndex() ? 'true' : null"
+            (click)="goTo(i)"
+          ></button>
+        }
+      </div>
+
+      <button type="button" class="spiral-stage__arrow" [attr.aria-label]="'dashboard.spotlight.next' | translate" (click)="next()">
+        <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+      </button>
+    </div>
+
+    <p class="sr-only" aria-live="polite">{{ announcement() }}</p>
+  }
+</section>
