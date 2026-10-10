@@ -1,0 +1,232 @@
+// Landing: composición por "bandas de frecuencia" en vez de tarjetas.
+
+// --- Hero: título colgado a la izquierda, placa del sonograma hasta el borde derecho.
+.landing-hero {
+  display: grid;
+  gap: calc(var(--space-unit) * 10);
+  padding-block: calc(var(--space-unit) * 12) calc(var(--space-unit) * 16);
+
+  @screen lg {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: center;
+    gap: calc(var(--space-unit) * 12);
+    // Llena la primera pantalla, con tope para monitores muy altos.
+    min-height: min(calc(100dvh - var(--header-height)), calc(var(--space-unit) * 224));
+    padding-block: calc(var(--space-unit) * 12);
+  }
+}
+
+// La palabra clave del título descansa sobre un trazo de sonograma azufre.
+.landing-hero__accent {
+  position: relative;
+  display: inline-block;
+  z-index: 0;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline: calc(var(--space-unit) * -1);
+    bottom: 0.08em;
+    height: 0.32em;
+    z-index: -1;
+    border-radius: var(--radius-full);
+    background: var(--color-sulfur);
+    transform: skewY(-2deg);
+  }
+}
+
+.landing-hero__plate {
+  position: relative;
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto auto;
+}
+
+.landing-hero__freq-axis {
+  position: relative;
+  width: calc(var(--space-unit) * 12);
+  font-family: var(--font-data);
+  font-size: var(--text-xs);
+  color: var(--color-on-surface-variant);
+}
+
+.landing-hero__freq-label {
+  position: absolute;
+  inset-inline-end: calc(var(--space-unit) * 2);
+  transform: translateY(50%);
+}
+
+.landing-hero__screen {
+  position: relative;
+  height: calc(var(--space-unit) * 60);
+  background: var(--color-spectro-floor);
+  border-block: 1px solid var(--color-outline-variant);
+  border-inline-start: 1px solid var(--color-outline-variant);
+  overflow: hidden;
+
+  @screen lg {
+    height: min(60dvh, calc(var(--space-unit) * 120));
+  }
+}
+
+// Sin animaciones el SVG estático ocupa la placa con tinta plena.
+.landing-hero__static {
+  --sonogram-ink-opacity: 0.9;
+  --sonogram-harmonic-opacity: 0.35;
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-items: center;
+  color: var(--color-spectro-mid);
+}
+
+// Cabezal de lectura: donde nacen las columnas nuevas.
+.landing-hero__playhead {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: calc(var(--space-unit) * 1);
+  background: var(--color-sulfur);
+}
+
+.landing-hero__time-axis {
+  grid-column: 2;
+  position: relative;
+  height: calc(var(--space-unit) * 7);
+  font-family: var(--font-data);
+  font-size: var(--text-xs);
+  color: var(--color-on-surface-variant);
+}
+
+.landing-hero__time-label {
+  position: absolute;
+  top: calc(var(--space-unit) * 1.5);
+  transform: translateX(-50%);
+
+  // La última marca ("ahora") se alinea al borde derecho para no desbordar.
+  &:last-child {
+    transform: translateX(-100%);
+
+    &::before {
+      left: auto;
+      right: 0;
+    }
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--space-unit) * -1.5);
+    left: 50%;
+    width: 1px;
+    height: calc(var(--space-unit) * 1.5);
+    background: var(--color-outline);
+  }
+}
+
+.landing-hero__caption {
+  grid-column: 2;
+  padding-inline-end: var(--space-gutter);
+}
+
+// --- Banda de lecturas reales de la red.
+.landing-readings__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: calc(var(--space-unit) * 8) 0;
+
+  @screen lg {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.landing-readings__item {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: calc(var(--space-unit) * 1);
+  padding-inline-start: calc(var(--space-unit) * 4);
+  border-inline-start: 2px solid var(--color-chrome-line);
+}
+
+// --- Pasos: tres "notas" que suben de grave a agudo.
+.landing-steps {
+  display: grid;
+  gap: calc(var(--space-unit) * 12);
+
+  @screen md {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+.landing-step {
+  position: relative;
+  padding-inline-start: calc(var(--space-unit) * 5);
+  border-inline-start: 2px solid var(--color-primary);
+
+  @screen md {
+    // Cada paso sube una banda: el recorrido se lee como un canto ascendente.
+    margin-block-start: calc(var(--step-rise) * var(--space-unit) * 12);
+  }
+}
+
+.landing-step__note {
+  position: absolute;
+  inset-inline-start: -2px;
+  top: 0;
+  width: calc(var(--space-unit) * 10);
+  height: calc(var(--space-unit) * 1.5);
+  border-radius: var(--radius-full);
+  background: var(--color-sulfur);
+}
+
+// --- Motor de IA: pestañas como marcas de una regla.
+.pipeline-tab {
+  display: grid;
+  grid-template-columns: calc(var(--space-unit) * 10) minmax(0, 1fr);
+  align-items: baseline;
+  gap: calc(var(--space-unit) * 3);
+  width: 100%;
+  min-height: var(--touch-target);
+  padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 4);
+  text-align: start;
+  border-inline-start: 4px solid var(--color-outline-variant);
+  color: var(--color-on-surface-variant);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    color: var(--color-on-surface);
+  }
+
+  &[aria-selected='true'] {
+    border-color: var(--color-sulfur);
+    color: var(--color-on-surface);
+  }
+}
+
+.pipeline-stage {
+  position: relative;
+  min-height: calc(var(--space-unit) * 80);
+  display: grid;
+  place-items: center;
+  padding: calc(var(--space-unit) * 8);
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.pipeline-stage__spectrogram {
+  position: absolute;
+  inset: 0;
+}
+
+// --- Cierre.
+.landing-closing__sonogram {
+  --sonogram-ink-opacity: 0.35;
+  --sonogram-harmonic-opacity: 0.15;
+  color: var(--color-on-chrome);
+}

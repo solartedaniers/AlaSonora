@@ -1,298 +1,232 @@
-<div class="flex flex-col w-full min-h-screen bg-surface text-on-surface">
+<div class="flex flex-col w-full min-h-dvh bg-surface text-on-surface">
   <app-nav-header />
 
-  <!-- Hero -->
-  <section appGlowCursor class="relative w-full px-6 lg:px-12 pt-12 pb-20 lg:pt-16 lg:pb-28 overflow-hidden">
-    <app-field-backdrop />
-
-    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-      <div class="lg:col-span-6 flex flex-col items-start text-left">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container-high mb-6">
-          <span class="relative flex h-2.5 w-2.5">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
-          </span>
-          <span class="font-data text-[11px] font-semibold uppercase tracking-wider text-primary">
-            {{ 'landing.badge' | translate }}
-          </span>
-        </div>
-
-        <h1 class="font-display text-4xl lg:text-5xl font-bold leading-tight mb-6">
-          {{ 'landing.title' | translate }}
+  <main class="flex-1">
+    <!-- Hero: el sonograma es el protagonista -->
+    <section class="landing-hero" aria-labelledby="landing-title">
+      <div class="px-gutter lg:pe-0">
+        <p class="eyebrow-label">{{ 'landing.eyebrow' | translate }}</p>
+        <h1 id="landing-title" class="mt-6 text-6xl font-extrabold tracking-display leading-none">
+          <span class="block">{{ 'landing.titleLead' | translate }}</span>
+          <span class="landing-hero__accent">{{ 'landing.titleAccent' | translate }}</span>
         </h1>
-
-        <p class="text-on-surface-variant max-w-xl mb-8 leading-relaxed">
-          {{ 'landing.subtitle' | translate }}
-        </p>
-
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto">
-          <a
-            routerLink="/register"
-            class="px-8 py-4 rounded-xl bg-primary hover:opacity-90 text-on-primary font-display font-semibold shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl flex items-center justify-center gap-2.5"
-          >
-            <span class="material-symbols-outlined">mic</span>
-            <span>{{ 'landing.ctaPrimary' | translate }}</span>
+        <p class="mt-8 max-w-lg text-lg text-on-surface-variant leading-relaxed">{{ 'landing.subtitle' | translate }}</p>
+        <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+          <a routerLink="/register" class="btn btn--sulfur min-h-14 px-8 text-lg">
+            <span class="material-symbols-outlined" aria-hidden="true">mic</span>
+            {{ 'landing.ctaPrimary' | translate }}
           </a>
-          <a
-            routerLink="/map"
-            class="px-6 py-4 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-primary shadow-sm font-display font-semibold transition-all hover:-translate-y-1 flex items-center justify-center gap-2"
-          >
-            <span class="material-symbols-outlined">public</span>
-            <span>{{ 'landing.ctaSecondary' | translate }}</span>
+          <a routerLink="/map" class="sono-link min-h-touch px-3 inline-flex items-center gap-2 font-display font-bold text-primary">
+            {{ 'landing.ctaSecondary' | translate }}
+            <span class="material-symbols-outlined text-xl" aria-hidden="true">arrow_forward</span>
           </a>
         </div>
       </div>
 
-      <!-- Live spectrogram hero card -->
-      <div class="lg:col-span-6 w-full">
-        <div class="w-full glass-card animate-float rounded-3xl p-5 sm:p-7 shadow-2xl relative overflow-hidden">
-          <div class="flex items-center justify-between pb-4 mb-4">
-            <div class="flex items-center gap-3">
-              <span class="p-2 rounded-xl bg-surface-container text-primary flex items-center justify-center">
-                <span class="material-symbols-outlined text-[20px]">graphic_eq</span>
-              </span>
-              <div>
-                <p class="font-display text-sm text-on-surface font-semibold">{{ 'landing.liveMonitorTitle' | translate }}</p>
-                <p class="font-data text-[10px] text-primary">{{ 'landing.liveMonitorSpecs' | translate }}</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-1.5 px-3 py-1 bg-surface-container rounded-full">
-              <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
-              <span class="font-data text-[10px] text-tertiary font-bold">{{ 'recording.listening' | translate }}</span>
-            </div>
-          </div>
+      <figure class="landing-hero__plate">
+        <div class="landing-hero__freq-axis" aria-hidden="true">
+          @for (khz of freqLabels; track khz) {
+            <span class="landing-hero__freq-label" [style.bottom.%]="(khz / maxKhz) * 100">{{ khz }}</span>
+          }
+          <span class="landing-hero__freq-label text-primary font-semibold" [style.bottom.%]="100">{{ 'units.khz' | translate }}</span>
+        </div>
 
-          <div class="relative w-full h-44 sm:h-52 rounded-2xl bg-surface-container-lowest overflow-hidden shadow-inner">
-            <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 600 200">
-              <defs>
-                <linearGradient id="heroSpectro" x1="0%" y1="100%" x2="0%" y2="0%">
-                  <stop offset="0%" style="stop-color: var(--color-primary-container)" stop-opacity="0.2" />
-                  <stop offset="30%" style="stop-color: var(--color-primary)" stop-opacity="0.7" />
-                  <stop offset="65%" style="stop-color: var(--color-tertiary)" stop-opacity="0.9" />
-                  <stop offset="100%" style="stop-color: var(--color-secondary)" stop-opacity="1" />
-                </linearGradient>
-              </defs>
-              <path d="M 60,140 Q 90,70 120,130 T 170,110 T 210,145" fill="none" stroke="url(#heroSpectro)" stroke-width="10" stroke-linecap="round" opacity="0.9" />
-              <path d="M 260,120 Q 300,30 340,90 T 390,60 T 430,130" fill="none" stroke="url(#heroSpectro)" stroke-width="14" stroke-linecap="round" />
-              <path d="M 480,110 Q 510,70 540,115 T 580,125" fill="none" stroke="url(#heroSpectro)" stroke-width="8" stroke-linecap="round" opacity="0.8" />
-              <line x1="340" y1="0" x2="340" y2="185" style="stroke: var(--color-tertiary)" stroke-width="2" class="animate-pulse" />
-            </svg>
-            <div class="absolute top-0 bottom-0 w-0.5 bg-gradient-to-b from-tertiary via-primary to-transparent shadow-[0_0_10px_var(--color-primary)] animate-scan pointer-events-none"></div>
-          </div>
+        <div class="landing-hero__screen">
+          <!-- El servidor y "reduced motion" muestran el sonograma estático; el navegador lo cambia por el canvas vivo. -->
+          @if (motion.reduced()) {
+            <ng-container [ngTemplateOutlet]="staticSonogram" />
+          } @else {
+            @defer (on immediate) {
+              <app-spectrogram-view
+                class="block w-full h-full"
+                [getFrame]="heroFrame"
+                [columns]="heroColumns"
+                [initialColumns]="heroInitialColumns"
+                growFrom="end"
+                ariaLabelKey="landing.demo.plateLabel"
+              />
+            } @placeholder {
+              <ng-container [ngTemplateOutlet]="staticSonogram" />
+            }
+          }
+          <ng-template #staticSonogram>
+            <div class="landing-hero__static" role="img" [attr.aria-label]="'landing.demo.plateLabel' | translate">
+              <app-song-sonogram [band]="false" />
+            </div>
+          </ng-template>
+          <span class="landing-hero__playhead" aria-hidden="true"></span>
+        </div>
 
-          <div class="mt-4 p-4 rounded-2xl bg-surface-container-high flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div class="flex items-center gap-3.5">
-              <div class="w-14 h-14 rounded-xl bg-surface-container-lowest flex items-center justify-center text-primary shrink-0">
-                <span class="material-symbols-outlined text-[26px]">flutter_dash</span>
-              </div>
-              <div>
-                <div class="flex items-center gap-2">
-                  <h4 class="font-display font-bold text-on-surface">{{ 'landing.demoSpeciesName' | translate }}</h4>
-                  <span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary font-data text-[10px] font-semibold">{{ 'landing.demoAiBadge' | translate }}</span>
+        <div class="landing-hero__time-axis" aria-hidden="true">
+          @for (second of timeLabels; track second) {
+            <span class="landing-hero__time-label" [style.left.%]="100 - (second / windowSeconds) * 100">
+              @if (second === 0) {
+                {{ 'landing.demo.now' | translate }}
+              } @else {
+                {{ second }} {{ 'units.seconds' | translate }}
+              }
+            </span>
+          }
+        </div>
+
+        <figcaption class="landing-hero__caption mt-2 flex items-start gap-2 text-sm text-on-surface-variant">
+          <span class="mt-1.5 w-4 h-1.5 shrink-0 rounded-full bg-sulfur" aria-hidden="true"></span>
+          {{ 'landing.demo.label' | translate }}
+        </figcaption>
+      </figure>
+    </section>
+
+    <!-- Lecturas reales de la red. @defer (on viewport): el HTML estático no espera estos datos vivos. -->
+    @defer (on viewport) {
+      @if (stats()) {
+        <section class="chrome" aria-labelledby="readings-title">
+          <div class="max-w-7xl mx-auto px-gutter py-14 flex flex-col gap-10">
+            <h2 id="readings-title" class="eyebrow-label">{{ 'landing.readingsTitle' | translate }}</h2>
+            <dl class="landing-readings__list">
+              @for (reading of readings(); track reading.labelKey) {
+                <div class="landing-readings__item">
+                  <dt class="text-sm text-on-surface-variant">{{ reading.labelKey | translate }}</dt>
+                  <dd class="m-0 font-data text-5xl font-semibold leading-none">
+                    <app-count-up [value]="reading.value" [suffix]="reading.suffixKey ? (reading.suffixKey | translate) : ''" />
+                  </dd>
                 </div>
-                <p class="text-xs text-on-surface-variant italic">Turdus chiguanco</p>
-              </div>
-            </div>
-            <button
-              type="button"
-              class="px-4 py-2.5 rounded-xl bg-primary text-on-primary font-display text-sm font-semibold flex items-center gap-2 shadow-sm"
-            >
-              <span class="material-symbols-outlined text-[18px]">play_arrow</span>
-              <span>{{ 'common.listen' | translate }}</span>
-            </button>
+              }
+            </dl>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
+        </section>
+      }
+    } @placeholder {
+      <section class="chrome min-h-48" aria-hidden="true"></section>
+    }
 
-  <!-- Stats bar: @defer (on viewport) → el HTML estático llega sin esperar
-       estos datos vivos; el bloque (y CountUpComponent) se carga cuando el
-       usuario llega a esta sección. -->
-  @defer (on viewport) {
-  @if (stats(); as s) {
-    <section class="w-full bg-surface-container-low py-10 shadow-sm">
-      <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-2 md:grid-cols-4 gap-8">
-        <div class="flex flex-col items-center text-center">
-          <span class="font-display text-3xl font-bold text-primary"><app-count-up [value]="s.totalPublicDetections" /></span>
-          <span class="text-sm text-on-surface-variant mt-1">{{ 'landing.stats.totalDetections' | translate }}</span>
-        </div>
-        <div class="flex flex-col items-center text-center">
-          <span class="font-display text-3xl font-bold text-primary"><app-count-up [value]="s.totalSpecies" /></span>
-          <span class="text-sm text-on-surface-variant mt-1">{{ 'landing.stats.species' | translate }}</span>
-        </div>
-        <div class="flex flex-col items-center text-center">
-          <span class="font-display text-3xl font-bold text-primary"><app-count-up [value]="s.distinctObservers" /></span>
-          <span class="text-sm text-on-surface-variant mt-1">{{ 'landing.stats.observers' | translate }}</span>
-        </div>
-        <div class="flex flex-col items-center text-center">
-          <span class="font-display text-3xl font-bold text-primary"><app-count-up [value]="s.averageConfidencePct" suffix="%" /></span>
-          <span class="text-sm text-on-surface-variant mt-1">{{ 'landing.stats.accuracy' | translate }}</span>
-        </div>
+    <!-- Tres pasos que suben de grave a agudo, como un canto -->
+    <section class="px-gutter py-section" aria-labelledby="how-title">
+      <div class="max-w-7xl mx-auto">
+        <p class="eyebrow-label">{{ 'landing.how.eyebrow' | translate }}</p>
+        <h2 id="how-title" class="mt-4 max-w-3xl text-4xl font-extrabold tracking-display">{{ 'landing.how.title' | translate }}</h2>
+
+        <ol class="landing-steps mt-16 list-none p-0">
+          @for (step of howSteps; track step.titleKey; let i = $index) {
+            <li class="landing-step" [style.--step-rise]="howSteps.length - 1 - i">
+              <span class="landing-step__note" aria-hidden="true"></span>
+              <span class="block pt-6 font-data text-sm font-semibold text-primary">{{ stepNumber(i) }}</span>
+              <h3 class="mt-2 text-2xl font-extrabold">{{ step.titleKey | translate }}</h3>
+              <p class="mt-3 text-on-surface-variant leading-relaxed">{{ step.bodyKey | translate }}</p>
+            </li>
+          }
+        </ol>
       </div>
     </section>
-  }
-  } @placeholder {
-    <section class="w-full bg-surface-container-low py-10 shadow-sm min-h-[7.5rem]" aria-hidden="true"></section>
-  }
 
-  <!-- How it works -->
-  <section class="w-full px-6 lg:px-12 py-20">
-    <div class="max-w-7xl mx-auto">
-      <div class="text-center max-w-2xl mx-auto mb-16">
-        <span class="font-data text-xs uppercase tracking-widest text-primary font-semibold">
-          {{ 'landing.how.eyebrow' | translate }}
-        </span>
-        <h2 class="font-display text-2xl md:text-3xl font-bold mt-2 tracking-tight">
-          {{ 'landing.how.title' | translate }}
-        </h2>
-      </div>
+    <!-- Motor de IA -->
+    <section class="bg-surface-container-lowest border-y px-gutter py-section" aria-labelledby="pipeline-title">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div class="lg:col-span-5">
+          <p class="eyebrow-label">{{ 'landing.pipeline.eyebrow' | translate }}</p>
+          <h2 id="pipeline-title" class="mt-4 text-4xl font-extrabold tracking-display">{{ 'landing.pipeline.title' | translate }}</h2>
+          <p class="mt-4 text-on-surface-variant leading-relaxed">{{ 'landing.pipeline.subtitle' | translate }}</p>
 
-      <div appSpotlightCarousel class="spotlight-group grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div appBorderGlow class="spotlight-cycle feature-card bg-surface-container-low rounded-3xl p-8 shadow-sm flex flex-col gap-4">
-          <span class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-tertiary text-on-primary flex items-center justify-center shadow-md">
-            <span class="material-symbols-outlined text-3xl">mic</span>
-          </span>
-          <h3 class="font-display font-bold text-lg">{{ 'landing.how.step1Title' | translate }}</h3>
-          <p class="text-sm text-on-surface-variant leading-relaxed">{{ 'landing.how.step1Body' | translate }}</p>
-        </div>
-        <div appBorderGlow class="spotlight-cycle feature-card bg-surface-container-low rounded-3xl p-8 shadow-sm flex flex-col gap-4">
-          <span class="w-14 h-14 rounded-2xl bg-gradient-to-br from-tertiary to-primary text-on-primary flex items-center justify-center shadow-md">
-            <span class="material-symbols-outlined text-3xl">neurology</span>
-          </span>
-          <h3 class="font-display font-bold text-lg">{{ 'landing.how.step2Title' | translate }}</h3>
-          <p class="text-sm text-on-surface-variant leading-relaxed">{{ 'landing.how.step2Body' | translate }}</p>
-        </div>
-        <div appBorderGlow class="spotlight-cycle feature-card bg-surface-container-low rounded-3xl p-8 shadow-sm flex flex-col gap-4">
-          <span class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-container to-primary text-on-primary flex items-center justify-center shadow-md">
-            <span class="material-symbols-outlined text-3xl">travel_explore</span>
-          </span>
-          <h3 class="font-display font-bold text-lg">{{ 'landing.how.step3Title' | translate }}</h3>
-          <p class="text-sm text-on-surface-variant leading-relaxed">{{ 'landing.how.step3Body' | translate }}</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- How BirdNET-powered pipeline works -->
-  <section class="w-full px-6 lg:px-12 py-20 bg-surface-container-lowest">
-    <div class="max-w-6xl mx-auto">
-      <div class="text-center max-w-2xl mx-auto mb-14">
-        <span class="font-data text-xs uppercase tracking-widest text-primary font-semibold">
-          {{ 'landing.pipeline.eyebrow' | translate }}
-        </span>
-        <h2 class="font-display text-2xl md:text-3xl font-bold mt-2 tracking-tight">
-          {{ 'landing.pipeline.title' | translate }}
-        </h2>
-        <p class="text-sm text-on-surface-variant mt-3 leading-relaxed">
-          {{ 'landing.pipeline.subtitle' | translate }}
-        </p>
-      </div>
-
-      <!-- Tabs -->
-      <div class="flex items-center justify-center gap-2 sm:gap-4 mb-8 flex-wrap">
-        @for (step of pipelineSteps; track step) {
-          <button
-            type="button"
-            (click)="pipelineStep.set(step)"
-            class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-display text-sm font-semibold transition-all"
-            [class.bg-primary]="pipelineStep() === step"
-            [class.text-on-primary]="pipelineStep() === step"
-            [class.shadow-md]="pipelineStep() === step"
-            [class.bg-surface-container]="pipelineStep() !== step"
-            [class.text-on-surface-variant]="pipelineStep() !== step"
-          >
-            <span class="material-symbols-outlined text-[18px]">
-              {{ step === 0 ? 'mic' : step === 1 ? 'graphic_eq' : step === 2 ? 'neurology' : 'check_circle' }}
-            </span>
-            {{ ('landing.pipeline.step' + (step + 1) + 'Title') | translate }}
-          </button>
-        }
-      </div>
-
-      <!-- Progress track -->
-      <div class="relative h-1 max-w-2xl mx-auto mb-10 bg-surface-container rounded-full overflow-hidden">
-        <div
-          class="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-tertiary rounded-full transition-all duration-base"
-          [style.width.%]="(pipelineStep() + 1) * 25"
-        ></div>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        <!-- Visualization panel -->
-        <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl h-72 flex items-center justify-center overflow-hidden relative">
-          @switch (pipelineStep()) {
-            @case (0) {
-              <!-- Grabación: barras de ecualizador animadas (CSS puro) -->
-              <div class="flex items-center justify-center gap-1.5 h-full w-full px-4">
-                @for (h of [30, 55, 80, 45, 95, 60, 35, 70, 50, 85, 40, 65]; track $index) {
-                  <div
-                    class="w-2.5 rounded-full bg-gradient-to-t from-primary to-tertiary animate-pulse"
-                    [style.height.%]="h"
-                    [style.animation-delay.ms]="$index * 90"
-                  ></div>
-                }
-              </div>
-            }
-            @case (1) {
-              <!-- Espectrograma: el mismo componente de la grabación real, alimentado con datos sintéticos -->
-              <app-spectrogram-view [getFrame]="getPipelineFrame" ariaLabel="Espectrograma de ejemplo" />
-            }
-            @case (2) {
-              <!-- Red neuronal: diagrama de capas simple -->
-              <svg viewBox="0 0 200 100" class="w-full h-full" preserveAspectRatio="xMidYMid meet">
-                @for (layer of [0, 1, 2, 3]; track layer) {
-                  @for (node of (layer === 0 || layer === 3 ? [0, 1, 2] : [0, 1, 2, 3, 4]); track node) {
-                    <circle
-                      [attr.cx]="20 + layer * 55"
-                      [attr.cy]="50 - ((layer === 0 || layer === 3 ? 2 : 4) * 9) / 2 + node * 9"
-                      r="3.5"
-                      class="fill-primary animate-pulse"
-                      [style.animation-delay.ms]="(layer * 5 + node) * 120"
-                    />
+          <div class="mt-10 flex flex-col" role="tablist" [attr.aria-label]="'landing.pipeline.tablistLabel' | translate">
+            @for (step of pipelineSteps; track step) {
+              <button
+                type="button"
+                role="tab"
+                class="pipeline-tab"
+                [id]="'pipeline-tab-' + step"
+                aria-controls="pipeline-panel"
+                [attr.aria-selected]="pipelineStep() === step"
+                [attr.tabindex]="pipelineStep() === step ? 0 : -1"
+                (click)="pipelineStep.set(step)"
+                (keydown.arrowDown)="moveTab(1, $event)"
+                (keydown.arrowUp)="moveTab(-1, $event)"
+              >
+                <span class="font-data text-sm font-semibold">{{ stepNumber(step) }}</span>
+                <span>
+                  <span class="block font-display text-lg font-bold">{{ ('landing.pipeline.step' + (step + 1) + 'Title') | translate }}</span>
+                  @if (pipelineStep() === step) {
+                    <span class="block mt-1 text-sm text-on-surface-variant leading-relaxed">
+                      {{ ('landing.pipeline.step' + (step + 1) + 'Body') | translate }}
+                    </span>
                   }
-                }
-              </svg>
+                </span>
+              </button>
             }
-            @case (3) {
-              <!-- Resultado: reutiliza el badge de confianza real -->
-              <div class="w-full px-2 flex flex-col gap-4">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <h4 class="font-display font-bold text-on-surface">{{ 'landing.demoSpeciesName' | translate }}</h4>
-                    <p class="text-xs italic text-on-surface-variant">Turdus chiguanco</p>
-                  </div>
-                  <app-confidence-badge [value]="96" />
+          </div>
+        </div>
+
+        <figure
+          id="pipeline-panel"
+          role="tabpanel"
+          class="lg:col-span-7 m-0 flex flex-col gap-3"
+          [attr.aria-labelledby]="'pipeline-tab-' + pipelineStep()"
+        >
+          <div class="pipeline-stage">
+            @switch (pipelineStep()) {
+              @case (0) {
+                <div class="flex items-center justify-center gap-1.5 h-40 w-full" aria-hidden="true">
+                  @for (level of waveformLevels; track $index) {
+                    <span class="w-2.5 rounded-full bg-primary animate-pulse" [style.height.%]="level" [style.animation-delay.ms]="$index * 90"></span>
+                  }
                 </div>
-                <div class="flex flex-col gap-2">
-                  @for (c of [{ n: 'Turdus chiguanco', v: 96 }, { n: 'Turdus fuscater', v: 3 }, { n: 'Zonotrichia capensis', v: 1 }]; track c.n) {
-                    <div class="flex items-center gap-2">
-                      <span class="text-[11px] font-data text-on-surface-variant w-32 truncate">{{ c.n }}</span>
-                      <div class="flex-1 h-2 rounded-full bg-surface-container overflow-hidden">
-                        <div class="h-full rounded-full bg-primary" [style.width.%]="c.v"></div>
-                      </div>
-                      <span class="text-[11px] font-data text-on-surface-variant w-8 text-right">{{ c.v }}%</span>
+              }
+              @case (1) {
+                <app-spectrogram-view
+                  class="pipeline-stage__spectrogram"
+                  [getFrame]="pipelineFrame"
+                  [columns]="pipelineColumns"
+                  [initialColumns]="pipelineInitialColumns"
+                  growFrom="end"
+                  ariaLabelKey="landing.demo.plateLabel"
+                />
+              }
+              @case (2) {
+                <svg viewBox="0 0 200 100" class="w-full h-56" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                  @for (layer of networkLayers; track $index; let l = $index) {
+                    @for (node of layer; track $index; let n = $index) {
+                      <circle
+                        [attr.cx]="20 + l * 53"
+                        [attr.cy]="50 - ((layer.length - 1) * 9) / 2 + n * 9"
+                        r="3.5"
+                        class="fill-primary animate-pulse"
+                        [style.animation-delay.ms]="(l * 5 + n) * 120"
+                      />
+                    }
+                  }
+                </svg>
+              }
+              @case (3) {
+                <!-- Anatomía de un resultado: sin especie ni porcentaje inventados -->
+                <dl class="w-full max-w-md m-0 flex flex-col gap-5">
+                  @for (field of resultAnatomy; track field.labelKey) {
+                    <div>
+                      <dt class="font-data text-sm text-on-surface-variant">{{ field.labelKey | translate }}</dt>
+                      <dd class="m-0 mt-2 h-4 rounded-full bg-surface-container-highest" [style.width.%]="field.width" aria-hidden="true"></dd>
                     </div>
                   }
-                </div>
-              </div>
+                </dl>
+              }
             }
-          }
-        </div>
-
-        <!-- Descripción del paso activo -->
-        <div class="flex flex-col gap-3">
-          @for (step of pipelineSteps; track step) {
-            @if (pipelineStep() === step) {
-              <span class="font-data text-xs uppercase tracking-widest text-primary font-semibold">0{{ step + 1 }}</span>
-              <h3 class="font-display text-xl font-bold">{{ ('landing.pipeline.step' + (step + 1) + 'Title') | translate }}</h3>
-              <p class="text-sm text-on-surface-variant leading-relaxed">{{ ('landing.pipeline.step' + (step + 1) + 'Body') | translate }}</p>
-            }
-          }
-        </div>
+          </div>
+          <figcaption class="flex items-start gap-2 text-sm text-on-surface-variant">
+            <span class="mt-1.5 w-4 h-1.5 shrink-0 rounded-full bg-sulfur" aria-hidden="true"></span>
+            {{ 'landing.pipeline.illustrationLabel' | translate }}
+          </figcaption>
+        </figure>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <!-- Cierre -->
+    <section class="chrome relative overflow-hidden" aria-labelledby="closing-title">
+      <app-song-sonogram class="landing-closing__sonogram absolute inset-x-0 bottom-0 opacity-60" aria-hidden="true" />
+      <div class="relative max-w-7xl mx-auto px-gutter py-section flex flex-col items-start gap-8">
+        <h2 id="closing-title" class="max-w-3xl text-5xl font-extrabold tracking-display">{{ 'landing.closing.title' | translate }}</h2>
+        <a routerLink="/register" class="btn btn--sulfur min-h-14 px-8 text-lg">
+          <span class="material-symbols-outlined" aria-hidden="true">mic</span>
+          {{ 'landing.ctaPrimary' | translate }}
+        </a>
+      </div>
+    </section>
+  </main>
 
   <app-site-footer />
 </div>
