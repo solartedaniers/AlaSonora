@@ -9,7 +9,7 @@ import { ThemeService, ThemeMode } from '../../core/services/theme.service';
 import { I18nService, AppLang } from '../../core/services/i18n.service';
 import { LettersOnlyDirective } from '../../shared/directives/letters-only.directive';
 import { PointerGlowDirective } from '../../shared/directives/pointer-glow.directive';
-import { SoftAuroraComponent } from '../../shared/components/soft-aurora/soft-aurora.component';
+import { FieldBackdropComponent } from '../../shared/components/field-backdrop/field-backdrop.component';
 import { nameValidator } from '../../core/validators/name.validator';
 import { ObserverRole, Profile } from '../../core/models';
 
@@ -22,7 +22,7 @@ import { ObserverRole, Profile } from '../../core/models';
     ReactiveFormsModule,
     LettersOnlyDirective,
     PointerGlowDirective,
-    SoftAuroraComponent,
+    FieldBackdropComponent,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './profile.component.html',

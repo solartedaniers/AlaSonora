@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
 import { OfflineBannerComponent } from '../../shared/components/offline-banner/offline-banner.component';
-import { SoftAuroraComponent } from '../../shared/components/soft-aurora/soft-aurora.component';
+import { FieldBackdropComponent } from '../../shared/components/field-backdrop/field-backdrop.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
 import { DetectionsService } from '../../core/services/detections.service';
@@ -22,7 +22,7 @@ type StatusFilter = 'all' | SyncStatus;
     NavHeaderComponent,
     ConfidenceBadgeComponent,
     OfflineBannerComponent,
-    SoftAuroraComponent,
+    FieldBackdropComponent,
     TranslatePipe,
     SpeciesNamePipe,
   ],

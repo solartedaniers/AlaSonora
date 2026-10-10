@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { OfflineBannerComponent } from '../../shared/components/offline-banner/offline-banner.component';
 import { SpectrogramViewComponent } from '../../shared/components/spectrogram-view/spectrogram-view.component';
-import { SoftAuroraComponent } from '../../shared/components/soft-aurora/soft-aurora.component';
+import { FieldBackdropComponent } from '../../shared/components/field-backdrop/field-backdrop.component';
 import { PointerGlowDirective } from '../../shared/directives/pointer-glow.directive';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { AudioCaptureService } from '../../core/services/audio-capture.service';
@@ -33,7 +33,7 @@ const NO_SPECIES_IDENTIFIED_DETAIL = 'No bird species were identified in this re
     NavHeaderComponent,
     OfflineBannerComponent,
     SpectrogramViewComponent,
-    SoftAuroraComponent,
+    FieldBackdropComponent,
     PointerGlowDirective,
     TranslatePipe,
   ],

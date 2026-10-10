@@ -18,7 +18,7 @@ import { DatePipe, DecimalPipe, isPlatformBrowser } from '@angular/common';
 import type * as Leaflet from 'leaflet';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
-import { SoftAuroraComponent } from '../../shared/components/soft-aurora/soft-aurora.component';
+import { FieldBackdropComponent } from '../../shared/components/field-backdrop/field-backdrop.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
 import { DetectionsService } from '../../core/services/detections.service';
@@ -33,7 +33,7 @@ const DEFAULT_ZOOM = 5;
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [DatePipe, DecimalPipe, NavHeaderComponent, ConfidenceBadgeComponent, SoftAuroraComponent, TranslatePipe, SpeciesNamePipe],
+  imports: [DatePipe, DecimalPipe, NavHeaderComponent, ConfidenceBadgeComponent, FieldBackdropComponent, TranslatePipe, SpeciesNamePipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './map.component.html',
 })

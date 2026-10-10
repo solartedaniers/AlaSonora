@@ -5,7 +5,7 @@ import { OfflineBannerComponent } from '../../shared/components/offline-banner/o
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
 import { CountUpComponent } from '../../shared/components/count-up/count-up.component';
 import { InfiniteSpiralComponent, SpiralItem } from '../../shared/components/infinite-spiral/infinite-spiral.component';
-import { SoftAuroraComponent } from '../../shared/components/soft-aurora/soft-aurora.component';
+import { FieldBackdropComponent } from '../../shared/components/field-backdrop/field-backdrop.component';
 import { PointerGlowDirective } from '../../shared/directives/pointer-glow.directive';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
@@ -24,7 +24,7 @@ import { Detection, UserStats, speciesDisplayName } from '../../core/models';
     ConfidenceBadgeComponent,
     CountUpComponent,
     InfiniteSpiralComponent,
-    SoftAuroraComponent,
+    FieldBackdropComponent,
     PointerGlowDirective,
     TranslatePipe,
     SpeciesNamePipe,

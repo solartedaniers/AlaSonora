@@ -2,7 +2,7 @@ import { Component, OnInit, computed, inject, signal, ChangeDetectionStrategy } 
 import { DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
-import { SoftAuroraComponent } from '../../shared/components/soft-aurora/soft-aurora.component';
+import { FieldBackdropComponent } from '../../shared/components/field-backdrop/field-backdrop.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
@@ -20,7 +20,7 @@ import { Detection, ObserverRole, Profile, SystemRole } from '../../core/models'
   imports: [
     DatePipe,
     NavHeaderComponent,
-    SoftAuroraComponent,
+    FieldBackdropComponent,
     TranslatePipe,
     SpeciesNamePipe,
     ConfidenceBadgeComponent,
