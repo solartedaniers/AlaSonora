@@ -1,203 +1,215 @@
-<div class="flex flex-col w-full min-h-dvh lg:h-dvh bg-surface text-on-surface relative">
-  <app-field-backdrop />
+<div class="flex flex-col w-full min-h-dvh bg-surface text-on-surface">
   <app-nav-header />
-  <app-offline-banner class="relative z-10" />
+  <app-offline-banner />
 
-  <div class="relative z-10 w-full flex-1 lg:min-h-0 px-4 md:px-8 py-6 flex flex-col gap-6 max-w-7xl mx-auto">
-    <!-- Tabs -->
-    <div class="flex items-center gap-1 p-1 bg-surface-container-low rounded-xl self-start shadow-sm">
-      <button
-        type="button"
-        (click)="setTab('live')"
-        class="px-4 py-2 rounded-lg font-display text-sm font-semibold flex items-center gap-2 transition-all"
-        [class.bg-primary]="activeTab() === 'live'"
-        [class.text-on-primary]="activeTab() === 'live'"
-        [class.text-on-surface-variant]="activeTab() !== 'live'"
-      >
-        <span class="material-symbols-outlined text-[18px]">mic</span>
-        {{ 'recording.tabLive' | translate }}
-      </button>
-      <button
-        type="button"
-        (click)="setTab('upload')"
-        class="px-4 py-2 rounded-lg font-display text-sm font-semibold flex items-center gap-2 transition-all"
-        [class.bg-primary]="activeTab() === 'upload'"
-        [class.text-on-primary]="activeTab() === 'upload'"
-        [class.text-on-surface-variant]="activeTab() !== 'upload'"
-      >
-        <span class="material-symbols-outlined text-[18px]">upload_file</span>
-        {{ 'recording.tabUpload' | translate }}
-      </button>
-    </div>
+  <main class="w-full max-w-7xl mx-auto px-gutter py-10 flex flex-col gap-8">
+    <header class="flex flex-wrap items-end justify-between gap-6">
+      <div>
+        <p class="eyebrow-label">{{ 'recording.eyebrow' | translate }}</p>
+        <h1 class="mt-2 text-5xl font-extrabold tracking-display">{{ 'recording.title' | translate }}</h1>
+      </div>
 
+      <div class="record-tabs" role="tablist" [attr.aria-label]="'recording.tabsLabel' | translate">
+        @for (tab of tabs; track tab.id) {
+          <button
+            type="button"
+            role="tab"
+            class="record-tabs__tab"
+            [id]="'record-tab-' + tab.id"
+            [attr.aria-controls]="'record-panel-' + tab.id"
+            [attr.aria-selected]="activeTab() === tab.id"
+            (click)="setTab(tab.id)"
+          >
+            <span class="material-symbols-outlined text-xl" aria-hidden="true">{{ tab.icon }}</span>
+            {{ tab.labelKey | translate }}
+          </button>
+        }
+      </div>
+    </header>
+
+    <!-- Estados -->
+    @if (micDenied()) {
+      <div role="alert" class="record-notice bg-error-container text-on-error-container">
+        <span class="material-symbols-outlined shrink-0" aria-hidden="true">mic_off</span>
+        <div class="flex-1">
+          <p class="font-bold">{{ 'recording.micDeniedTitle' | translate }}</p>
+          <p class="text-sm">{{ 'recording.micDeniedBody' | translate }}</p>
+        </div>
+        <button type="button" class="btn btn--quiet shrink-0" (click)="setTab('upload')">{{ 'recording.tabUpload' | translate }}</button>
+      </div>
+    }
     @if (savedOffline()) {
-      <div role="status" class="flex items-center gap-3 p-4 rounded-xl bg-secondary-container text-on-secondary-container shadow-sm">
-        <span class="material-symbols-outlined shrink-0">cloud_sync</span>
-        <p class="text-sm font-medium">{{ 'recording.savedOffline' | translate }}</p>
+      <div role="status" class="record-notice bg-warning-container text-on-warning-container">
+        <span class="material-symbols-outlined shrink-0" aria-hidden="true">cloud_sync</span>
+        <p>{{ 'recording.savedOffline' | translate }}</p>
       </div>
     }
-
     @if (classifyError()) {
-      <div class="flex items-center gap-3 p-4 rounded-xl bg-error-container text-on-error-container shadow-sm">
-        <span class="material-symbols-outlined shrink-0">error</span>
-        <p class="text-sm font-medium">{{ classifyError() }}</p>
+      <div role="alert" class="record-notice bg-error-container text-on-error-container">
+        <span class="material-symbols-outlined shrink-0" aria-hidden="true">error</span>
+        <p>{{ classifyError() }}</p>
       </div>
     }
-
-    <!-- Tips row -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="feature-card glass-card p-4 rounded-xl flex items-start gap-3 shadow-sm">
-        <span class="material-symbols-outlined text-primary shrink-0">lock_open</span>
-        <div>
-          <p class="font-display text-sm font-semibold">{{ 'recording.micPermissionTitle' | translate }}</p>
-          <p class="text-xs text-on-surface-variant mt-1">{{ 'recording.micPermissionBody' | translate }}</p>
-        </div>
-      </div>
-      <div class="feature-card glass-card p-4 rounded-xl flex items-start gap-3 shadow-sm">
-        <span class="material-symbols-outlined text-secondary shrink-0">nature</span>
-        <div>
-          <p class="font-display text-sm font-semibold text-secondary">{{ 'recording.fieldTipTitle' | translate }}</p>
-          <p class="text-xs text-on-surface-variant mt-1">{{ 'recording.fieldTipBody' | translate }}</p>
-        </div>
-      </div>
-    </div>
 
     @if (activeTab() === 'live') {
-      <div class="grid grid-cols-1 lg:grid-cols-12 lg:flex-1 lg:min-h-0 gap-4">
-        <!-- Spectrogram + controls -->
-        <div appBorderGlow class="lg:col-span-8 flex flex-col glass-card p-4 lg:p-6 rounded-2xl shadow-xl gap-4">
-          <div class="flex flex-wrap items-center justify-between gap-3">
-            <div class="flex flex-col">
-              <span class="text-xs text-on-surface-variant uppercase tracking-wider">{{ 'recording.samplingTime' | translate }}</span>
-              <span class="font-data text-2xl font-bold text-primary">{{ capture.elapsedSeconds() | number: '1.1-1' }}s</span>
-            </div>
-            <div class="flex items-center gap-2 bg-surface-container-highest px-3 py-1.5 rounded-full">
-              @if (capture.isRecording()) {
-                <span class="w-2.5 h-2.5 rounded-full bg-error animate-pulse"></span>
-                <span class="text-xs font-semibold text-tertiary">{{ 'recording.listening' | translate }}</span>
-              } @else {
-                <span class="w-2.5 h-2.5 rounded-full bg-outline"></span>
-                <span class="text-xs text-on-surface-variant">—</span>
-              }
-            </div>
+      <section id="record-panel-live" role="tabpanel" aria-labelledby="record-tab-live" class="flex flex-col gap-8">
+        <!-- Placa del sonograma en vivo: el visualizador real es el protagonista -->
+        <figure class="record-plate">
+          @if (maxKhz) {
+            <app-frequency-axis class="record-plate__axis" [maxKhz]="maxKhz" />
+          }
+          <div class="record-plate__screen">
+            <app-spectrogram-view class="block w-full h-full" [getFrame]="getLatestFrame" [columns]="liveColumns" growFrom="end" />
+            @if (capture.isRecording()) {
+              <span class="record-plate__playhead" aria-hidden="true"></span>
+              <span class="record-plate__rec">
+                <span class="record-plate__rec-dot" aria-hidden="true"></span>
+                {{ 'recording.recLabel' | translate }}
+              </span>
+            } @else {
+              <p class="record-plate__idle">{{ (isClassifying() ? 'recording.classifying' : 'recording.idleHint') | translate }}</p>
+            }
           </div>
+        </figure>
 
-          <div class="relative w-full h-64 sm:h-72 lg:h-auto lg:flex-1 lg:min-h-40 bg-surface-container-lowest rounded-xl overflow-hidden shadow-inner">
-            <app-spectrogram-view [getFrame]="getLatestFrame" class="w-full h-full block" />
-          </div>
+        <div class="record-console">
+          <!-- Lecturas reales del worker -->
+          <dl class="record-readouts" aria-live="off">
+            <div class="readings__item">
+              <dt class="text-sm text-on-surface-variant">{{ 'recording.samplingTime' | translate }}</dt>
+              <dd class="m-0 font-data text-2xl sm:text-4xl font-semibold leading-none">
+                {{ capture.elapsedSeconds() | number: '1.1-1' }}<span class="text-base sm:text-xl"> {{ 'units.seconds' | translate }}</span>
+              </dd>
+            </div>
+            <div class="readings__item">
+              <dt class="text-sm text-on-surface-variant">{{ 'recording.peakFrequency' | translate }}</dt>
+              <dd class="m-0 font-data text-2xl sm:text-4xl font-semibold leading-none">
+                @if (peakKhz() !== null) {
+                  {{ peakKhz() | number: '1.1-1' }}<span class="text-base sm:text-xl"> {{ 'units.khz' | translate }}</span>
+                } @else {
+                  {{ 'common.noValue' | translate }}
+                }
+              </dd>
+            </div>
+            <div class="readings__item">
+              <dt class="text-sm text-on-surface-variant">{{ 'recording.level' | translate }}</dt>
+              <dd class="m-0 font-data text-2xl sm:text-4xl font-semibold leading-none">
+                @if (levelDb() !== null) {
+                  {{ levelDb() | number: '1.0-0' }}<span class="text-base sm:text-xl"> {{ 'units.decibels' | translate }}</span>
+                } @else {
+                  {{ 'common.noValue' | translate }}
+                }
+              </dd>
+            </div>
+          </dl>
 
-          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+          <!-- Disco de grabación: rojo bromelia; el anillo azufre crece con el nivel real -->
+          <div class="record-button-wrap" [style.--level]="levelRatio()">
+            <span class="record-button-wrap__ring" aria-hidden="true"></span>
             <button
               type="button"
-              (click)="toggleRecording()"
+              class="record-button"
               [disabled]="isClassifying()"
-              class="group relative flex items-center justify-center gap-3 px-10 py-4 rounded-full transition-all shadow-xl hover:scale-105 active:scale-95 disabled:opacity-60 disabled:pointer-events-none"
-              [class.bg-error-container]="!capture.isRecording()"
-              [class.text-on-error-container]="!capture.isRecording()"
-              [class.bg-surface-container-highest]="capture.isRecording()"
-              [class.text-on-surface]="capture.isRecording()"
+              [attr.aria-pressed]="capture.isRecording()"
+              (click)="toggleRecording()"
             >
               @if (isClassifying()) {
-                <span class="font-display font-bold">{{ 'recording.classifying' | translate }}</span>
+                <span class="material-symbols-outlined text-4xl animate-spin" aria-hidden="true">progress_activity</span>
               } @else if (capture.isRecording()) {
-                <span class="w-4 h-4 rounded-sm bg-current"></span>
-                <span class="font-display font-bold">{{ 'recording.stopAndClassify' | translate }}</span>
+                <span class="w-7 h-7 rounded-md bg-current" aria-hidden="true"></span>
               } @else {
-                <span class="material-symbols-outlined text-2xl">mic</span>
-                <span class="font-display font-bold">{{ 'recording.tabLive' | translate }}</span>
+                <span class="material-symbols-outlined text-5xl" aria-hidden="true">mic</span>
               }
+              <span class="sr-only">
+                {{ (isClassifying() ? 'recording.classifying' : capture.isRecording() ? 'recording.stopAndClassify' : 'recording.tabLive') | translate }}
+              </span>
             </button>
+            <p class="font-display font-bold text-center" aria-hidden="true">
+              {{ (isClassifying() ? 'recording.classifying' : capture.isRecording() ? 'recording.stopAndClassify' : 'recording.tabLive') | translate }}
+            </p>
           </div>
-        </div>
 
-        <!-- DSP controls -->
-        <div class="lg:col-span-4 flex flex-col gap-4">
-          <div class="glass-card p-4 rounded-2xl flex flex-col gap-4 shadow-md">
+          <!-- Controles de señal -->
+          <div class="record-controls">
             <div class="flex flex-col gap-2">
-              <div class="flex justify-between items-center text-xs text-on-surface-variant">
-                <span class="inline-flex items-center gap-1">
-                  {{ 'recording.gain' | translate }}
-                  <span
-                    class="material-symbols-outlined text-[14px] cursor-help"
-                    [title]="'recording.gainHelp' | translate"
-                    [attr.aria-label]="'recording.gainHelp' | translate"
-                    role="img"
-                    >help</span
-                  >
-                </span>
-                <span class="text-primary font-bold">+{{ capture.gainDb() }} dB</span>
+              <div class="flex items-baseline justify-between gap-3">
+                <label for="gain" class="field-label">{{ 'recording.gain' | translate }}</label>
+                <span class="font-data font-semibold text-primary">+{{ capture.gainDb() }} {{ 'units.decibels' | translate }}</span>
               </div>
               <input
+                id="gain"
                 type="range"
                 min="0"
                 max="36"
+                class="record-range"
                 [value]="capture.gainDb()"
                 (input)="capture.setGainDb($any($event.target).valueAsNumber)"
-                class="w-full accent-primary"
+                aria-describedby="gain-help"
               />
+              <p id="gain-help" class="text-sm text-on-surface-variant">{{ 'recording.gainHelp' | translate }}</p>
             </div>
-            <div class="flex items-center justify-between p-3 bg-surface-container rounded-xl">
-              <span class="text-sm font-medium inline-flex items-center gap-1">
-                {{ 'recording.highPassFilter' | translate }}
-                <span
-                  class="material-symbols-outlined text-[14px] cursor-help"
-                  [title]="'recording.highPassFilterHelp' | translate"
-                  [attr.aria-label]="'recording.highPassFilterHelp' | translate"
-                  role="img"
-                  >help</span
-                >
-              </span>
-              <label class="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  [checked]="capture.highPassEnabled()"
-                  (change)="capture.setHighPassEnabled($any($event.target).checked)"
-                  class="sr-only peer"
-                />
-                <div class="w-11 h-6 bg-surface-container-highest peer-checked:bg-primary rounded-full transition-colors relative after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-surface-container-lowest peer-checked:after:bg-on-primary after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5"></div>
-              </label>
-            </div>
-          </div>
 
-          <div class="glass-card p-4 rounded-2xl shadow-md flex-1">
-            <p class="font-display text-sm font-semibold mb-3">{{ 'recording.candidates' | translate }}</p>
-            <p class="text-xs text-on-surface-variant">
-              @if (capture.isRecording()) {
-                {{ 'recording.listening' | translate }}
-              } @else {
-                —
-              }
-            </p>
+            <label class="flex items-start justify-between gap-4 cursor-pointer">
+              <span class="flex flex-col gap-1">
+                <span class="field-label">{{ 'recording.highPassFilter' | translate }}</span>
+                <span class="text-sm text-on-surface-variant">{{ 'recording.highPassFilterHelp' | translate }}</span>
+              </span>
+              <input
+                type="checkbox"
+                role="switch"
+                class="record-switch"
+                [checked]="capture.highPassEnabled()"
+                (change)="capture.setHighPassEnabled($any($event.target).checked)"
+              />
+            </label>
           </div>
         </div>
-      </div>
+
+        <!-- Notas de campo: texto, no tarjetas -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t">
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-primary shrink-0" aria-hidden="true">mic</span>
+            <div>
+              <p class="font-display font-bold">{{ 'recording.micPermissionTitle' | translate }}</p>
+              <p class="mt-1 text-sm text-on-surface-variant">{{ 'recording.micPermissionBody' | translate }}</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-primary shrink-0" aria-hidden="true">forest</span>
+            <div>
+              <p class="font-display font-bold">{{ 'recording.fieldTipTitle' | translate }}</p>
+              <p class="mt-1 text-sm text-on-surface-variant">{{ 'recording.fieldTipBody' | translate }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
     } @else {
-      <div
-        class="bg-surface-container-low p-10 rounded-2xl flex flex-col items-center justify-center text-center gap-4 border-2 border-dashed transition-colors"
-        [class.border-primary]="isDragOver()"
-        [class.border-outline-variant]="!isDragOver()"
-        [class.opacity-60]="isClassifying()"
-        [class.pointer-events-none]="isClassifying()"
-        [class.cursor-pointer]="!isClassifying()"
-        (dragover)="$event.preventDefault(); isDragOver.set(true)"
-        (dragleave)="isDragOver.set(false)"
-        (drop)="onFileDropped($event)"
-        (click)="fileInput.click()"
-      >
-        <div class="w-20 h-20 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
-          <span class="material-symbols-outlined text-5xl">cloud_upload</span>
+      <section id="record-panel-upload" role="tabpanel" aria-labelledby="record-tab-upload">
+        <div
+          class="record-dropzone"
+          [class.is-dragover]="isDragOver()"
+          [class.is-busy]="isClassifying()"
+          (dragover)="$event.preventDefault(); isDragOver.set(true)"
+          (dragleave)="isDragOver.set(false)"
+          (drop)="onFileDropped($event)"
+          (click)="fileInput.click()"
+        >
+          <app-song-sonogram class="record-dropzone__sonogram" [band]="false" />
+          <span class="material-symbols-outlined text-6xl text-primary" aria-hidden="true">
+            {{ isClassifying() ? 'progress_activity' : 'upload_file' }}
+          </span>
+          <div class="flex flex-col gap-2 max-w-md">
+            <h2 class="text-3xl font-extrabold tracking-display">
+              {{ (isClassifying() ? 'recording.classifying' : 'recording.dropzoneTitle') | translate }}
+            </h2>
+            <p class="text-on-surface-variant">{{ 'recording.dropzoneBody' | translate }}</p>
+          </div>
+          <button type="button" class="btn btn--ink" [disabled]="isClassifying()">
+            {{ 'recording.browseFiles' | translate }}
+          </button>
+          <input #fileInput type="file" accept="audio/*" class="sr-only" tabindex="-1" (change)="onFileSelected($event)" />
         </div>
-        <div class="flex flex-col gap-1 max-w-md">
-          <h3 class="font-display text-lg font-semibold">
-            {{ (isClassifying() ? 'recording.classifying' : 'recording.dropzoneTitle') | translate }}
-          </h3>
-          <p class="text-sm text-on-surface-variant">{{ 'recording.dropzoneBody' | translate }}</p>
-        </div>
-        <button type="button" class="bio-glow-btn px-6 py-2.5 rounded-full bg-primary text-on-primary font-display font-semibold">
-          {{ 'recording.browseFiles' | translate }}
-        </button>
-        <input #fileInput type="file" accept="audio/*" class="hidden" (change)="onFileSelected($event)" />
-      </div>
+      </section>
     }
-  </div>
+  </main>
 </div>

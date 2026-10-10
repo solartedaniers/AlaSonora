@@ -1,12 +1,12 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { Component, computed, inject, signal, ChangeDetectionStrategy, PLATFORM_ID } from '@angular/core';
+import { DecimalPipe, isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { OfflineBannerComponent } from '../../shared/components/offline-banner/offline-banner.component';
 import { SpectrogramViewComponent } from '../../shared/components/spectrogram-view/spectrogram-view.component';
-import { FieldBackdropComponent } from '../../shared/components/field-backdrop/field-backdrop.component';
-import { PointerGlowDirective } from '../../shared/directives/pointer-glow.directive';
+import { FrequencyAxisComponent } from '../../shared/components/frequency-axis/frequency-axis.component';
+import { SongSonogramComponent } from '../../shared/components/song-sonogram/song-sonogram.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { AudioCaptureService } from '../../core/services/audio-capture.service';
 import { ClassificationService } from '../../core/services/classification.service';
@@ -25,6 +25,11 @@ type RecordingTab = 'live' | 'upload';
 // cambia, hay que actualizarlo aquí también.
 const NO_SPECIES_IDENTIFIED_DETAIL = 'No bird species were identified in this recording';
 
+// Visualizador en vivo: columnas visibles y rango de nivel que mueve el anillo del botón.
+const LIVE_COLUMNS = 120;
+const LEVEL_FLOOR_DB = -60;
+const HZ_PER_KHZ = 1000;
+
 @Component({
   selector: 'app-recording',
   standalone: true,
@@ -33,12 +38,13 @@ const NO_SPECIES_IDENTIFIED_DETAIL = 'No bird species were identified in this re
     NavHeaderComponent,
     OfflineBannerComponent,
     SpectrogramViewComponent,
-    FieldBackdropComponent,
-    PointerGlowDirective,
+    FrequencyAxisComponent,
+    SongSonogramComponent,
     TranslatePipe,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './recording.component.html',
+  styleUrl: './recording.component.scss',
 })
 export class RecordingComponent {
   readonly capture = inject(AudioCaptureService);
@@ -50,12 +56,32 @@ export class RecordingComponent {
   private readonly router = inject(Router);
 
   readonly activeTab = signal<RecordingTab>('live');
+  readonly tabs: { id: RecordingTab; icon: string; labelKey: string }[] = [
+    { id: 'live', icon: 'mic', labelKey: 'recording.tabLive' },
+    { id: 'upload', icon: 'upload_file', labelKey: 'recording.tabUpload' },
+  ];
   readonly isDragOver = signal(false);
 
   // Se pasa como función (no como valor) para que el componente de canvas
   // pueda leer el signal en cada tick de rAF sin que este componente padre
   // tenga que re-renderizarse en cada frame de audio.
   readonly getLatestFrame = () => this.capture.latestFrame();
+  readonly liveColumns = LIVE_COLUMNS;
+
+  /** Top of the live spectrogram: the worker's FFT spans 0 Hz up to half the device sample rate. */
+  readonly maxKhz = isPlatformBrowser(inject(PLATFORM_ID)) ? RecordingComponent.deviceNyquistKhz() : null;
+
+  /** Live readings straight from the worker's last frame (null while idle). */
+  readonly peakKhz = computed(() => {
+    const frame = this.capture.isRecording() ? this.capture.latestFrame() : null;
+    return frame ? frame.peakFrequencyHz / HZ_PER_KHZ : null;
+  });
+  readonly levelDb = computed(() => (this.capture.isRecording() ? (this.capture.latestFrame()?.rmsDb ?? null) : null));
+  /** 0…1 signal level that grows the ring around the record button. */
+  readonly levelRatio = computed(() => {
+    const db = this.levelDb();
+    return db === null ? 0 : Math.min(1, Math.max(0, 1 - db / LEVEL_FLOOR_DB));
+  });
 
   setTab(tab: RecordingTab): void {
     this.activeTab.set(tab);
@@ -64,6 +90,7 @@ export class RecordingComponent {
   readonly isClassifying = signal(false);
   readonly classifyError = signal<string | null>(null);
   readonly savedOffline = signal(false);
+  readonly micDenied = signal(false);
 
   async toggleRecording(): Promise<void> {
     if (this.capture.isRecording()) {
@@ -74,9 +101,11 @@ export class RecordingComponent {
     } else {
       try {
         await this.capture.start();
+        this.micDenied.set(false);
       } catch {
         // Permiso de micrófono denegado o no disponible: no interrumpimos
         // el flujo, el usuario puede intentar de nuevo o usar "Subir archivo".
+        this.micDenied.set(true);
       }
     }
   }
@@ -186,6 +215,14 @@ export class RecordingComponent {
       if (detail) return detail;
     }
     return this.i18n.translate('recording.classifyError');
+  }
+
+  // La captura usa un AudioContext por defecto; uno temporal reporta la misma frecuencia de muestreo del dispositivo.
+  private static deviceNyquistKhz(): number {
+    const probe = new AudioContext();
+    const nyquistKhz = probe.sampleRate / 2 / HZ_PER_KHZ;
+    void probe.close();
+    return nyquistKhz;
   }
 
   /** Only decoded for uploaded files: live recordings already track their own elapsed time. */

@@ -1,0 +1,275 @@
+// Pestañas: segmento con el estado activo en tinta.
+.record-tabs {
+  display: inline-flex;
+  padding: calc(var(--space-unit) * 1);
+  gap: calc(var(--space-unit) * 1);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-container-high);
+}
+
+.record-tabs__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--space-unit) * 2);
+  min-height: var(--touch-target);
+  padding-inline: calc(var(--space-unit) * 5);
+  border-radius: var(--radius-full);
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  color: var(--color-on-surface-variant);
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    color: var(--color-on-surface);
+  }
+
+  &[aria-selected='true'] {
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+}
+
+.record-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--space-unit) * 3);
+  padding: calc(var(--space-unit) * 4) calc(var(--space-unit) * 5);
+  border-radius: var(--radius-xl);
+}
+
+// --- Placa del sonograma en vivo.
+.record-plate {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.record-plate__axis {
+  grid-column: 1;
+}
+
+.record-plate__screen {
+  grid-column: 2;
+  position: relative;
+  height: clamp(calc(var(--space-unit) * 56), 42dvh, calc(var(--space-unit) * 104));
+  background: var(--color-spectro-floor);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.record-plate__playhead {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: calc(var(--space-unit) * 1);
+  background: var(--color-record);
+}
+
+.record-plate__rec {
+  position: absolute;
+  top: calc(var(--space-unit) * 3);
+  inset-inline-start: calc(var(--space-unit) * 3);
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--space-unit) * 2);
+  padding: calc(var(--space-unit) * 1) calc(var(--space-unit) * 3);
+  border-radius: var(--radius-full);
+  background: var(--color-record);
+  color: var(--color-on-record);
+  font-family: var(--font-data);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.record-plate__rec-dot {
+  width: calc(var(--space-unit) * 2);
+  height: calc(var(--space-unit) * 2);
+  border-radius: var(--radius-full);
+  background: currentColor;
+  animation: rec-blink var(--duration-pulse) var(--ease-in-out) infinite;
+}
+
+@keyframes rec-blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.record-plate__idle {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: calc(var(--space-unit) * 6);
+  text-align: center;
+  color: var(--color-on-surface-variant);
+}
+
+// --- Consola: lecturas · disco · controles.
+.record-console {
+  display: grid;
+  gap: calc(var(--space-unit) * 10);
+  align-items: center;
+
+  @screen lg {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+}
+
+.record-readouts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: calc(var(--space-unit) * 4);
+  margin: 0;
+}
+
+.record-button-wrap {
+  --button-size: calc(var(--space-unit) * 24);
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: calc(var(--space-unit) * 3);
+  order: -1;
+
+  @screen lg {
+    order: 0;
+  }
+}
+
+// Anillo azufre: su tamaño sigue el nivel real de la señal (--level, 0…1).
+.record-button-wrap__ring {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--button-size);
+  height: var(--button-size);
+  border-radius: var(--radius-full);
+  border: calc(var(--space-unit) * 1.5) solid var(--color-sulfur);
+  transform: translateX(-50%) scale(calc(1 + var(--level, 0) * 0.45));
+  opacity: calc(0.25 + var(--level, 0) * 0.75);
+  transition: transform var(--duration-fast) linear;
+  pointer-events: none;
+}
+
+.record-button {
+  position: relative;
+  width: var(--button-size);
+  height: var(--button-size);
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--color-record);
+  color: var(--color-on-record);
+  box-shadow: var(--shadow-lg);
+  transition:
+    box-shadow var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+
+  &:hover:enabled {
+    box-shadow: var(--shadow-xl);
+    transform: scale(1.03);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
+}
+
+.record-controls {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-unit) * 6);
+}
+
+.record-range {
+  width: 100%;
+  min-height: var(--touch-target);
+  accent-color: var(--color-primary);
+}
+
+// Interruptor nativo con apariencia propia: pista y perilla desde tokens.
+.record-switch {
+  appearance: none;
+  position: relative;
+  flex-shrink: 0;
+  width: calc(var(--space-unit) * 14);
+  height: calc(var(--space-unit) * 8);
+  margin-top: calc(var(--space-unit) * 1);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-container-highest);
+  border: 1px solid var(--color-outline);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out);
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: calc(var(--space-unit) * 0.75);
+    left: calc(var(--space-unit) * 0.75);
+    width: calc(var(--space-unit) * 6);
+    height: calc(var(--space-unit) * 6);
+    border-radius: var(--radius-full);
+    background: var(--color-on-surface-variant);
+    transition:
+      transform var(--duration-fast) var(--ease-out),
+      background-color var(--duration-fast) var(--ease-out);
+  }
+
+  &:checked {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  &:checked::after {
+    transform: translateX(calc(var(--space-unit) * 6));
+    background: var(--color-on-primary);
+  }
+}
+
+// --- Subir archivo.
+.record-dropzone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--space-unit) * 6);
+  min-height: calc(var(--space-unit) * 100);
+  padding: calc(var(--space-unit) * 10) var(--space-gutter);
+  text-align: center;
+  border: 2px dashed var(--color-outline);
+  border-radius: var(--radius-3xl);
+  background: var(--color-surface-container-lowest);
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+
+  &.is-dragover {
+    border-color: var(--color-primary);
+    background: var(--color-primary-container);
+  }
+
+  &.is-busy {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  > :not(.record-dropzone__sonogram) {
+    position: relative;
+  }
+}
+
+.record-dropzone__sonogram {
+  position: absolute;
+  inset-inline: 0;
+  bottom: calc(var(--space-unit) * -4);
+  color: var(--color-primary);
+  pointer-events: none;
+}
