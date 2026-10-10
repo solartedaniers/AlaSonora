@@ -60,12 +60,30 @@
   --color-record: #c8102e;
   --color-on-record: #ffffff;
 
-  // Rampa del espectrograma: papel → tinta → pico de energía.
+  // Acentos del plumaje tropical: relleno (gráficos ≥3:1), texto encima y tinta (texto sobre papel).
+  --color-cyan: #0f93a4;
+  --color-on-cyan: #04161b;
+  --color-cyan-ink: #0b6f7c;
+  --color-coral: #e8573f;
+  --color-on-coral: #2a0b05;
+  --color-coral-ink: #b23a26;
+  --color-moss: #5b8f2e;
+  --color-on-moss: #0b1d06;
+  --color-moss-ink: #3f6a1c;
+  --color-sky: #3d86d4;
+  --color-on-sky: #04162b;
+  --color-sky-ink: #1f5fa8;
+
+  // Rampa del espectrograma: papel → tinta petróleo → cian → azufre → coral.
   --color-spectro-floor: #ffffff;
-  --color-spectro-mid: #0f4c5c;
-  --color-spectro-peak: #f2c230;
+  --color-spectro-low: #0f4c5c;
+  --color-spectro-mid: #0f93a4;
+  --color-spectro-high: #f2c230;
+  --color-spectro-peak: #e8573f;
 
   --color-focus: #0f4c5c;
+  // Luz del brillo que sigue al cursor sobre superficies de color.
+  --color-glow: #ffffff;
   --color-shadow: #0b1d22;
   --color-scrim: #0b1d22;
 
@@ -78,6 +96,9 @@
 
   // Intensidad de la banda azufre del fondo sonograma.
   --backdrop-band-opacity: 0.16;
+
+  // Teselas del mapa: en claro apenas se apagan para que los pines destaquen.
+  --map-tile-filter: saturate(0.75) contrast(0.95);
 }
 
 @mixin dark-palette {
@@ -130,11 +151,27 @@
   --color-record: #ff6b7a;
   --color-on-record: #2a0309;
 
+  --color-cyan: #3fd0df;
+  --color-on-cyan: #04161b;
+  --color-cyan-ink: #5fe0ec;
+  --color-coral: #ff8a75;
+  --color-on-coral: #2a0b05;
+  --color-coral-ink: #ffa391;
+  --color-moss: #8cc063;
+  --color-on-moss: #0e1f05;
+  --color-moss-ink: #a6d47e;
+  --color-sky: #7fb8ff;
+  --color-on-sky: #061a33;
+  --color-sky-ink: #9cc8ff;
+
   --color-spectro-floor: #071116;
-  --color-spectro-mid: #1f8fa3;
-  --color-spectro-peak: #f2c230;
+  --color-spectro-low: #12404b;
+  --color-spectro-mid: #3fd0df;
+  --color-spectro-high: #f2c230;
+  --color-spectro-peak: #ff8a75;
 
   --color-focus: #f2c230;
+  --color-glow: #ffffff;
   --color-shadow: #000000;
   --color-scrim: #000000;
 
@@ -145,6 +182,9 @@
   --color-chrome-line: #3a5059;
 
   --backdrop-band-opacity: 0.06;
+
+  // En oscuro las teselas se invierten para no encandilar antes del alba.
+  --map-tile-filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9) saturate(0.6);
 }
 
 :root,

@@ -37,7 +37,6 @@
     "seeMore": "Ver más",
     "spectrogramLabel": "Espectrograma en tiempo real",
     "seeDetail": "Ver detalle",
-    "listen": "Escuchar",
     "play": "Reproducir",
     "pause": "Pausar",
     "download": "Descargar",
@@ -52,7 +51,11 @@
       "medium": "Certeza media",
       "low": "Certeza baja"
     },
-    "noValue": "—"
+    "noValue": "—",
+    "languages": {
+      "es": "Español",
+      "en": "English"
+    }
   },
   "iucn": {
     "lc": "Preocupación Menor",
@@ -126,8 +129,7 @@
     "readingsTitle": "Lecturas de la red",
     "demo": {
       "label": "Ejemplo: señal sintética generada por la app, no es una grabación ni una detección real.",
-      "plateLabel": "Sonograma de ejemplo con una señal sintética; no es una grabación real.",
-      "now": "ahora"
+      "plateLabel": "Sonograma de ejemplo con una señal sintética; no es una grabación real."
     },
     "closing": {
       "title": "La próxima vez que escuches un canto, sabrás de quién es."
@@ -290,7 +292,7 @@
     "observerPhotoLabel": "Foto aportada por el observador",
     "uploadObserverPhoto": "Subir mi foto",
     "observerPhotoError": "No se pudo subir la foto. Inténtalo de nuevo.",
-    "spectrogramTitle": "Espectrograma Térmico & Ventana Armónica",
+    "spectrogramTitle": "El canto, en sonograma",
     "spectrogramLabel": "Espectrograma de la grabación",
     "spectrogramLoading": "Calculando espectrograma…",
     "spectrogramUnavailable": "Espectrograma no disponible para esta grabación",
@@ -307,7 +309,13 @@
     "viewHistory": "Ver en Mi Historial",
     "reportIncorrect": "¿No es correcto? Reportar para revisión comunitaria",
     "peakFrequency": "Pico Espectral",
-    "duration": "Duración"
+    "duration": "Duración",
+    "eyebrowDraft": "Borrador sin guardar",
+    "draftHint": "Revisa la identificación y guárdala en tu cuaderno; hasta entonces no aparece en tu historial.",
+    "notFoundTitle": "No encontramos esta detección",
+    "notFoundBody": "Puede que se haya eliminado, que no sea tuya o que no haya conexión. Revisa tu historial o graba un canto nuevo.",
+    "savedConfirmation": "Guardada en tu cuaderno",
+    "alternativesEmpty": "La IA no propuso otras especies para esta grabación."
   },
   "photoId": {
     "title": "Identificación por Foto",
@@ -321,11 +329,11 @@
     "unavailable": "La identificación por foto no está disponible por ahora. Mientras tanto puedes identificar aves por su canto."
   },
   "history": {
-    "eyebrow": "Cuaderno de Campo",
+    "eyebrow": "Mi historial",
     "title": "Cuaderno de Campo Bioacústico",
     "subtitle": "Grabaciones archivadas, procesadas con el modelo bioacústico.",
     "searchPlaceholder": "Buscar por especie, nombre científico o ubicación…",
-    "viewGallery": "Tarjetas",
+    "viewGallery": "Láminas",
     "viewList": "Lista",
     "statusAll": "Todas",
     "statusValidated": "Validadas",
@@ -339,11 +347,14 @@
       "validated": "Validadas",
       "pending": "Pendientes",
       "species": "Especies"
-    }
+    },
+    "viewLabel": "Forma de ver el historial",
+    "errorTitle": "No pudimos cargar tu historial",
+    "errorBody": "Revisa tu conexión e inténtalo de nuevo. Las grabaciones hechas sin señal siguen guardadas en este dispositivo.",
+    "noMatchesTitle": "Nada coincide con tu búsqueda",
+    "noMatchesBody": "Prueba con otro nombre, especie o lugar, o cambia el filtro."
   },
   "map": {
-    "eyebrow": "Red en Vivo",
-    "aiSuffix": "IA",
     "title": "Mapa Vivo de Avistamientos y Biofonía",
     "subtitle": "Explora las grabaciones recientes identificadas por la red en tiempo real.",
     "searchPlaceholder": "Buscar por especie, familia o parque natural…",
@@ -354,7 +365,10 @@
     "heatmapLayer": "Capa de puntos calientes",
     "syncedTabs": "pestañas sincronizadas",
     "emptyFeedTitle": "Sin detecciones en vivo",
-    "emptyFeedBody": "Aún no hay grabaciones públicas recientes en tu área. Vuelve pronto."
+    "emptyFeedBody": "Aún no hay grabaciones públicas recientes en tu área. Vuelve pronto.",
+    "mapLabel": "Mapa de avistamientos públicos",
+    "errorTitle": "No pudimos cargar los avistamientos",
+    "errorBody": "Revisa tu conexión e inténtalo de nuevo en unos minutos."
   },
   "profile": {
     "observerTitle": "Perfil del Observador",
@@ -372,7 +386,9 @@
     "micHardware": "Micrófono & Ganancia de Campo",
     "activeSession": "Sesión Activa",
     "logout": "Cerrar Sesión Segura",
-    "logoutConfirm": "¿Deseas cerrar la sesión activa? Los registros offline permanecerán seguros en tu dispositivo."
+    "logoutConfirm": "¿Deseas cerrar la sesión activa? Los registros offline permanecerán seguros en tu dispositivo.",
+    "loadError": "No pudimos cargar tu perfil. Revisa tu conexión antes de editar tus datos.",
+    "savedConfirmation": "Tus datos de observador quedaron guardados."
   },
   "admin": {
     "title": "Panel de Administración",
@@ -407,7 +423,9 @@
     "offlineBannerTitle": "Modo Campo Sin Conexión Activo",
     "offlineBannerBody": "Las grabaciones se guardan localmente y se sincronizan al recuperar conexión.",
     "syncPending": "grabaciones en cola",
-    "forceSync": "Forzar Sincronización"
+    "forceSync": "Forzar Sincronización",
+    "offlineTitle": "Sin conexión.",
+    "offlineBody": "Puedes seguir grabando: tus cantos se guardan en este dispositivo y se identificarán al volver la señal."
   },
   "footer": {
     "rights": "Plataforma Abierta de Bioacústica & Conservación",
@@ -434,6 +452,9 @@
     "khz": "kHz",
     "seconds": "s",
     "percent": "%",
-    "decibels": "dB"
+    "decibels": "dB",
+    "hertz": "Hz",
+    "now": "ahora",
+    "secondsAgo": "−{n} s"
   }
 }

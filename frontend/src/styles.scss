@@ -55,6 +55,17 @@
   // Si la fuente de iconos aún no carga (o no hay conexión), la ligadura se ve como
   // su palabra ("notifications"); la caja de 1em evita que esa palabra desborde.
   .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: calc(var(--space-unit) * 6);
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'liga';
     display: inline-block;
     width: 1em;
     height: 1em;
@@ -124,6 +135,32 @@
     @apply text-sm text-error;
   }
 
+  // Control segmentado (pestañas, filtros, opciones): el estado sale de aria-pressed / aria-selected.
+  .segmented {
+    @apply inline-flex flex-wrap gap-1 p-1 rounded-3xl bg-surface-container-high;
+  }
+  .segmented__option {
+    @apply inline-flex items-center justify-center gap-2 min-h-touch min-w-touch px-4 rounded-full font-display font-bold
+      text-on-surface-variant transition-colors duration-fast hover:text-on-surface
+      aria-pressed:bg-primary aria-pressed:text-on-primary aria-selected:bg-primary aria-selected:text-on-primary;
+  }
+
+  // Diálogo: velo + hoja de papel con filete; sin vidrio ni desenfoque.
+  .modal {
+    @apply fixed inset-0 z-50 grid place-items-center p-4 bg-scrim/60;
+  }
+  .modal__panel {
+    @apply relative w-full max-w-md max-h-full overflow-y-auto rounded-2xl p-8 bg-surface-container-lowest shadow-xl;
+  }
+  .modal__close {
+    @apply absolute top-3 end-3 w-touch h-touch grid place-items-center rounded-full text-on-surface-variant hover:bg-surface-container-high;
+  }
+
+  // Estados vacío / error / sin resultados: centrados, con aire, nunca un guion suelto.
+  .state-panel {
+    @apply flex flex-col items-center gap-5 py-section text-center;
+  }
+
   // Lecturas tipo instrumento: cifra grande sobre su etiqueta, separadas por marcas de regla.
   .readings {
     @apply grid grid-cols-2 lg:grid-cols-4 gap-x-0 gap-y-8;
@@ -182,6 +219,43 @@
   }
 }
 
+// Mapa (Leaflet crea estos nodos fuera de las plantillas de Angular).
+.leaflet-tile-pane {
+  filter: var(--map-tile-filter);
+}
+
+// Pin de avistamiento: gota de tinta con núcleo azufre. Leaflet posiciona el
+// marcador con transform sobre .map-pin, así que el dibujo vive en los pseudo-elementos.
+.map-pin {
+  background: none;
+  border: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: calc(var(--space-unit) * 0.5);
+    width: calc(var(--space-unit) * 6);
+    height: calc(var(--space-unit) * 6);
+    background: var(--color-primary);
+    border: 3px solid var(--color-surface-container-lowest);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    box-shadow: var(--shadow-md);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: calc(var(--space-unit) * 2);
+    left: calc(var(--space-unit) * 2.5);
+    width: calc(var(--space-unit) * 2);
+    height: calc(var(--space-unit) * 2);
+    border-radius: 50%;
+    background: var(--color-sulfur);
+  }
+}
+
 // Respeto global de reduced motion (los tokens de duración ya bajan a ~0).
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -194,67 +268,7 @@
   }
 }
 
-// ---------------------------------------------------------------------------
-// Utilidades heredadas aún usadas por las pantallas. Ya leen tokens; cada una
-// se reemplaza por el lenguaje «Sonograma de campo» en la fase de su pantalla.
-// ---------------------------------------------------------------------------
-
-// Borde que sigue al puntero — [appBorderGlow] (PointerGlowDirective).
-.border-glow {
-  position: relative;
-  isolation: isolate;
-}
-.border-glow::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.5px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity var(--duration-base) var(--ease-standard);
-  background: radial-gradient(
-    calc(var(--space-unit) * 45) circle at var(--glow-x, 50%) var(--glow-y, 50%),
-    var(--color-primary),
-    transparent 70%
-  );
-  -webkit-mask: linear-gradient(var(--color-on-surface) 0 0) content-box, linear-gradient(var(--color-on-surface) 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-}
-.border-glow:hover::before {
-  opacity: 1;
-}
-
-// Superficie sólida con filete fino (antes vidrio con blur).
-.glass-card {
-  background: var(--color-surface-container-lowest);
-  border: 1px solid var(--color-outline-variant);
-}
-
-// Acción principal: sin halo luminoso, solo elevación difusa.
-.bio-glow-btn {
-  box-shadow: var(--shadow-md);
-  transition:
-    transform var(--duration-fast) var(--ease-out),
-    box-shadow var(--duration-fast) var(--ease-out);
-}
-.bio-glow-btn:hover {
-  transform: translateY(calc(var(--space-unit) * -0.5));
-  box-shadow: var(--shadow-lg);
-}
-
-.feature-card {
-  --feature-card-lift-shadow: var(--shadow-lg);
-  transition:
-    transform var(--duration-slow) var(--ease-out),
-    box-shadow var(--duration-slow) var(--ease-out);
-}
-.feature-card:hover {
-  transform: translateY(calc(var(--space-unit) * -1.5));
-  box-shadow: var(--feature-card-lift-shadow);
-}
-
+// Antetítulo: lectura de instrumento con una marca de regla.
 // Antetítulo: lectura de instrumento (Plex Condensed) con una marca azufre
 // como la de una regla de kHz; sin mayúsculas sostenidas.
 .eyebrow-label {
@@ -275,37 +289,72 @@
   background: var(--color-sulfur);
 }
 
-.icon-wrapper {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--touch-target);
-  height: var(--touch-target);
-  border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
-  color: var(--color-primary);
-  flex-shrink: 0;
-}
-.icon-wrapper--sm {
-  width: calc(var(--space-unit) * 9);
-  height: calc(var(--space-unit) * 9);
-  border-radius: var(--radius-md);
-}
 
-.stat-card {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--space-unit) * 4);
-}
-
-.empty-state-banner {
+// Brillo que sigue al cursor (CursorGlowService escribe --glow-x/--glow-y).
+// Luz clara sobre botones de color, cian en los sin relleno y azufre sobre el papel.
+.btn,
+[data-glow] {
   position: relative;
-  overflow: hidden;
+  isolation: isolate;
+  --glow-color: var(--color-glow);
 }
-.empty-state-banner::before {
+.btn--quiet {
+  --glow-color: var(--color-cyan);
+}
+[data-glow] {
+  --glow-color: var(--color-sulfur);
+}
+.btn::after,
+[data-glow]::after {
   content: '';
   position: absolute;
-  inset: 0 0 auto;
-  height: calc(var(--space-unit) * 1.5);
-  background: linear-gradient(to right, var(--color-primary), var(--color-sulfur));
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-base) var(--ease-out);
+  background: radial-gradient(
+    circle calc(var(--space-unit) * 32) at var(--glow-x, 50%) var(--glow-y, 50%),
+    color-mix(in srgb, var(--glow-color) 28%, transparent),
+    transparent 70%
+  );
+}
+@media (hover: hover) {
+  .btn:hover::after,
+  [data-glow]:hover::after {
+    opacity: 1;
+  }
+}
+
+// Entrada al hacer scroll: CSS nativo (animation-timeline: view()). Sin soporte, o con
+// reduced motion, el contenido simplemente está visible.
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 28%;
+    }
+  }
+}
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--space-unit) * 8));
+  }
+}
+
+// Cada lectura lleva la marca de un plumaje distinto.
+.readings__item:nth-child(4n + 1) {
+  border-color: var(--color-cyan);
+}
+.readings__item:nth-child(4n + 2) {
+  border-color: var(--color-sulfur);
+}
+.readings__item:nth-child(4n + 3) {
+  border-color: var(--color-coral);
+}
+.readings__item:nth-child(4n + 4) {
+  border-color: var(--color-moss);
 }

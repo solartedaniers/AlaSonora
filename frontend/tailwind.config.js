@@ -18,6 +18,8 @@ const COLOR_TOKENS = [
   'outline', 'outline-variant',
   'sulfur', 'on-sulfur', 'record', 'on-record', 'focus', 'scrim',
   'chrome', 'chrome-raised', 'on-chrome', 'on-chrome-variant', 'chrome-line',
+  'cyan', 'on-cyan', 'cyan-ink', 'coral', 'on-coral', 'coral-ink',
+  'moss', 'on-moss', 'moss-ink', 'sky', 'on-sky', 'sky-ink',
 ];
 
 // Opacity modifiers (`bg-primary/20`) can't be applied to a bare var(), so they

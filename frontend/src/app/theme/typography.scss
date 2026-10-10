@@ -25,3 +25,16 @@ $latin-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+0
 @include font('Atkinson Hyperlegible', 'atkinson-hyperlegible-latin-700', 700);
 @include font('IBM Plex Sans Condensed', 'ibm-plex-sans-condensed-latin-500', 500);
 @include font('IBM Plex Sans Condensed', 'ibm-plex-sans-condensed-latin-600', 600);
+
+// Íconos: subconjunto local de Material Symbols Outlined (24 px, peso 400, sin relleno)
+// con solo los íconos que usa la app, para que funcionen sin conexión.
+// Al usar un ícono nuevo hay que regenerarlo agregando su nombre en `icon_names`:
+// https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=<lista>
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  font-style: normal;
+  font-weight: 400;
+  // block: mientras carga, el ícono queda invisible en vez de mostrar su palabra.
+  font-display: block;
+  src: url('/assets/fonts/material-symbols-outlined-subset.woff2') format('woff2');
+}
