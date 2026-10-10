@@ -24,47 +24,27 @@
       </div>
 
       <figure class="landing-hero__plate">
-        <app-frequency-axis [maxKhz]="maxKhz" [stepKhz]="freqStepKhz" />
-
+        <!-- Cascada 3D del canto. El servidor muestra el sonograma estático; el navegador lo cambia por la cascada viva. -->
         <div class="landing-hero__screen">
-          <!-- El servidor y "reduced motion" muestran el sonograma estático; el navegador lo cambia por el canvas vivo. -->
-          @if (motion.reduced()) {
-            <ng-container [ngTemplateOutlet]="staticSonogram" />
-          } @else {
-            @defer (on immediate) {
-              <app-spectrogram-view
-                class="block w-full h-full"
-                [getFrame]="heroFrame"
-                [columns]="heroColumns"
-                [initialColumns]="heroInitialColumns"
-                growFrom="end"
-                ariaLabelKey="landing.demo.plateLabel"
-              />
-            } @placeholder {
-              <ng-container [ngTemplateOutlet]="staticSonogram" />
-            }
-          }
-          <ng-template #staticSonogram>
+          @defer (on immediate) {
+            <app-spectrogram-waterfall
+              class="w-full h-full"
+              [getFrame]="heroFrame"
+              [initialColumns]="heroInitialRows"
+              [rows]="heroRows"
+              [maxKhz]="maxKhz"
+              [stepKhz]="freqStepKhz"
+              [windowSeconds]="windowSeconds"
+              ariaLabelKey="landing.demo.plateLabel"
+            />
+          } @placeholder {
             <div class="landing-hero__static" role="img" [attr.aria-label]="'landing.demo.plateLabel' | translate">
               <app-song-sonogram [band]="false" />
             </div>
-          </ng-template>
-          <span class="landing-hero__playhead" aria-hidden="true"></span>
-        </div>
-
-        <div class="landing-hero__time-axis" aria-hidden="true">
-          @for (second of timeLabels; track second) {
-            <span class="landing-hero__time-label" [style.left.%]="100 - (second / windowSeconds) * 100">
-              @if (second === 0) {
-                {{ 'landing.demo.now' | translate }}
-              } @else {
-                {{ second }} {{ 'units.seconds' | translate }}
-              }
-            </span>
           }
         </div>
 
-        <figcaption class="landing-hero__caption mt-2 flex items-start gap-2 text-sm text-on-surface-variant">
+        <figcaption class="mt-3 flex items-start gap-2 text-sm text-on-surface-variant">
           <span class="mt-1.5 w-4 h-1.5 shrink-0 rounded-full bg-sulfur" aria-hidden="true"></span>
           {{ 'landing.demo.label' | translate }}
         </figcaption>
@@ -102,7 +82,7 @@
 
         <ol class="landing-steps mt-16 list-none p-0">
           @for (step of howSteps; track step.titleKey; let i = $index) {
-            <li class="landing-step" [style.--step-rise]="howSteps.length - 1 - i">
+            <li class="landing-step reveal" [style.--step-rise]="howSteps.length - 1 - i">
               <span class="landing-step__note" aria-hidden="true"></span>
               <span class="block pt-6 font-data text-sm font-semibold text-primary">{{ stepNumber(i) }}</span>
               <h3 class="mt-2 text-2xl font-extrabold">{{ step.titleKey | translate }}</h3>
@@ -152,7 +132,7 @@
         <figure
           id="pipeline-panel"
           role="tabpanel"
-          class="lg:col-span-7 m-0 flex flex-col gap-3"
+          class="reveal lg:col-span-7 m-0 flex flex-col gap-3"
           [attr.aria-labelledby]="'pipeline-tab-' + pipelineStep()"
         >
           <div class="pipeline-stage">
@@ -211,9 +191,9 @@
     </section>
 
     <!-- Cierre -->
-    <section class="chrome relative overflow-hidden" aria-labelledby="closing-title">
+    <section class="chrome sing-on-hover relative overflow-hidden" aria-labelledby="closing-title">
       <app-song-sonogram class="landing-closing__sonogram absolute inset-x-0 bottom-0 opacity-60" aria-hidden="true" />
-      <div class="relative max-w-7xl mx-auto px-gutter py-section flex flex-col items-start gap-8">
+      <div class="reveal relative max-w-7xl mx-auto px-gutter py-section flex flex-col items-start gap-8">
         <h2 id="closing-title" class="max-w-3xl text-5xl font-extrabold tracking-display">{{ 'landing.closing.title' | translate }}</h2>
         <a routerLink="/register" class="btn btn--sulfur min-h-14 px-8 text-lg">
           <span class="material-symbols-outlined" aria-hidden="true">mic</span>

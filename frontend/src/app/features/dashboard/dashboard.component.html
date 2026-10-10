@@ -1,7 +1,6 @@
 <div class="flex flex-col w-full min-h-dvh bg-surface text-on-surface relative">
   <app-field-backdrop />
   <app-nav-header />
-  <app-offline-banner class="relative z-10" />
 
   <main class="relative z-10 w-full max-w-7xl mx-auto px-gutter py-12 flex flex-col gap-16">
     <!-- Saludo: tipografía grande, sin caja -->
@@ -19,7 +18,7 @@
 
     <!-- Acción principal: una banda de tinta con la frase del canto -->
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-4" [attr.aria-label]="'nav.record' | translate">
-      <a routerLink="/record" class="dashboard-record chrome lg:col-span-8">
+      <a routerLink="/record" class="dashboard-record chrome sing-on-hover lg:col-span-8" data-glow>
         <app-song-sonogram class="dashboard-record__sonogram" [band]="false" />
         <span class="relative grid place-items-center w-16 h-16 shrink-0 rounded-full bg-sulfur text-on-sulfur">
           <span class="material-symbols-outlined text-3xl" aria-hidden="true">mic</span>
@@ -31,7 +30,7 @@
         <span class="relative material-symbols-outlined ms-auto hidden sm:block text-3xl text-primary" aria-hidden="true">arrow_forward</span>
       </a>
 
-      <a routerLink="/record" class="dashboard-upload lg:col-span-4">
+      <a routerLink="/record" class="dashboard-upload lg:col-span-4" data-glow>
         <span class="material-symbols-outlined text-3xl text-primary" aria-hidden="true">upload_file</span>
         <span class="flex flex-col gap-1">
           <span class="font-display text-lg font-extrabold">{{ 'dashboard.uploadCta' | translate }}</span>
@@ -42,7 +41,7 @@
 
     <!-- Lecturas personales -->
     @if (stats(); as s) {
-      <section aria-labelledby="dashboard-metrics-title" class="flex flex-col gap-6">
+      <section aria-labelledby="dashboard-metrics-title" class="reveal flex flex-col gap-6">
         <div>
           <p class="eyebrow-label">{{ 'dashboard.metricsEyebrow' | translate }}</p>
           <h2 id="dashboard-metrics-title" class="mt-2 text-3xl font-extrabold tracking-display">{{ 'dashboard.personalStatsTitle' | translate }}</h2>
@@ -61,7 +60,7 @@
     }
 
     <!-- Última detección -->
-    <section aria-labelledby="dashboard-latest-title" class="flex flex-col gap-4">
+    <section aria-labelledby="dashboard-latest-title" class="reveal flex flex-col gap-4">
       <h2 id="dashboard-latest-title" class="text-3xl font-extrabold tracking-display">{{ 'dashboard.lastDetection' | translate }}</h2>
       @if (latest(); as d) {
         <a [routerLink]="['/result', d.id]" class="dashboard-latest">
@@ -83,7 +82,7 @@
     </section>
 
     <!-- Especies destacadas: el carrusel 3D sobre la mesa de luz -->
-    <section aria-labelledby="dashboard-spotlight-title" class="flex flex-col gap-6">
+    <section aria-labelledby="dashboard-spotlight-title" class="reveal flex flex-col gap-6">
       <div>
         <p class="eyebrow-label">{{ 'dashboard.spotlight.eyebrow' | translate }}</p>
         <h2 id="dashboard-spotlight-title" class="mt-2 text-3xl font-extrabold tracking-display">{{ 'dashboard.speciesSpotlight' | translate }}</h2>

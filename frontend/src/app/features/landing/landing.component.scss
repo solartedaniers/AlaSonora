@@ -36,27 +36,23 @@
 }
 
 .landing-hero__plate {
-  position: relative;
   margin: 0;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1fr) auto auto;
+  min-width: 0;
 }
 
+// La placa sangra hasta el borde derecho: papel del espectrograma con su filete.
 .landing-hero__screen {
   position: relative;
-  height: calc(var(--space-unit) * 60);
+  height: clamp(calc(var(--space-unit) * 72), 52dvh, calc(var(--space-unit) * 130));
   background: var(--color-spectro-floor);
   border-block: 1px solid var(--color-outline-variant);
   border-inline-start: 1px solid var(--color-outline-variant);
+  border-start-start-radius: var(--radius-2xl);
+  border-end-start-radius: var(--radius-2xl);
   overflow: hidden;
-
-  @screen lg {
-    height: min(60dvh, calc(var(--space-unit) * 120));
-  }
 }
 
-// Sin animaciones el SVG estático ocupa la placa con tinta plena.
+// Sin JavaScript (SSR) el SVG estático ocupa la placa con tinta plena.
 .landing-hero__static {
   --sonogram-ink-opacity: 0.9;
   --sonogram-harmonic-opacity: 0.35;
@@ -64,56 +60,7 @@
   inset: 0;
   display: grid;
   align-items: center;
-  color: var(--color-spectro-mid);
-}
-
-// Cabezal de lectura: donde nacen las columnas nuevas.
-.landing-hero__playhead {
-  position: absolute;
-  inset-block: 0;
-  inset-inline-end: 0;
-  width: calc(var(--space-unit) * 1);
-  background: var(--color-sulfur);
-}
-
-.landing-hero__time-axis {
-  grid-column: 2;
-  position: relative;
-  height: calc(var(--space-unit) * 7);
-  font-family: var(--font-data);
-  font-size: var(--text-xs);
-  color: var(--color-on-surface-variant);
-}
-
-.landing-hero__time-label {
-  position: absolute;
-  top: calc(var(--space-unit) * 1.5);
-  transform: translateX(-50%);
-
-  // La última marca ("ahora") se alinea al borde derecho para no desbordar.
-  &:last-child {
-    transform: translateX(-100%);
-
-    &::before {
-      left: auto;
-      right: 0;
-    }
-  }
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: calc(var(--space-unit) * -1.5);
-    left: 50%;
-    width: 1px;
-    height: calc(var(--space-unit) * 1.5);
-    background: var(--color-outline);
-  }
-}
-
-.landing-hero__caption {
-  grid-column: 2;
-  padding-inline-end: var(--space-gutter);
+  color: var(--color-spectro-low);
 }
 
 // --- Pasos: tres "notas" que suben de grave a agudo.
@@ -136,6 +83,13 @@
     // Cada paso sube una banda: el recorrido se lee como un canto ascendente.
     margin-block-start: calc(var(--step-rise) * var(--space-unit) * 12);
   }
+}
+
+.landing-step:nth-child(2) .landing-step__note {
+  background: var(--color-cyan);
+}
+.landing-step:nth-child(3) .landing-step__note {
+  background: var(--color-coral);
 }
 
 .landing-step__note {

@@ -1,7 +1,6 @@
 import { Component, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
-import { OfflineBannerComponent } from '../../shared/components/offline-banner/offline-banner.component';
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
 import { CountUpComponent } from '../../shared/components/count-up/count-up.component';
 import { InfiniteSpiralComponent, SpiralItem } from '../../shared/components/infinite-spiral/infinite-spiral.component';
@@ -28,7 +27,6 @@ const RECENT_DETECTIONS = 5;
   imports: [
     RouterLink,
     NavHeaderComponent,
-    OfflineBannerComponent,
     ConfidenceBadgeComponent,
     CountUpComponent,
     InfiniteSpiralComponent,

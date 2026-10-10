@@ -8,7 +8,7 @@ import { SongSonogramComponent } from '../../../shared/components/song-sonogram/
   standalone: true,
   imports: [TranslatePipe, SongSonogramComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'auth-layout__panel chrome' },
+  host: { class: 'auth-layout__panel chrome sing-on-hover' },
   template: `
     <div class="flex flex-col gap-5">
       <p class="eyebrow-label">{{ 'app.tagline' | translate }}</p>
