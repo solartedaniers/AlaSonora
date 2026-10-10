@@ -18,12 +18,12 @@
 
     <div class="p-6 sm:p-10 flex flex-col gap-8">
       <div class="flex flex-col items-center gap-2 text-center">
-        <div class="flex items-center justify-center gap-2 text-primary font-mono text-xs uppercase tracking-wider">
+        <div class="flex items-center justify-center gap-2 text-primary font-data text-xs uppercase tracking-wider">
           <span class="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
           {{ 'auth.register.eyebrow' | translate }}
         </div>
-        <h1 class="font-display text-2xl sm:text-3xl font-bold tracking-tight hero-title-3d">
-          <span class="gradient-3d-text">{{ 'auth.register.title' | translate }}</span>
+        <h1 class="font-display text-2xl sm:text-3xl font-bold tracking-tight">
+          {{ 'auth.register.title' | translate }}
         </h1>
         <p class="text-sm text-on-surface-variant max-w-xl mx-auto">
           {{ 'auth.register.subtitle' | translate }}
@@ -122,10 +122,10 @@
         <!-- Password strength meter -->
         <div class="bg-surface-container-lowest/70 rounded-lg p-4 flex flex-col gap-3">
           <div class="flex items-center justify-between">
-            <span class="font-mono text-xs uppercase tracking-wider text-on-surface-variant">
+            <span class="font-data text-xs uppercase tracking-wider text-on-surface-variant">
               {{ 'auth.register.passwordStrength' | translate }}
             </span>
-            <span class="font-mono text-xs font-semibold text-primary">
+            <span class="font-data text-xs font-semibold text-primary">
               {{ passwordTier() }}
             </span>
           </div>
@@ -156,7 +156,7 @@
           [disabled]="submitting()"
           class="group relative w-full h-12 rounded-lg bg-primary text-on-primary font-display font-semibold shadow-lg flex items-center justify-center gap-2 overflow-hidden hover:shadow-xl active:scale-[0.98] transition-all disabled:opacity-60"
         >
-          <span class="absolute inset-0 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-out bg-on-primary/20 skew-x-12 w-1/3"></span>
+          <span class="absolute inset-0 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-slow ease-out bg-on-primary/20 skew-x-12 w-1/3"></span>
           <span class="material-symbols-outlined text-xl">nature_people</span>
           <span>{{ 'auth.register.submit' | translate }}</span>
         </button>
