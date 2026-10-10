@@ -1,7 +1,7 @@
 <div class="flex flex-col w-full min-h-screen bg-surface text-on-surface">
   <!-- Header -->
   <header class="w-full px-6 lg:px-12 py-4 bg-surface-container-low/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-3">
         <span class="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-tertiary text-on-primary flex items-center justify-center shadow-md shrink-0">
           <span class="material-symbols-outlined text-[24px]">graphic_eq</span>
@@ -10,12 +10,12 @@
           <span class="font-display font-bold text-on-surface tracking-tight text-lg leading-none">
             Ala<span class="text-primary">Sonora</span>
           </span>
-          <span class="font-mono text-[10px] tracking-widest text-on-surface-variant uppercase">
+          <span class="font-data text-[10px] tracking-widest text-on-surface-variant uppercase">
             {{ 'app.tagline' | translate }}
           </span>
         </div>
       </div>
-      <div class="flex items-center gap-3 sm:gap-4">
+      <div class="flex flex-wrap items-center gap-3 sm:gap-4">
         <app-lang-toggle />
         <app-theme-toggle />
         <a routerLink="/login" class="font-display text-sm font-semibold text-primary hover:text-on-surface transition-colors whitespace-nowrap">
@@ -36,13 +36,13 @@
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
             <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
           </span>
-          <span class="font-mono text-[11px] font-semibold uppercase tracking-wider text-primary">
+          <span class="font-data text-[11px] font-semibold uppercase tracking-wider text-primary">
             {{ 'landing.badge' | translate }}
           </span>
         </div>
 
-        <h1 class="font-display text-4xl lg:text-5xl font-bold leading-tight mb-6 hero-title-3d">
-          <span class="gradient-3d-text">{{ 'landing.title' | translate }}</span>
+        <h1 class="font-display text-4xl lg:text-5xl font-bold leading-tight mb-6">
+          {{ 'landing.title' | translate }}
         </h1>
 
         <p class="text-on-surface-variant max-w-xl mb-8 leading-relaxed">
@@ -77,12 +77,12 @@
               </span>
               <div>
                 <p class="font-display text-sm text-on-surface font-semibold">{{ 'landing.liveMonitorTitle' | translate }}</p>
-                <p class="font-mono text-[10px] text-primary">{{ 'landing.liveMonitorSpecs' | translate }}</p>
+                <p class="font-data text-[10px] text-primary">{{ 'landing.liveMonitorSpecs' | translate }}</p>
               </div>
             </div>
             <div class="flex items-center gap-1.5 px-3 py-1 bg-surface-container rounded-full">
               <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
-              <span class="font-mono text-[10px] text-tertiary font-bold">{{ 'recording.listening' | translate }}</span>
+              <span class="font-data text-[10px] text-tertiary font-bold">{{ 'recording.listening' | translate }}</span>
             </div>
           </div>
 
@@ -112,7 +112,7 @@
               <div>
                 <div class="flex items-center gap-2">
                   <h4 class="font-display font-bold text-on-surface">{{ 'landing.demoSpeciesName' | translate }}</h4>
-                  <span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono text-[10px] font-semibold">{{ 'landing.demoAiBadge' | translate }}</span>
+                  <span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary font-data text-[10px] font-semibold">{{ 'landing.demoAiBadge' | translate }}</span>
                 </div>
                 <p class="text-xs text-on-surface-variant italic">Turdus chiguanco</p>
               </div>
@@ -164,7 +164,7 @@
   <section class="w-full px-6 lg:px-12 py-20">
     <div class="max-w-7xl mx-auto">
       <div class="text-center max-w-2xl mx-auto mb-16">
-        <span class="font-mono text-xs uppercase tracking-widest text-primary font-semibold">
+        <span class="font-data text-xs uppercase tracking-widest text-primary font-semibold">
           {{ 'landing.how.eyebrow' | translate }}
         </span>
         <h2 class="font-display text-2xl md:text-3xl font-bold mt-2 tracking-tight">
@@ -202,7 +202,7 @@
   <section class="w-full px-6 lg:px-12 py-20 bg-surface-container-lowest">
     <div class="max-w-6xl mx-auto">
       <div class="text-center max-w-2xl mx-auto mb-14">
-        <span class="font-mono text-xs uppercase tracking-widest text-primary font-semibold">
+        <span class="font-data text-xs uppercase tracking-widest text-primary font-semibold">
           {{ 'landing.pipeline.eyebrow' | translate }}
         </span>
         <h2 class="font-display text-2xl md:text-3xl font-bold mt-2 tracking-tight">
@@ -237,7 +237,7 @@
       <!-- Progress track -->
       <div class="relative h-1 max-w-2xl mx-auto mb-10 bg-surface-container rounded-full overflow-hidden">
         <div
-          class="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-tertiary rounded-full transition-all duration-300"
+          class="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-tertiary rounded-full transition-all duration-base"
           [style.width.%]="(pipelineStep() + 1) * 25"
         ></div>
       </div>
@@ -291,11 +291,11 @@
                 <div class="flex flex-col gap-2">
                   @for (c of [{ n: 'Turdus chiguanco', v: 96 }, { n: 'Turdus fuscater', v: 3 }, { n: 'Zonotrichia capensis', v: 1 }]; track c.n) {
                     <div class="flex items-center gap-2">
-                      <span class="text-[11px] font-mono text-on-surface-variant w-32 truncate">{{ c.n }}</span>
+                      <span class="text-[11px] font-data text-on-surface-variant w-32 truncate">{{ c.n }}</span>
                       <div class="flex-1 h-2 rounded-full bg-surface-container overflow-hidden">
                         <div class="h-full rounded-full bg-primary" [style.width.%]="c.v"></div>
                       </div>
-                      <span class="text-[11px] font-mono text-on-surface-variant w-8 text-right">{{ c.v }}%</span>
+                      <span class="text-[11px] font-data text-on-surface-variant w-8 text-right">{{ c.v }}%</span>
                     </div>
                   }
                 </div>
@@ -308,7 +308,7 @@
         <div class="flex flex-col gap-3">
           @for (step of pipelineSteps; track step) {
             @if (pipelineStep() === step) {
-              <span class="font-mono text-xs uppercase tracking-widest text-primary font-semibold">0{{ step + 1 }}</span>
+              <span class="font-data text-xs uppercase tracking-widest text-primary font-semibold">0{{ step + 1 }}</span>
               <h3 class="font-display text-xl font-bold">{{ ('landing.pipeline.step' + (step + 1) + 'Title') | translate }}</h3>
               <p class="text-sm text-on-surface-variant leading-relaxed">{{ ('landing.pipeline.step' + (step + 1) + 'Body') | translate }}</p>
             }
