@@ -98,6 +98,11 @@
 <!-- En móvil y tablet el borde de la cabecera hace de regla: marcas + línea de lectura. -->
 <div class="header-scale lg:hidden" aria-hidden="true"><span class="header-scale__reading"></span></div>
 
+<!-- Conexión y cola offline: solo en el navegador (IndexedDB y eventos de red no existen en SSR). -->
+@defer (on idle) {
+  <app-offline-banner />
+}
+
 @if (mobileMenuOpen()) {
   <nav id="app-mobile-menu" class="xl:hidden border-t px-gutter py-2 flex flex-col" [attr.aria-label]="'nav.menu' | translate">
     @for (item of navItems(); track item.path) {

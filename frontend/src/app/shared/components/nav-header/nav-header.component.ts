@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { BrandMarkComponent } from '../brand-mark/brand-mark.component';
+import { OfflineBannerComponent } from '../offline-banner/offline-banner.component';
 import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
 import { LangToggleComponent } from '../lang-toggle/lang-toggle.component';
 import { TranslatePipe } from '../../pipes/translate.pipe';
@@ -24,7 +25,7 @@ interface NavItem {
 @Component({
   selector: 'app-nav-header',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, BrandMarkComponent, ThemeToggleComponent, LangToggleComponent, TranslatePipe, SpeciesNamePipe],
+  imports: [RouterLink, RouterLinkActive, BrandMarkComponent, OfflineBannerComponent, ThemeToggleComponent, LangToggleComponent, TranslatePipe, SpeciesNamePipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   // The host is the sticky stacking context: it must sit above the page
   // sections (relative z-10 over the backdrop) or they paint over the menus.

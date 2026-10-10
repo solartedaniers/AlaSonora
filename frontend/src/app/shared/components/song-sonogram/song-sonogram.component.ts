@@ -54,7 +54,7 @@ const PEAKS = SONG_PHRASE.filter((note) => note.peak).map((note) => stroke(note,
         <path [attr.d]="s.d" [attr.stroke-width]="s.width" class="song-sonogram__harmonic" />
       }
       @for (s of fundamentals; track $index) {
-        <path [attr.d]="s.d" [attr.stroke-width]="s.width" class="song-sonogram__note" />
+        <path [attr.d]="s.d" [attr.stroke-width]="s.width" class="song-sonogram__note" [style.--n]="$index" />
       }
       @for (s of peaks; track $index) {
         <path [attr.d]="s.d" [attr.stroke-width]="s.width" class="song-sonogram__peak" />
@@ -84,6 +84,17 @@ const PEAKS = SONG_PHRASE.filter((note) => note.peak).map((note) => stroke(note,
     }
     .song-sonogram__peak {
       stroke: var(--color-sulfur);
+    }
+    // "Suena" al pasar: cada nota se enciende en orden, como un sonido que viaja.
+    :host-context(.sing-on-hover:hover) .song-sonogram__note {
+      animation: note-sing var(--duration-slow) var(--ease-out) both;
+      animation-delay: calc(var(--n) * 45ms);
+    }
+    @keyframes note-sing {
+      50% {
+        stroke-opacity: 1;
+        stroke: var(--color-sulfur);
+      }
     }
   `,
 })

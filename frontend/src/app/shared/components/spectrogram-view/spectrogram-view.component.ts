@@ -16,9 +16,7 @@ import { SpectrogramFrame } from '../../../core/services/audio-capture.service';
 import { ThemeService } from '../../../core/services/theme.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { SpectrogramPainter } from './spectrogram-painter';
-
-// Raw live magnitudes are small; this scales them into the painter's 0..1 range.
-const LIVE_INTENSITY_GAIN = 6;
+import { LIVE_INTENSITY_GAIN } from './spectrogram-scale';
 
 /**
  * Dibuja el espectrograma en un <canvas>.
@@ -55,6 +53,8 @@ export class SpectrogramViewComponent implements AfterViewInit, OnDestroy {
   /** Where new columns appear until the view fills: centered, or at the right edge like a scrolling sonogram. */
   readonly growFrom = input<'center' | 'end'>('center');
   readonly ariaLabelKey = input('common.spectrogramLabel');
+  /** Share of the spectrum drawn, from 0 Hz up (1 = everything the FFT computed). Display only. */
+  readonly visibleFraction = input(1);
   /** Columns already on screen when the view starts (e.g. a demo that opens full). */
   readonly initialColumns = input<Float32Array[]>([]);
 
@@ -110,6 +110,7 @@ export class SpectrogramViewComponent implements AfterViewInit, OnDestroy {
     const free = maxColumns - this.history.length;
     // Mientras no se llena el historial, las columnas nacen centradas o en el borde derecho.
     const firstSlot = this.growFrom() === 'end' ? free : Math.floor(free / 2);
-    this.painter?.draw(this.history, (magnitude) => magnitude * LIVE_INTENSITY_GAIN, maxColumns, firstSlot);
+    const visible = SpectrogramPainter.cropToFraction(this.history, this.visibleFraction());
+    this.painter?.draw(visible, (magnitude) => magnitude * LIVE_INTENSITY_GAIN, maxColumns, firstSlot);
   }
 }

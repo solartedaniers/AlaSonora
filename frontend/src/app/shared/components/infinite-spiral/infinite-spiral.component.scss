@@ -20,12 +20,16 @@
   padding: calc(var(--space-unit) * 10) var(--space-gutter) calc(var(--space-unit) * 8);
   border: 1px solid var(--color-outline-variant);
   border-radius: var(--radius-3xl);
-  background: radial-gradient(
-    ellipse 75% 70% at 50% 45%,
-    var(--color-surface-container-lowest) 0%,
-    var(--color-surface-container-lowest) 35%,
-    var(--color-surface-container-high) 100%
-  );
+  // Mesa de luz con focos de plumaje: cian por la izquierda, coral por la derecha.
+  background:
+    radial-gradient(ellipse 40% 55% at 8% 40%, color-mix(in srgb, var(--color-cyan) 22%, transparent), transparent 70%),
+    radial-gradient(ellipse 40% 55% at 92% 40%, color-mix(in srgb, var(--color-coral) 18%, transparent), transparent 70%),
+    radial-gradient(
+      ellipse 75% 70% at 50% 45%,
+      var(--color-surface-container-lowest) 0%,
+      var(--color-surface-container-lowest) 35%,
+      var(--color-surface-container-high) 100%
+    );
   overflow: clip;
   isolation: isolate;
 }
@@ -95,6 +99,10 @@
 
 .spiral-item.is-front {
   outline: 3px solid var(--color-sulfur);
+  // La especie al frente recibe la luz de la mesa.
+  box-shadow:
+    var(--shadow-xl),
+    0 0 calc(var(--space-unit) * 10) color-mix(in srgb, var(--color-sulfur) 45%, transparent);
 }
 
 .spiral-item img {
