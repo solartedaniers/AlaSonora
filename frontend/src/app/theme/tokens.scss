@@ -1,126 +1,226 @@
-// AlaSonora — Design tokens
+// AlaSonora — Design tokens («Sonograma de campo»)
 //
-// Fuente única de verdad para el color de toda la app. Los componentes NUNCA
-// deben usar valores hex sueltos: siempre referencian estas variables CSS
-// (vía las clases de utilidad de Tailwind configuradas en tailwind.config.js).
+// Fuente única de verdad del diseño. Componentes, Tailwind (tailwind.config.js)
+// y el canvas del espectrograma leen SOLO estas variables.
 //
-// Los valores de :root (modo oscuro) vienen directamente de la paleta Material
-// que trae el config de Tailwind de los mockups de Stitch (todas las pantallas
-// comparten el mismo set). Los valores de .theme-light se completan a partir
-// de los hex sueltos usados en las variantes claras de landing/login/registro/
-// resultado, mapeados al mismo esquema semántico para que ambos modos usen
-// exactamente las mismas claves.
+// Claro = la caja de luz de una guía de campo al amanecer: tinta petróleo
+// sobre blanco frío y el amarillo azufre como la energía del canto.
+// Oscuro = la hora de grabar antes del alba: el mismo sonograma visto como
+// mapa de calor. El rojo bromelia se reserva para grabar / en vivo.
 
-:root,
-.theme-dark {
-  --color-primary: #95d4b3;
-  --color-on-primary: #003824;
-  --color-primary-container: #2d6a4f;
-  --color-on-primary-container: #a8e7c5;
-  --color-primary-fixed: #b1f0ce;
-  --color-primary-fixed-dim: #95d4b3;
-  --color-on-primary-fixed: #002114;
-  --color-on-primary-fixed-variant: #0e5138;
+@mixin light-palette {
+  color-scheme: light;
 
-  --color-secondary: #eabe9a;
-  --color-on-secondary: #452a11;
-  --color-secondary-container: #5f4025;
-  --color-on-secondary-container: #d7ad8a;
-  --color-secondary-fixed: #ffdcc1;
-  --color-secondary-fixed-dim: #eabe9a;
-  --color-on-secondary-fixed: #2d1601;
-  --color-on-secondary-fixed-variant: #5f4025;
+  --color-primary: #0f4c5c;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #d3ecf1;
+  --color-on-primary-container: #0b3440;
 
-  --color-tertiary: #93ccff;
-  --color-on-tertiary: #003351;
-  --color-tertiary-container: #006499;
-  --color-on-tertiary-container: #bbddff;
-  --color-tertiary-fixed: #cce5ff;
-  --color-tertiary-fixed-dim: #93ccff;
-  --color-on-tertiary-fixed: #001d31;
-  --color-on-tertiary-fixed-variant: #004b73;
+  --color-secondary: #7a5200;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #f2c230;
+  --color-on-secondary-container: #0b1d22;
 
-  --color-error: #ffb4ab;
-  --color-on-error: #690005;
-  --color-error-container: #93000a;
-  --color-on-error-container: #ffdad6;
+  --color-tertiary: #1f5a9e;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #dce8f8;
+  --color-on-tertiary-container: #0e2f57;
 
-  --color-background: #071611;
-  --color-on-background: #d5e7dd;
-  --color-surface: #071611;
-  --color-on-surface: #d5e7dd;
-  --color-surface-variant: #293831;
-  --color-on-surface-variant: #bfc9c1;
-  --color-surface-dim: #071611;
-  --color-surface-bright: #2d3c36;
-  --color-surface-container-lowest: #03110c;
-  --color-surface-container-low: #0f1e19;
-  --color-surface-container: #14231d;
-  --color-surface-container-high: #1e2d27;
-  --color-surface-container-highest: #293831;
+  --color-error: #b3261e;
+  --color-on-error: #ffffff;
+  --color-error-container: #fbe3e0;
+  --color-on-error-container: #5c0f0a;
 
-  --color-outline: #8a938c;
-  --color-outline-variant: #404943;
-  --color-inverse-surface: #d5e7dd;
-  --color-inverse-on-surface: #24342d;
-  --color-inverse-primary: #2c694e;
-  --color-surface-tint: #95d4b3;
+  --color-success: #17633d;
+  --color-on-success: #ffffff;
+  --color-success-container: #d8f0e2;
+  --color-on-success-container: #0b3a22;
+
+  --color-warning: #7a5200;
+  --color-warning-container: #fbefc8;
+  --color-on-warning-container: #3d2900;
+
+  --color-surface: #f2f6f7;
+  --color-on-surface: #0b1d22;
+  --color-on-surface-variant: #475b61;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #eaf1f3;
+  --color-surface-container: #e2ecef;
+  --color-surface-container-high: #d9e6ea;
+  --color-surface-container-highest: #cddde2;
+
+  --color-outline: #6b7f85;
+  --color-outline-variant: #c3d3d8;
+
+  // Energía del canto: siempre como relleno, con tinta encima.
+  --color-sulfur: #f2c230;
+  --color-on-sulfur: #0b1d22;
+
+  // Rojo bromelia: exclusivo del botón de grabar y los indicadores REC.
+  --color-record: #c8102e;
+  --color-on-record: #ffffff;
+
+  // Rampa del espectrograma: papel → tinta → pico de energía.
+  --color-spectro-floor: #ffffff;
+  --color-spectro-mid: #0f4c5c;
+  --color-spectro-peak: #f2c230;
+
+  --color-focus: #0f4c5c;
+  --color-shadow: #0b1d22;
+  --color-scrim: #0b1d22;
 }
 
-// Modo claro — esmeralda vibrante, contrastes limpios (evita el verde apagado
-// y los grises turbios de la paleta anterior; mismo esquema semántico que el
-// modo oscuro para que ningún componente necesite lógica condicional).
+@mixin dark-palette {
+  color-scheme: dark;
+
+  --color-primary: #5fc4d4;
+  --color-on-primary: #04161b;
+  --color-primary-container: #12404b;
+  --color-on-primary-container: #cdeff5;
+
+  --color-secondary: #f0b44c;
+  --color-on-secondary: #1f1400;
+  --color-secondary-container: #3d3208;
+  --color-on-secondary-container: #f8e3a0;
+
+  --color-tertiary: #8ab8ff;
+  --color-on-tertiary: #062042;
+  --color-tertiary-container: #18355e;
+  --color-on-tertiary-container: #dce8ff;
+
+  --color-error: #ff8a80;
+  --color-on-error: #3b0503;
+  --color-error-container: #5c1410;
+  --color-on-error-container: #ffdad5;
+
+  --color-success: #5bd08f;
+  --color-on-success: #032113;
+  --color-success-container: #0f3b25;
+  --color-on-success-container: #c9f2da;
+
+  --color-warning: #f0b44c;
+  --color-warning-container: #3d2c06;
+  --color-on-warning-container: #fbe3b0;
+
+  --color-surface: #070d10;
+  --color-on-surface: #e6eef0;
+  --color-on-surface-variant: #9db0b6;
+  --color-surface-container-lowest: #0f181c;
+  --color-surface-container-low: #121d22;
+  --color-surface-container: #17242a;
+  --color-surface-container-high: #1d2c33;
+  --color-surface-container-highest: #24363e;
+
+  --color-outline: #6e838a;
+  --color-outline-variant: #2c3e45;
+
+  --color-sulfur: #f2c230;
+  --color-on-sulfur: #0b1d22;
+
+  --color-record: #ff6b7a;
+  --color-on-record: #2a0309;
+
+  --color-spectro-floor: #071116;
+  --color-spectro-mid: #1f8fa3;
+  --color-spectro-peak: #f2c230;
+
+  --color-focus: #f2c230;
+  --color-shadow: #000000;
+  --color-scrim: #000000;
+}
+
+:root,
 .theme-light {
-  --color-primary: #059669;
-  --color-on-primary: #ffffff;
-  --color-primary-container: #a7f3d0;
-  --color-on-primary-container: #065f46;
-  --color-primary-fixed: #a7f3d0;
-  --color-primary-fixed-dim: #6ee7b7;
-  --color-on-primary-fixed: #022c22;
-  --color-on-primary-fixed-variant: #047857;
+  @include light-palette;
+}
 
-  --color-secondary: #b45309;
-  --color-on-secondary: #ffffff;
-  --color-secondary-container: #fde68a;
-  --color-on-secondary-container: #78350f;
-  --color-secondary-fixed: #fde68a;
-  --color-secondary-fixed-dim: #fcd34d;
-  --color-on-secondary-fixed: #451a03;
-  --color-on-secondary-fixed-variant: #92400e;
+.theme-dark {
+  @include dark-palette;
+}
 
-  --color-tertiary: #0284c7;
-  --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #bae6fd;
-  --color-on-tertiary-container: #075985;
-  --color-tertiary-fixed: #bae6fd;
-  --color-tertiary-fixed-dim: #7dd3fc;
-  --color-on-tertiary-fixed: #082f49;
-  --color-on-tertiary-fixed-variant: #0369a1;
+:root {
+  // Tipografía
+  --font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Atkinson Hyperlegible', ui-sans-serif, system-ui, sans-serif;
+  --font-data: 'IBM Plex Sans Condensed', 'Arial Narrow', ui-sans-serif, sans-serif;
 
-  --color-error: #ba1a1a;
-  --color-on-error: #ffffff;
-  --color-error-container: #ffdad6;
-  --color-on-error-container: #410002;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: clamp(1.375rem, 1.2rem + 0.8vw, 1.625rem);
+  --text-3xl: clamp(1.625rem, 1.3rem + 1.5vw, 2.25rem);
+  --text-4xl: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
+  --text-5xl: clamp(2.25rem, 1.4rem + 4vw, 4.5rem);
+  --text-6xl: clamp(2.5rem, 1.2rem + 6vw, 6.5rem);
 
-  --color-background: #f6fdf9;
-  --color-on-background: #0b2e22;
-  --color-surface: #f6fdf9;
-  --color-on-surface: #0b2e22;
-  --color-surface-variant: #d7f3e3;
-  --color-on-surface-variant: #35574a;
-  --color-surface-dim: #dcefe4;
-  --color-surface-bright: #ffffff;
-  --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #eefaf3;
-  --color-surface-container: #e6f6ee;
-  --color-surface-container-high: #daf0e5;
-  --color-surface-container-highest: #cde8db;
+  --leading-none: 1;
+  --leading-tight: 1.05;
+  --leading-snug: 1.3;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
 
-  --color-outline: #5f7a6d;
-  --color-outline-variant: #b7d9c6;
-  --color-inverse-surface: #0b2e22;
-  --color-inverse-on-surface: #eafaf1;
-  --color-inverse-primary: #6ee7b7;
-  --color-surface-tint: #059669;
+  --tracking-display: -0.035em;
+  --tracking-tight: -0.015em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+  --tracking-wider: 0.08em;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-black: 800;
+
+  // Espaciado: una sola unidad base; Tailwind deriva su escala de aquí.
+  --space-unit: 0.25rem;
+  --space-gutter: clamp(1rem, 0.5rem + 2.5vw, 3rem);
+  --space-section: clamp(3rem, 1.5rem + 6vw, 8rem);
+  --touch-target: 2.75rem;
+
+  // Radios: esquinas cortas, casi sin cajas.
+  --radius-none: 0;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 14px;
+  --radius-3xl: 20px;
+  --radius-full: 9999px;
+
+  // Sombras siempre difusas (nunca desplazadas sin blur).
+  --shadow-sm: 0 1px 2px color-mix(in srgb, var(--color-shadow) 8%, transparent);
+  --shadow-md: 0 4px 14px -4px color-mix(in srgb, var(--color-shadow) 14%, transparent);
+  --shadow-lg: 0 14px 32px -12px color-mix(in srgb, var(--color-shadow) 20%, transparent);
+  --shadow-xl: 0 28px 56px -20px color-mix(in srgb, var(--color-shadow) 26%, transparent);
+  --shadow-inner: inset 0 1px 3px color-mix(in srgb, var(--color-shadow) 10%, transparent);
+
+  // Movimiento
+  --duration-instant: 80ms;
+  --duration-fast: 160ms;
+  --duration-base: 240ms;
+  --duration-slow: 420ms;
+  --duration-pulse: 2s;
+  --duration-spin: 1s;
+  --duration-float: 5s;
+  --duration-sweep: 3.2s;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  // Foco
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-instant: 0.01ms;
+    --duration-fast: 0.01ms;
+    --duration-base: 0.01ms;
+    --duration-slow: 0.01ms;
+  }
 }

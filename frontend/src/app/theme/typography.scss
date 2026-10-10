@@ -1,10 +1,27 @@
-// AlaSonora — Typography tokens
-// Plus Jakarta Sans (headlines / UI actions), Inter (body), JetBrains Mono
-// (telemetry / technical labels) — consistent across every screen in the
-// Stitch design.
+// AlaSonora — Fuentes locales (subconjunto latino, OFL).
+// Viven en public/assets/fonts para que el Service Worker las guarde con
+// el grupo "assets" y la app conserve su tipografía sin conexión.
+//   Bricolage Grotesque     → títulos (archivo variable, pesos 600–800)
+//   Atkinson Hyperlegible   → texto (legible con sol directo)
+//   IBM Plex Sans Condensed → datos: kHz, dB, confianza, tiempos
 
-:root {
-  --font-display: 'Plus Jakarta Sans', sans-serif;
-  --font-body: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+$latin-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+  U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+
+@mixin font($family, $file, $weight, $style: normal) {
+  @font-face {
+    font-family: $family;
+    font-style: $style;
+    font-weight: $weight;
+    font-display: swap;
+    src: url('/assets/fonts/#{$file}.woff2') format('woff2');
+    unicode-range: $latin-range;
+  }
 }
+
+@include font('Bricolage Grotesque', 'bricolage-grotesque-latin-var', 600 800);
+@include font('Atkinson Hyperlegible', 'atkinson-hyperlegible-latin-400', 400);
+@include font('Atkinson Hyperlegible', 'atkinson-hyperlegible-latin-400-italic', 400, italic);
+@include font('Atkinson Hyperlegible', 'atkinson-hyperlegible-latin-700', 700);
+@include font('IBM Plex Sans Condensed', 'ibm-plex-sans-condensed-latin-500', 500);
+@include font('IBM Plex Sans Condensed', 'ibm-plex-sans-condensed-latin-600', 600);
