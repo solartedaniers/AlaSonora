@@ -21,17 +21,17 @@
             </div>
           </div>
           <div class="space-y-2">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-container/30 text-on-primary-container font-mono text-xs">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-container/30 text-on-primary-container font-data text-xs">
               <span class="material-symbols-outlined text-xs">hub</span>
               <span>{{ 'profile.observerTitle' | translate }}</span>
             </div>
-            <h1 class="font-display text-2xl font-bold tracking-tight hero-title-3d">{{ user.currentUser()?.fullName }}</h1>
+            <h1 class="font-display text-2xl font-bold tracking-tight">{{ user.currentUser()?.fullName }}</h1>
             <p class="text-sm text-on-surface-variant flex items-center gap-1.5">
               <span class="material-symbols-outlined text-sm text-primary">account_balance</span>
               {{ user.currentUser()?.institution }}
             </p>
             @if (user.currentUser()?.orcidId; as orcidId) {
-              <span class="font-mono text-xs bg-surface-container px-2 py-0.5 rounded text-on-surface-variant">
+              <span class="font-data text-xs bg-surface-container px-2 py-0.5 rounded text-on-surface-variant">
                 ORCID: {{ orcidId }}
               </span>
             }
@@ -212,7 +212,7 @@
                   >help</span
                 >
               </span>
-              <span class="font-mono text-primary font-bold">+{{ gainDb() }} dB</span>
+              <span class="font-data text-primary font-bold">+{{ gainDb() }} dB</span>
             </div>
             <input
               type="range"
