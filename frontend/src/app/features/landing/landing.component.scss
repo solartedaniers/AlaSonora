@@ -3,8 +3,8 @@
 // --- Hero: título colgado a la izquierda, placa del sonograma hasta el borde derecho.
 .landing-hero {
   display: grid;
-  gap: calc(var(--space-unit) * 10);
-  padding-block: calc(var(--space-unit) * 12) calc(var(--space-unit) * 16);
+  gap: calc(var(--space-unit) * 8);
+  padding-block: calc(var(--space-unit) * 8) calc(var(--space-unit) * 12);
 
   @screen lg {
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
@@ -36,20 +36,31 @@
 }
 
 .landing-hero__plate {
-  margin: 0;
+  // En móvil la placa respeta los márgenes; desde lg sangra hasta el borde derecho.
+  margin: 0 var(--space-gutter);
   min-width: 0;
+
+  @screen lg {
+    margin: 0;
+  }
 }
 
 // La placa sangra hasta el borde derecho: papel del espectrograma con su filete.
 .landing-hero__screen {
   position: relative;
-  height: clamp(calc(var(--space-unit) * 72), 52dvh, calc(var(--space-unit) * 130));
+  // En el celular la altura sigue al ancho: la cascada se ve completa sin ocupar toda la pantalla.
+  height: clamp(calc(var(--space-unit) * 56), 72vw, calc(var(--space-unit) * 88));
   background: var(--color-spectro-floor);
-  border-block: 1px solid var(--color-outline-variant);
-  border-inline-start: 1px solid var(--color-outline-variant);
-  border-start-start-radius: var(--radius-2xl);
-  border-end-start-radius: var(--radius-2xl);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-2xl);
   overflow: hidden;
+
+  @screen lg {
+    height: clamp(calc(var(--space-unit) * 72), 52dvh, calc(var(--space-unit) * 130));
+    border-inline-end: 0;
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
 }
 
 // Sin JavaScript (SSR) el SVG estático ocupa la placa con tinta plena.
@@ -66,7 +77,7 @@
 // --- Pasos: tres "notas" que suben de grave a agudo.
 .landing-steps {
   display: grid;
-  gap: calc(var(--space-unit) * 12);
+  gap: calc(var(--space-unit) * 8);
 
   @screen md {
     grid-template-columns: repeat(3, minmax(0, 1fr));

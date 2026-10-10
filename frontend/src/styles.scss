@@ -156,6 +156,14 @@
     @apply absolute top-3 end-3 w-touch h-touch grid place-items-center rounded-full text-on-surface-variant hover:bg-surface-container-high;
   }
 
+  // En móvil el segmentado ocupa todo el ancho con opciones iguales; desde sm vuelve a su tamaño.
+  .segmented--fill {
+    @apply flex w-full sm:inline-flex sm:w-auto;
+  }
+  .segmented--fill > .segmented__option {
+    @apply flex-1 px-3 text-sm sm:flex-none sm:px-4 sm:text-base;
+  }
+
   // Estados vacío / error / sin resultados: centrados, con aire, nunca un guion suelto.
   .state-panel {
     @apply flex flex-col items-center gap-5 py-section text-center;
@@ -208,8 +216,10 @@
   .sono-link[aria-current='page']::after {
     transform: scaleX(1);
   }
-  .sono-link:hover::after {
-    animation: sono-vibrate var(--duration-slow) linear infinite;
+  @media (hover: hover) {
+    .sono-link:hover::after {
+      animation: sono-vibrate var(--duration-slow) linear infinite;
+    }
   }
 }
 
@@ -324,6 +334,18 @@
   .btn:hover::after,
   [data-glow]:hover::after {
     opacity: 1;
+  }
+}
+// En táctil no hay cursor: al tocar, un destello breve desde el centro confirma el toque.
+@media (hover: none) {
+  .btn,
+  [data-glow] {
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active::after,
+  [data-glow]:active::after {
+    opacity: 1;
+    transition-duration: 0s;
   }
 }
 

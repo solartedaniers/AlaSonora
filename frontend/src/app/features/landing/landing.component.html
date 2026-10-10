@@ -6,13 +6,13 @@
     <section class="landing-hero" aria-labelledby="landing-title">
       <div class="px-gutter lg:pe-0">
         <p class="eyebrow-label">{{ 'landing.eyebrow' | translate }}</p>
-        <h1 id="landing-title" class="mt-6 text-6xl font-extrabold tracking-display leading-none">
+        <h1 id="landing-title" class="mt-4 sm:mt-6 text-6xl font-extrabold tracking-display leading-none">
           <span class="block">{{ 'landing.titleLead' | translate }}</span>
           <span class="landing-hero__accent">{{ 'landing.titleAccent' | translate }}</span>
         </h1>
-        <p class="mt-8 max-w-lg text-lg text-on-surface-variant leading-relaxed">{{ 'landing.subtitle' | translate }}</p>
-        <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-          <a routerLink="/register" class="btn btn--sulfur min-h-14 px-8 text-lg">
+        <p class="mt-5 sm:mt-8 max-w-lg sm:text-lg text-on-surface-variant leading-relaxed">{{ 'landing.subtitle' | translate }}</p>
+        <div class="mt-7 sm:mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+          <a routerLink="/register" class="btn btn--sulfur min-h-14 w-full sm:w-auto px-5 sm:px-8 sm:text-lg text-center leading-tight text-balance sm:whitespace-nowrap">
             <span class="material-symbols-outlined" aria-hidden="true">mic</span>
             {{ 'landing.ctaPrimary' | translate }}
           </a>
@@ -80,7 +80,7 @@
         <p class="eyebrow-label">{{ 'landing.how.eyebrow' | translate }}</p>
         <h2 id="how-title" class="mt-4 max-w-3xl text-4xl font-extrabold tracking-display">{{ 'landing.how.title' | translate }}</h2>
 
-        <ol class="landing-steps mt-16 list-none p-0">
+        <ol class="landing-steps mt-10 sm:mt-16 list-none p-0">
           @for (step of howSteps; track step.titleKey; let i = $index) {
             <li class="landing-step reveal" [style.--step-rise]="howSteps.length - 1 - i">
               <span class="landing-step__note" aria-hidden="true"></span>
@@ -101,7 +101,20 @@
           <h2 id="pipeline-title" class="mt-4 text-4xl font-extrabold tracking-display">{{ 'landing.pipeline.title' | translate }}</h2>
           <p class="mt-4 text-on-surface-variant leading-relaxed">{{ 'landing.pipeline.subtitle' | translate }}</p>
 
-          <div class="mt-10 flex flex-col" role="tablist" [attr.aria-label]="'landing.pipeline.tablistLabel' | translate">
+          <!-- En el celular: los cuatro pasos como lista, sin pestañas que cambian de alto solas ni segunda ilustración. -->
+          <ol class="md:hidden mt-8 list-none p-0 flex flex-col gap-5">
+            @for (step of pipelineSteps; track step) {
+              <li class="flex gap-4">
+                <span class="font-data text-sm font-semibold text-primary pt-1">{{ stepNumber(step) }}</span>
+                <span>
+                  <span class="block font-display text-lg font-bold">{{ ('landing.pipeline.step' + (step + 1) + 'Title') | translate }}</span>
+                  <span class="block mt-1 text-sm text-on-surface-variant leading-relaxed">{{ ('landing.pipeline.step' + (step + 1) + 'Body') | translate }}</span>
+                </span>
+              </li>
+            }
+          </ol>
+
+          <div class="hidden md:flex mt-10 flex-col" role="tablist" [attr.aria-label]="'landing.pipeline.tablistLabel' | translate">
             @for (step of pipelineSteps; track step) {
               <button
                 type="button"
@@ -132,7 +145,7 @@
         <figure
           id="pipeline-panel"
           role="tabpanel"
-          class="reveal lg:col-span-7 m-0 flex flex-col gap-3"
+          class="reveal hidden md:flex lg:col-span-7 m-0 flex-col gap-3"
           [attr.aria-labelledby]="'pipeline-tab-' + pipelineStep()"
         >
           <div class="pipeline-stage">
@@ -194,8 +207,8 @@
     <section class="chrome sing-on-hover relative overflow-hidden" aria-labelledby="closing-title">
       <app-song-sonogram class="landing-closing__sonogram absolute inset-x-0 bottom-0 opacity-60" aria-hidden="true" />
       <div class="reveal relative max-w-7xl mx-auto px-gutter py-section flex flex-col items-start gap-8">
-        <h2 id="closing-title" class="max-w-3xl text-5xl font-extrabold tracking-display">{{ 'landing.closing.title' | translate }}</h2>
-        <a routerLink="/register" class="btn btn--sulfur min-h-14 px-8 text-lg">
+        <h2 id="closing-title" class="max-w-3xl text-4xl sm:text-5xl font-extrabold tracking-display">{{ 'landing.closing.title' | translate }}</h2>
+        <a routerLink="/register" class="btn btn--sulfur min-h-14 w-full sm:w-auto px-5 sm:px-8 sm:text-lg text-center leading-tight text-balance sm:whitespace-nowrap">
           <span class="material-symbols-outlined" aria-hidden="true">mic</span>
           {{ 'landing.ctaPrimary' | translate }}
         </a>

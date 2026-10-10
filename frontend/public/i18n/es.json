@@ -281,7 +281,10 @@
     "recLabel": "Grabando",
     "idleHint": "Pulsa el botón rojo y el sonograma de lo que escuchas aparecerá aquí en tiempo real.",
     "peakFrequency": "Frecuencia pico",
-    "level": "Nivel de la señal"
+    "level": "Nivel de la señal",
+    "viewLabel": "Vista del sonograma",
+    "viewFlat": "Plano",
+    "viewWaterfall": "3D"
   },
   "result": {
     "completedTitle": "Identificación Bioacústica Completada",

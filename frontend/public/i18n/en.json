@@ -281,7 +281,10 @@
     "recLabel": "Recording",
     "idleHint": "Press the red button and the sonogram of what you hear will appear here in real time.",
     "peakFrequency": "Peak frequency",
-    "level": "Signal level"
+    "level": "Signal level",
+    "viewLabel": "Sonogram view",
+    "viewFlat": "Flat",
+    "viewWaterfall": "3D"
   },
   "result": {
     "completedTitle": "Bioacoustic Identification Complete",
