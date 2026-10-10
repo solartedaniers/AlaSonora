@@ -1,170 +1,156 @@
-<div class="min-h-dvh w-full flex flex-col bg-surface relative">
-  <app-field-backdrop />
+<div class="min-h-dvh w-full flex flex-col bg-surface text-on-surface">
   <app-nav-header />
 
-  <main class="relative z-10 flex-1 w-full flex flex-col items-center px-4 py-10">
+  <main class="auth-layout">
+    <app-auth-panel />
 
-  <div class="w-full max-w-2xl flex-1 flex items-center z-10">
-  <div appBorderGlow class="glass-card w-full rounded-2xl shadow-xl overflow-hidden">
-    <div class="h-1.5 w-full bg-gradient-to-r from-primary via-primary-container to-secondary"></div>
+    <section class="auth-layout__form">
+      <app-field-backdrop class="lg:hidden" />
 
-    <div class="p-6 sm:p-10 flex flex-col gap-8">
-      <div class="flex flex-col items-center gap-2 text-center">
-        <div class="flex items-center justify-center gap-2 text-primary font-data text-xs uppercase tracking-wider">
-          <span class="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-          {{ 'auth.register.eyebrow' | translate }}
+      <div class="relative z-10 w-full max-w-xl flex flex-col gap-8">
+        <div>
+          <p class="eyebrow-label">{{ 'auth.register.eyebrow' | translate }}</p>
+          <h1 class="mt-3 text-4xl font-extrabold tracking-display">{{ 'auth.register.title' | translate }}</h1>
+          <p class="mt-3 text-on-surface-variant">{{ 'auth.register.subtitle' | translate }}</p>
         </div>
-        <h1 class="font-display text-2xl sm:text-3xl font-bold tracking-tight">
-          {{ 'auth.register.title' | translate }}
-        </h1>
-        <p class="text-sm text-on-surface-variant max-w-xl mx-auto">
-          {{ 'auth.register.subtitle' | translate }}
-        </p>
-      </div>
 
-      @if (submitError()) {
-        <div class="bg-error-container/40 rounded-lg p-3 flex items-start gap-2">
-          <span class="material-symbols-outlined text-error shrink-0">warning</span>
-          <p class="text-sm text-on-surface-variant">{{ 'auth.register.errorBody' | translate }}</p>
-        </div>
-      }
-
-      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="flex flex-col gap-1.5">
-            <label for="fullName" class="text-sm font-semibold text-on-surface">
-              {{ 'auth.register.fullName' | translate }}
-            </label>
-            <input
-              id="fullName"
-              type="text"
-              formControlName="fullName"
-              appLettersOnly
-              [placeholder]="'auth.register.fullNamePlaceholder' | translate"
-              class="w-full h-12 px-4 bg-surface-container-lowest text-on-surface placeholder:text-outline rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
-            />
-            @if (form.controls.fullName.errors?.['pattern'] && form.controls.fullName.touched) {
-              <span class="text-xs text-error">{{ 'auth.register.fullNameError' | translate }}</span>
-            }
+        @if (submitError()) {
+          <div role="alert" class="flex items-start gap-3 rounded-lg bg-error-container text-on-error-container px-4 py-3">
+            <span class="material-symbols-outlined shrink-0" aria-hidden="true">warning</span>
+            <p>{{ 'auth.register.errorBody' | translate }}</p>
           </div>
-          <div class="flex flex-col gap-1.5">
-            <label for="role" class="text-sm font-semibold text-on-surface">
-              {{ 'auth.register.role' | translate }}
-            </label>
-            <select
-              id="role"
-              formControlName="role"
-              class="w-full h-12 px-4 bg-surface-container-lowest text-on-surface rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow appearance-none cursor-pointer"
-            >
-              @for (r of roles; track r) {
-                <option [value]="r">{{ ('auth.roles.' + r) | translate }}</option>
-              }
-            </select>
-          </div>
-        </div>
+        }
 
-        <div class="flex flex-col gap-1.5">
-          <label for="email" class="text-sm font-semibold text-on-surface">{{ 'auth.register.email' | translate }}</label>
-          <input
-            id="email"
-            type="email"
-            formControlName="email"
-            [placeholder]="'auth.register.emailPlaceholder' | translate"
-            class="w-full h-12 px-4 bg-surface-container-lowest text-on-surface placeholder:text-outline rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
-          />
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="flex flex-col gap-1.5">
-            <label for="password" class="text-sm font-semibold text-on-surface">
-              {{ 'auth.register.password' | translate }}
-            </label>
-            <div class="relative flex items-center">
+        <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div class="flex flex-col gap-2">
+              <label for="fullName" class="field-label">{{ 'auth.register.fullName' | translate }}</label>
               <input
-                id="password"
-                [type]="showPassword() ? 'text' : 'password'"
-                formControlName="password"
-                placeholder="••••••••••••"
-                (input)="onPasswordInput($any($event.target).value)"
-                class="w-full h-12 pr-11 px-4 bg-surface-container-lowest text-on-surface placeholder:text-outline rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
+                id="fullName"
+                type="text"
+                autocomplete="name"
+                formControlName="fullName"
+                appLettersOnly
+                class="field-input"
+                [placeholder]="'auth.register.fullNamePlaceholder' | translate"
+                [attr.aria-invalid]="form.controls.fullName.invalid && form.controls.fullName.touched"
+                aria-describedby="fullName-error"
               />
-              <button
-                type="button"
-                (click)="togglePasswordVisibility()"
-                class="absolute right-3.5 text-outline hover:text-on-surface transition-colors"
-              >
-                <span class="material-symbols-outlined text-xl">{{ showPassword() ? 'visibility_off' : 'visibility' }}</span>
-              </button>
+              @if (form.controls.fullName.errors?.['pattern'] && form.controls.fullName.touched) {
+                <span id="fullName-error" class="field-error">{{ 'auth.register.fullNameError' | translate }}</span>
+              }
+            </div>
+            <div class="flex flex-col gap-2">
+              <label for="role" class="field-label">{{ 'auth.register.role' | translate }}</label>
+              <div class="relative">
+                <select id="role" formControlName="role" class="field-input pe-12 appearance-none cursor-pointer">
+                  @for (r of roles; track r) {
+                    <option [value]="r">{{ ('auth.roles.' + r) | translate }}</option>
+                  }
+                </select>
+                <span class="material-symbols-outlined pointer-events-none absolute inset-y-0 end-3 my-auto h-6 text-on-surface-variant" aria-hidden="true">expand_more</span>
+              </div>
             </div>
           </div>
-          <div class="flex flex-col gap-1.5">
-            <label for="confirmPassword" class="text-sm font-semibold text-on-surface">
-              {{ 'auth.register.confirmPassword' | translate }}
-            </label>
+
+          <div class="flex flex-col gap-2">
+            <label for="email" class="field-label">{{ 'auth.register.email' | translate }}</label>
             <input
-              id="confirmPassword"
-              type="password"
-              formControlName="confirmPassword"
-              placeholder="••••••••••••"
-              class="w-full h-12 px-4 bg-surface-container-lowest text-on-surface placeholder:text-outline rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
+              id="email"
+              type="email"
+              autocomplete="email"
+              formControlName="email"
+              class="field-input"
+              [placeholder]="'auth.register.emailPlaceholder' | translate"
+              [attr.aria-invalid]="form.controls.email.invalid && form.controls.email.touched"
             />
           </div>
-        </div>
 
-        <!-- Password strength meter -->
-        <div class="bg-surface-container-lowest/70 rounded-lg p-4 flex flex-col gap-3">
-          <div class="flex items-center justify-between">
-            <span class="font-data text-xs uppercase tracking-wider text-on-surface-variant">
-              {{ 'auth.register.passwordStrength' | translate }}
-            </span>
-            <span class="font-data text-xs font-semibold text-primary">
-              {{ passwordTier() }}
-            </span>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div class="flex flex-col gap-2">
+              <label for="password" class="field-label">{{ 'auth.register.password' | translate }}</label>
+              <div class="relative">
+                <input
+                  id="password"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  autocomplete="new-password"
+                  formControlName="password"
+                  (input)="onPasswordInput($any($event.target).value)"
+                  class="field-input pe-14"
+                  [placeholder]="'auth.passwordPlaceholder' | translate"
+                  [attr.aria-invalid]="form.controls.password.invalid && form.controls.password.touched"
+                  aria-describedby="password-strength"
+                />
+                <button
+                  type="button"
+                  (click)="togglePasswordVisibility()"
+                  class="absolute inset-y-0 end-1 my-auto w-touch h-touch grid place-items-center rounded-full text-on-surface-variant hover:text-on-surface"
+                  [attr.aria-label]="'auth.togglePassword' | translate"
+                  [attr.aria-pressed]="showPassword()"
+                >
+                  <span class="material-symbols-outlined text-xl" aria-hidden="true">{{ showPassword() ? 'visibility_off' : 'visibility' }}</span>
+                </button>
+              </div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <label for="confirmPassword" class="field-label">{{ 'auth.register.confirmPassword' | translate }}</label>
+              <input
+                id="confirmPassword"
+                type="password"
+                autocomplete="new-password"
+                formControlName="confirmPassword"
+                class="field-input"
+                [placeholder]="'auth.passwordPlaceholder' | translate"
+                [attr.aria-invalid]="form.controls.confirmPassword.invalid && form.controls.confirmPassword.touched"
+              />
+            </div>
           </div>
-          <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden flex gap-1">
-            @for (bar of [0, 1, 2, 3]; track bar) {
-              <div
-                class="h-full flex-1 rounded-full transition-colors"
-                [class.bg-primary]="passwordScore() > bar"
-                [class.bg-surface-container-high]="passwordScore() <= bar"
-              ></div>
-            }
+
+          <!-- Fuerza de la clave como un medidor de nivel: cada barra es una banda más aguda. -->
+          <div id="password-strength" class="flex items-end gap-4">
+            <div class="flex items-end gap-1 h-8" aria-hidden="true">
+              @for (bar of strengthBars; track bar) {
+                <span
+                  class="w-2.5 rounded-sm transition-colors"
+                  [class.bg-primary]="passwordScore() > bar"
+                  [class.bg-surface-container-highest]="passwordScore() <= bar"
+                  [style.height.%]="(bar + 1) * 25"
+                ></span>
+              }
+            </div>
+            <p class="text-sm text-on-surface-variant" aria-live="polite">
+              {{ 'auth.register.passwordStrength' | translate }}:
+              <strong class="text-on-surface">{{ ('auth.register.strength.' + passwordTier()) | translate }}</strong>
+            </p>
           </div>
-        </div>
 
-        <div class="flex flex-col gap-3.5 pt-2">
-          <label class="flex items-start gap-3 cursor-pointer">
-            <input type="checkbox" formControlName="consentScience" class="w-5 h-5 mt-0.5 accent-primary rounded shrink-0" />
-            <span class="text-sm text-on-surface leading-snug">{{ 'auth.register.consentScience' | translate }}</span>
-          </label>
-          <label class="flex items-start gap-3 cursor-pointer">
-            <input type="checkbox" formControlName="consentTerms" class="w-5 h-5 mt-0.5 accent-primary rounded shrink-0" />
-            <span class="text-sm text-on-surface leading-snug">{{ 'auth.register.consentTerms' | translate }}</span>
-          </label>
-        </div>
+          <div class="flex flex-col gap-3">
+            <label class="flex items-start gap-3 min-h-touch cursor-pointer">
+              <input type="checkbox" formControlName="consentScience" class="w-5 h-5 mt-0.5 shrink-0 accent-primary" />
+              <span class="text-on-surface leading-snug">{{ 'auth.register.consentScience' | translate }}</span>
+            </label>
+            <label class="flex items-start gap-3 min-h-touch cursor-pointer">
+              <input
+                type="checkbox"
+                formControlName="consentTerms"
+                class="w-5 h-5 mt-0.5 shrink-0 accent-primary"
+                [attr.aria-invalid]="form.controls.consentTerms.invalid && form.controls.consentTerms.touched"
+              />
+              <span class="text-on-surface leading-snug">{{ 'auth.register.consentTerms' | translate }}</span>
+            </label>
+          </div>
 
-        <button
-          type="submit"
-          [disabled]="submitting()"
-          class="group relative w-full h-12 rounded-lg bg-primary text-on-primary font-display font-semibold shadow-lg flex items-center justify-center gap-2 overflow-hidden hover:shadow-xl active:scale-[0.98] transition-all disabled:opacity-60"
-        >
-          <span class="absolute inset-0 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-slow ease-out bg-on-primary/20 skew-x-12 w-1/3"></span>
-          <span class="material-symbols-outlined text-xl">nature_people</span>
-          <span>{{ 'auth.register.submit' | translate }}</span>
-        </button>
-      </form>
+          <button type="submit" [disabled]="submitting()" class="btn btn--ink w-full min-h-12">
+            {{ (submitting() ? 'common.loading' : 'auth.register.submit') | translate }}
+          </button>
+        </form>
 
-      <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left bg-surface-container-lowest/40 -mx-6 sm:-mx-10 -mb-6 sm:-mb-10 p-6 sm:px-10 rounded-b-2xl">
-        <span class="text-sm text-on-surface-variant">{{ 'auth.register.haveAccount' | translate }}</span>
-        <a routerLink="/login" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">
-          {{ 'auth.register.goToLogin' | translate }}
-          <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-        </a>
+        <p class="pt-5 border-t text-on-surface-variant">
+          {{ 'auth.register.haveAccount' | translate }}
+          <a routerLink="/login" class="ms-1 font-bold text-primary hover:underline">{{ 'auth.register.goToLogin' | translate }}</a>
+        </p>
       </div>
-    </div>
-  </div>
-  </div>
-
+    </section>
   </main>
 
   <app-site-footer />

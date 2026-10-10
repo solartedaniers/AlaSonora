@@ -5,7 +5,7 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { NavHeaderComponent } from '../../../shared/components/nav-header/nav-header.component';
 import { SiteFooterComponent } from '../../../shared/components/site-footer/site-footer.component';
 import { LettersOnlyDirective } from '../../../shared/directives/letters-only.directive';
-import { PointerGlowDirective } from '../../../shared/directives/pointer-glow.directive';
+import { AuthPanelComponent } from '../auth-panel/auth-panel.component';
 import { FieldBackdropComponent } from '../../../shared/components/field-backdrop/field-backdrop.component';
 import { UserService } from '../../../core/services/user.service';
 import { nameValidator } from '../../../core/validators/name.validator';
@@ -23,7 +23,7 @@ type PasswordTier = 'empty' | 'weak' | 'medium' | 'strong' | 'excellent';
     NavHeaderComponent,
     SiteFooterComponent,
     LettersOnlyDirective,
-    PointerGlowDirective,
+    AuthPanelComponent,
     FieldBackdropComponent,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -38,6 +38,8 @@ export class RegisterComponent {
   readonly submitting = signal(false);
   readonly submitError = signal(false);
   readonly passwordValue = signal('');
+
+  readonly strengthBars = [0, 1, 2, 3];
 
   readonly roles: ObserverRole[] = ['ornithologist', 'ranger', 'biologist', 'hobbyist', 'student'];
 

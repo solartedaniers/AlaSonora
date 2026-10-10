@@ -6,7 +6,7 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { NavHeaderComponent } from '../../../shared/components/nav-header/nav-header.component';
 import { SiteFooterComponent } from '../../../shared/components/site-footer/site-footer.component';
 import { FieldBackdropComponent } from '../../../shared/components/field-backdrop/field-backdrop.component';
-import { PointerGlowDirective } from '../../../shared/directives/pointer-glow.directive';
+import { AuthPanelComponent } from '../auth-panel/auth-panel.component';
 import { UserService } from '../../../core/services/user.service';
 import { ProfileService } from '../../../core/services/profile.service';
 
@@ -22,7 +22,7 @@ type LoginError = 'invalid-credentials' | 'email-not-confirmed';
     NavHeaderComponent,
     SiteFooterComponent,
     FieldBackdropComponent,
-    PointerGlowDirective,
+    AuthPanelComponent,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './login.component.html',

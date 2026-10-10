@@ -6,7 +6,7 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { NavHeaderComponent } from '../../../shared/components/nav-header/nav-header.component';
 import { SiteFooterComponent } from '../../../shared/components/site-footer/site-footer.component';
 import { FieldBackdropComponent } from '../../../shared/components/field-backdrop/field-backdrop.component';
-import { PointerGlowDirective } from '../../../shared/directives/pointer-glow.directive';
+import { AuthPanelComponent } from '../auth-panel/auth-panel.component';
 import { UserService } from '../../../core/services/user.service';
 import { SupabaseClientService } from '../../../core/services/supabase-client.service';
 import { passwordStrengthValidator } from '../../../core/validators/password-strength.validator';
@@ -29,7 +29,7 @@ function passwordsMatchValidator(control: AbstractControl): ValidationErrors | n
     NavHeaderComponent,
     SiteFooterComponent,
     FieldBackdropComponent,
-    PointerGlowDirective,
+    AuthPanelComponent,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './reset-password.component.html',
@@ -59,6 +59,11 @@ export class ResetPasswordComponent implements OnInit {
   readonly hasMinLength = computed(() => this.passwordValue().length >= 8);
   readonly hasUppercase = computed(() => /[A-Z]/.test(this.passwordValue()));
   readonly hasNumber = computed(() => /[0-9]/.test(this.passwordValue()));
+  readonly requirements = computed(() => [
+    { labelKey: 'auth.resetPassword.requirementMinLength', met: this.hasMinLength() },
+    { labelKey: 'auth.resetPassword.requirementUppercase', met: this.hasUppercase() },
+    { labelKey: 'auth.resetPassword.requirementNumber', met: this.hasNumber() },
+  ]);
 
   async ngOnInit(): Promise<void> {
     const { data } = await this.supabase.auth.getSession();

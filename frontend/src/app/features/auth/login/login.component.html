@@ -1,100 +1,90 @@
-<div class="min-h-dvh w-full flex flex-col bg-surface relative">
-  <app-field-backdrop />
+<div class="min-h-dvh w-full flex flex-col bg-surface text-on-surface">
   <app-nav-header />
 
-  <main class="relative z-10 flex-1 w-full flex flex-col items-center px-4 py-3 sm:py-5">
+  <main class="auth-layout">
+    <app-auth-panel />
 
-  <div class="w-full max-w-md flex-1 flex items-center z-10">
-  <div appBorderGlow class="glass-card w-full rounded-2xl shadow-xl p-5 sm:p-7 relative overflow-hidden">
-    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary-container via-primary to-secondary"></div>
+    <section class="auth-layout__form">
+      <app-field-backdrop class="lg:hidden" />
 
-    <h1 class="font-display text-2xl sm:text-3xl font-bold tracking-tight text-center mb-1">
-      {{ 'auth.login.title' | translate }}
-    </h1>
-    <p class="text-sm text-on-surface-variant text-center mb-4">{{ 'auth.login.subtitle' | translate }}</p>
-
-    @if (submitError(); as error) {
-      <div class="mb-4 bg-error-container/40 rounded-lg p-3 flex items-start gap-2">
-        <span class="material-symbols-outlined text-error shrink-0">warning</span>
+      <div class="relative z-10 w-full max-w-md flex flex-col gap-6">
         <div>
-          @if (error === 'email-not-confirmed') {
-            <p class="text-sm font-semibold text-on-surface">{{ 'auth.login.errorEmailNotConfirmedTitle' | translate }}</p>
-            <p class="text-sm text-on-surface-variant">{{ 'auth.login.errorEmailNotConfirmedBody' | translate }}</p>
-          } @else {
-            <p class="text-sm font-semibold text-on-surface">{{ 'auth.login.errorTitle' | translate }}</p>
-            <p class="text-sm text-on-surface-variant">{{ 'auth.login.errorBody' | translate }}</p>
-          }
+          <h1 class="text-4xl font-extrabold tracking-display">{{ 'auth.login.title' | translate }}</h1>
+          <p class="mt-3 text-on-surface-variant">{{ 'auth.login.subtitle' | translate }}</p>
         </div>
-      </div>
-    }
 
-    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-3">
-      <div class="flex flex-col gap-1.5">
-        <label for="email" class="text-sm font-semibold text-on-surface">{{ 'auth.login.email' | translate }}</label>
-        <div class="relative flex items-center">
-          <span class="material-symbols-outlined absolute left-3.5 text-outline text-xl pointer-events-none">badge</span>
-          <input
-            id="email"
-            type="email"
-            formControlName="email"
-            [placeholder]="'auth.login.emailPlaceholder' | translate"
-            class="w-full h-11 pl-12 pr-4 bg-surface-container-lowest text-on-surface placeholder:text-outline rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
-          />
-        </div>
-      </div>
+        @if (submitError(); as error) {
+          <div role="alert" class="flex items-start gap-3 rounded-lg bg-error-container text-on-error-container px-4 py-3">
+            <span class="material-symbols-outlined shrink-0" aria-hidden="true">warning</span>
+            <div>
+              @if (error === 'email-not-confirmed') {
+                <p class="font-bold">{{ 'auth.login.errorEmailNotConfirmedTitle' | translate }}</p>
+                <p class="text-sm">{{ 'auth.login.errorEmailNotConfirmedBody' | translate }}</p>
+              } @else {
+                <p class="font-bold">{{ 'auth.login.errorTitle' | translate }}</p>
+                <p class="text-sm">{{ 'auth.login.errorBody' | translate }}</p>
+              }
+            </div>
+          </div>
+        }
 
-      <div class="flex flex-col gap-1.5">
-        <label for="password" class="text-sm font-semibold text-on-surface">{{ 'auth.login.password' | translate }}</label>
-        <div class="relative flex items-center">
-          <span class="material-symbols-outlined absolute left-3.5 text-outline text-xl pointer-events-none">lock</span>
-          <input
-            id="password"
-            [type]="showPassword() ? 'text' : 'password'"
-            formControlName="password"
-            placeholder="••••••••••••"
-            class="w-full h-11 pl-12 pr-12 bg-surface-container-lowest text-on-surface placeholder:text-outline rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
-          />
-          <button
-            type="button"
-            (click)="togglePasswordVisibility()"
-            class="absolute right-3.5 text-outline hover:text-on-surface transition-colors"
-            [attr.aria-label]="'auth.togglePassword' | translate"
-          >
-            <span class="material-symbols-outlined text-xl">{{ showPassword() ? 'visibility_off' : 'visibility' }}</span>
+        <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-5">
+          <div class="flex flex-col gap-2">
+            <label for="email" class="field-label">{{ 'auth.login.email' | translate }}</label>
+            <input
+              id="email"
+              type="email"
+              autocomplete="email"
+              formControlName="email"
+              class="field-input"
+              [placeholder]="'auth.login.emailPlaceholder' | translate"
+              [attr.aria-invalid]="form.controls.email.invalid && form.controls.email.touched"
+            />
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <div class="flex items-baseline justify-between gap-3">
+              <label for="password" class="field-label">{{ 'auth.login.password' | translate }}</label>
+              <a routerLink="/forgot-password" class="text-sm font-bold text-primary hover:underline">{{ 'auth.login.forgotPassword' | translate }}</a>
+            </div>
+            <div class="relative">
+              <input
+                id="password"
+                [type]="showPassword() ? 'text' : 'password'"
+                autocomplete="current-password"
+                formControlName="password"
+                class="field-input pe-14"
+                [placeholder]="'auth.passwordPlaceholder' | translate"
+                [attr.aria-invalid]="form.controls.password.invalid && form.controls.password.touched"
+              />
+              <button
+                type="button"
+                (click)="togglePasswordVisibility()"
+                class="absolute inset-y-0 end-1 my-auto w-touch h-touch grid place-items-center rounded-full text-on-surface-variant hover:text-on-surface"
+                [attr.aria-label]="'auth.togglePassword' | translate"
+                [attr.aria-pressed]="showPassword()"
+              >
+                <span class="material-symbols-outlined text-xl" aria-hidden="true">{{ showPassword() ? 'visibility_off' : 'visibility' }}</span>
+              </button>
+            </div>
+          </div>
+
+          <label class="flex items-center gap-3 min-h-touch cursor-pointer select-none">
+            <input type="checkbox" formControlName="remember" class="w-5 h-5 accent-primary" />
+            <span class="text-on-surface-variant">{{ 'auth.login.remember' | translate }}</span>
+          </label>
+
+          <button type="submit" [disabled]="submitting()" class="btn btn--ink w-full min-h-12">
+            {{ (submitting() ? 'common.loading' : 'auth.login.submit') | translate }}
           </button>
-        </div>
-        <a routerLink="/forgot-password" class="self-end text-xs text-primary hover:underline">{{ 'auth.login.forgotPassword' | translate }}</a>
+        </form>
+
+        <p class="pt-5 border-t text-on-surface-variant">
+          {{ 'auth.login.noAccount' | translate }}
+          <a routerLink="/register" class="ms-1 font-bold text-primary hover:underline">{{ 'auth.login.goToRegister' | translate }}</a>
+        </p>
       </div>
-
-      <label class="flex items-center gap-2 cursor-pointer select-none">
-        <input type="checkbox" formControlName="remember" class="w-4 h-4 accent-primary rounded" />
-        <span class="text-sm text-on-surface-variant flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-sm text-primary">cloud_sync</span>
-          {{ 'auth.login.remember' | translate }}
-        </span>
-      </label>
-
-      <button
-        type="submit"
-        [disabled]="submitting()"
-        class="bio-glow-btn mt-1 w-full h-11 rounded-lg bg-primary text-on-primary font-display font-semibold flex items-center justify-center gap-2 active:scale-[0.99] transition-all disabled:opacity-60"
-      >
-        <span class="material-symbols-outlined text-xl">login</span>
-        <span>{{ 'auth.login.submit' | translate }}</span>
-      </button>
-    </form>
-
-    <div class="mt-4 pt-3 text-center border-t border-outline-variant/30">
-      <p class="text-sm text-on-surface-variant">
-        {{ 'auth.login.noAccount' | translate }}
-        <a routerLink="/register" class="font-semibold text-primary hover:underline ml-1">
-          {{ 'auth.login.goToRegister' | translate }}
-        </a>
-      </p>
-    </div>
-  </div>
-  </div>
-
+    </section>
   </main>
 
   <app-site-footer />
