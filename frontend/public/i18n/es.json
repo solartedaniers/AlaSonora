@@ -4,7 +4,6 @@
     "tagline": "Bioacústica & IA"
   },
   "nav": {
-    "landing": "Inicio",
     "dashboard": "Inicio",
     "record": "Grabar / Subir",
     "photoId": "Identificar por Foto",
@@ -13,8 +12,6 @@
     "profile": "Mi Perfil",
     "admin": "Administración",
     "login": "Iniciar Sesión",
-    "logout": "Cerrar Sesión",
-    "register": "Crear Cuenta",
     "menu": "Menú"
   },
   "notifications": {
@@ -32,19 +29,12 @@
     "uploading": "Subiendo…",
     "save": "Guardar",
     "cancel": "Cancelar",
-    "discard": "Descartar",
     "confidence": "Certeza IA",
-    "seeMore": "Ver más",
     "spectrogramLabel": "Espectrograma en tiempo real",
-    "seeDetail": "Ver detalle",
     "play": "Reproducir",
     "pause": "Pausar",
-    "download": "Descargar",
     "search": "Buscar",
     "filter": "Filtrar",
-    "high": "Alta",
-    "medium": "Media",
-    "low": "Baja",
     "langSwitcherLabel": "Selector de idioma",
     "confidenceTier": {
       "high": "Certeza alta",
@@ -55,7 +45,8 @@
     "languages": {
       "es": "Español",
       "en": "English"
-    }
+    },
+    "comingSoon": "Próximamente"
   },
   "iucn": {
     "lc": "Preocupación Menor",
@@ -141,8 +132,6 @@
       "eyebrow": "Estación de Registro Global",
       "title": "Únete a la Red de Bioacústica y Conservación",
       "subtitle": "Monitorea bioindicadores, sincroniza grabaciones de campo con IA taxonómica y colabora en el mapeo acústico planetario.",
-      "orQuick": "Acceso rápido con",
-      "orManual": "o registro manual de campo",
       "fullName": "Nombre y Apellido",
       "fullNamePlaceholder": "Dra. Elena Valenzuela",
       "fullNameError": "El nombre solo puede contener letras y espacios.",
@@ -175,7 +164,6 @@
       "forgotPassword": "¿Olvidaste tu contraseña?",
       "remember": "Mantener sesión activa en este dispositivo",
       "submit": "Iniciar Sesión",
-      "orGateway": "O ingresar con pasarela científica",
       "noAccount": "¿Primera vez en AlaSonora?",
       "goToRegister": "Crear cuenta gratuita",
       "errorTitle": "Credenciales no reconocidas",
@@ -342,7 +330,6 @@
     "statusValidated": "Validadas",
     "statusPending": "Pendientes Offline",
     "export": "Exportar a eBird / Darwin Core",
-    "syncNow": "Sincronizar ahora",
     "emptyTitle": "Aún no hay grabaciones",
     "emptyBody": "Graba o sube tu primer audio para empezar tu cuaderno de campo.",
     "stats": {
@@ -358,8 +345,6 @@
     "noMatchesBody": "Prueba con otro nombre, especie o lugar, o cambia el filtro."
   },
   "map": {
-    "title": "Mapa Vivo de Avistamientos y Biofonía",
-    "subtitle": "Explora las grabaciones recientes identificadas por la red en tiempo real.",
     "searchPlaceholder": "Buscar por especie, familia o parque natural…",
     "filterFamily": "Filtrar por Familia",
     "contribute": "Aportar Registro",
@@ -386,7 +371,6 @@
     "systemSettings": "Configuración del Sistema",
     "appearance": "Tema de Interfaz",
     "languageTaxonomy": "Idioma & Taxonomía Primaria",
-    "micHardware": "Micrófono & Ganancia de Campo",
     "activeSession": "Sesión Activa",
     "logout": "Cerrar Sesión Segura",
     "logoutConfirm": "¿Deseas cerrar la sesión activa? Los registros offline permanecerán seguros en tu dispositivo.",
@@ -424,18 +408,13 @@
   },
   "workers": {
     "offlineBannerTitle": "Modo Campo Sin Conexión Activo",
-    "offlineBannerBody": "Las grabaciones se guardan localmente y se sincronizan al recuperar conexión.",
     "syncPending": "grabaciones en cola",
     "forceSync": "Forzar Sincronización",
     "offlineTitle": "Sin conexión.",
     "offlineBody": "Puedes seguir grabando: tus cantos se guardan en este dispositivo y se identificarán al volver la señal."
   },
   "footer": {
-    "rights": "Plataforma Abierta de Bioacústica & Conservación",
-    "privacy": "Privacidad de Datos Ecológicos",
-    "protocol": "Protocolo de Grabación",
-    "api": "API para Investigadores",
-    "contact": "Contacto Científico"
+    "rights": "Plataforma Abierta de Bioacústica & Conservación"
   },
   "routeTitle": {
     "login": "Iniciar Sesión",

@@ -1,9 +1,9 @@
-// Registered instead of ngsw-worker.js (see app.config.ts): keeps Angular's
-// generated service worker for app-shell caching (ngsw-config.json) and adds
-// the Background Sync handler for recordings made offline.
+// Se registra en lugar de ngsw-worker.js (ver app.config.ts): conserva el service worker
+// de Angular para la caché del app shell (ngsw-config.json) y suma el manejador de
+// Background Sync para las grabaciones hechas sin conexión.
 importScripts('./ngsw-worker.js');
 
-// Must match PENDING_RECORDINGS_SYNC_TAG in pending-recordings-sync.service.ts.
+// Debe coincidir con PENDING_RECORDINGS_SYNC_TAG en pending-recordings-sync.service.ts.
 const PENDING_RECORDINGS_SYNC_TAG = 'alasonora-pending-recordings';
 
 self.addEventListener('sync', (event) => {

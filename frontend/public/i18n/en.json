@@ -4,7 +4,6 @@
     "tagline": "Bioacoustics & AI"
   },
   "nav": {
-    "landing": "Home",
     "dashboard": "Home",
     "record": "Record / Upload",
     "photoId": "Identify by Photo",
@@ -13,8 +12,6 @@
     "profile": "My Profile",
     "admin": "Admin",
     "login": "Log In",
-    "logout": "Log Out",
-    "register": "Create Account",
     "menu": "Menu"
   },
   "notifications": {
@@ -32,19 +29,12 @@
     "uploading": "Uploading…",
     "save": "Save",
     "cancel": "Cancel",
-    "discard": "Discard",
     "confidence": "AI Confidence",
-    "seeMore": "See more",
     "spectrogramLabel": "Real-time spectrogram",
-    "seeDetail": "View detail",
     "play": "Play",
     "pause": "Pause",
-    "download": "Download",
     "search": "Search",
     "filter": "Filter",
-    "high": "High",
-    "medium": "Medium",
-    "low": "Low",
     "langSwitcherLabel": "Language switcher",
     "confidenceTier": {
       "high": "High confidence",
@@ -55,7 +45,8 @@
     "languages": {
       "es": "Español",
       "en": "English"
-    }
+    },
+    "comingSoon": "Coming soon"
   },
   "iucn": {
     "lc": "Least Concern",
@@ -141,8 +132,6 @@
       "eyebrow": "Global Registration Station",
       "title": "Join the Bioacoustics & Conservation Network",
       "subtitle": "Monitor bioindicators, sync field recordings with taxonomic AI, and collaborate on the planetary acoustic map.",
-      "orQuick": "Quick access with",
-      "orManual": "or manual field registration",
       "fullName": "Full Name",
       "fullNamePlaceholder": "Dr. Elena Valenzuela",
       "fullNameError": "Name can only contain letters and spaces.",
@@ -175,7 +164,6 @@
       "forgotPassword": "Forgot your password?",
       "remember": "Keep session active on this device",
       "submit": "Log In",
-      "orGateway": "Or sign in with a scientific gateway",
       "noAccount": "First time on AlaSonora?",
       "goToRegister": "Create a free account",
       "errorTitle": "Credentials not recognized",
@@ -342,7 +330,6 @@
     "statusValidated": "Validated",
     "statusPending": "Pending Offline",
     "export": "Export to eBird / Darwin Core",
-    "syncNow": "Sync now",
     "emptyTitle": "No recordings yet",
     "emptyBody": "Record or upload your first audio to start your field notebook.",
     "stats": {
@@ -358,8 +345,6 @@
     "noMatchesBody": "Try another name, species or place, or change the filter."
   },
   "map": {
-    "title": "Live Sightings & Biophony Map",
-    "subtitle": "Explore recent recordings identified by the network in real time.",
     "searchPlaceholder": "Search by species, family, or natural park…",
     "filterFamily": "Filter by Family",
     "contribute": "Contribute Record",
@@ -386,7 +371,6 @@
     "systemSettings": "System Settings",
     "appearance": "Interface Theme",
     "languageTaxonomy": "Language & Primary Taxonomy",
-    "micHardware": "Microphone & Field Gain",
     "activeSession": "Active Session",
     "logout": "Log Out Securely",
     "logoutConfirm": "Do you want to end the active session? Offline records will remain safe on your device.",
@@ -424,18 +408,13 @@
   },
   "workers": {
     "offlineBannerTitle": "Offline Field Mode Active",
-    "offlineBannerBody": "Recordings are stored locally and sync when connectivity is restored.",
     "syncPending": "recordings queued",
     "forceSync": "Force Sync",
     "offlineTitle": "You are offline.",
     "offlineBody": "You can keep recording: your songs stay on this device and will be identified when the signal returns."
   },
   "footer": {
-    "rights": "Open Bioacoustics & Conservation Platform",
-    "privacy": "Ecological Data Privacy",
-    "protocol": "Recording Protocol",
-    "api": "API for Researchers",
-    "contact": "Scientific Contact"
+    "rights": "Open Bioacoustics & Conservation Platform"
   },
   "routeTitle": {
     "login": "Log In",
