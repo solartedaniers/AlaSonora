@@ -44,6 +44,9 @@ export class DashboardComponent implements OnInit {
   private readonly detectionsService = inject(DetectionsService);
   private readonly i18n = inject(I18nService);
 
+  /** Abre Grabar directo en la pestaña de subir archivo. */
+  readonly uploadTabQuery = { tab: 'upload' };
+
   readonly stats = signal<UserStats | null>(null);
   readonly latest = signal<Detection | null>(null);
   readonly recent = signal<Detection[]>([]);

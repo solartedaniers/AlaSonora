@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal, ChangeDetectionStrategy, PLATFORM_ID } from '@angular/core';
 import { DecimalPipe, isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { SpectrogramViewComponent } from '../../shared/components/spectrogram-view/spectrogram-view.component';
 import { FrequencyAxisComponent } from '../../shared/components/frequency-axis/frequency-axis.component';
@@ -19,12 +19,12 @@ import { GeoLocation } from '../../core/models';
 type RecordingTab = 'live' | 'upload';
 type SonogramView = 'flat' | 'waterfall';
 
-// Texto exacto que DetectionClassificationService.runClassification lanza
-// cuando BirdNET no encuentra ninguna especie con confianza suficiente (422
-// legítimo, nada que ver con la red). No hay un código de error dedicado en
-// la API todavía, así que se distingue por este texto — si el backend lo
-// cambia, hay que actualizarlo aquí también.
-const NO_SPECIES_IDENTIFIED_DETAIL = 'No bird species were identified in this recording';
+// 422 legítimo cuando BirdNET no encuentra especie: identifico por el código estable
+// (ApiErrorCode en el backend) y acepto el texto antiguo mientras haya backends sin el código.
+const NO_SPECIES_IDENTIFIED_CODE = 'NO_SPECIES_IDENTIFIED';
+const NO_SPECIES_IDENTIFIED_LEGACY_DETAIL = 'No bird species were identified in this recording';
+// ?tab=upload abre directo la pestaña de subir archivo (enlace del Dashboard).
+const TAB_QUERY_PARAM = 'tab';
 
 // Visualizador en vivo: columnas visibles y rango de nivel que mueve el anillo del botón.
 const LIVE_COLUMNS = 120;
@@ -58,7 +58,9 @@ export class RecordingComponent {
   private readonly pendingSync = inject(PendingRecordingsSyncService);
   private readonly router = inject(Router);
 
-  readonly activeTab = signal<RecordingTab>('live');
+  readonly activeTab = signal<RecordingTab>(
+    inject(ActivatedRoute).snapshot.queryParamMap.get(TAB_QUERY_PARAM) === 'upload' ? 'upload' : 'live'
+  );
   readonly tabs: { id: RecordingTab; icon: string; labelKey: string }[] = [
     { id: 'live', icon: 'mic', labelKey: 'recording.tabLive' },
     { id: 'upload', icon: 'upload_file', labelKey: 'recording.tabUpload' },
@@ -77,19 +79,19 @@ export class RecordingComponent {
     { id: 'waterfall', labelKey: 'recording.viewWaterfall' },
   ];
 
-  /** Top of the live spectrogram: the worker's FFT spans 0 Hz up to half the device sample rate. */
+  /** Tope del espectrograma en vivo: la FFT del worker va de 0 Hz a la mitad de la frecuencia de muestreo. */
   private readonly nyquistKhz = isPlatformBrowser(inject(PLATFORM_ID)) ? RecordingComponent.deviceNyquistKhz() : null;
   readonly plateMaxKhz = this.nyquistKhz ? Math.min(PLATE_MAX_KHZ, this.nyquistKhz) : null;
-  /** Share of the FFT bins drawn so the plate spans 0…plateMaxKhz. */
+  /** Fracción de bins de la FFT dibujada para que la placa cubra 0…plateMaxKhz. */
   readonly visibleFraction = this.nyquistKhz && this.plateMaxKhz ? this.plateMaxKhz / this.nyquistKhz : 1;
 
-  /** Live readings straight from the worker's last frame (null while idle). */
+  /** Lecturas en vivo tomadas del último frame del worker (null en reposo). */
   readonly peakKhz = computed(() => {
     const frame = this.capture.isRecording() ? this.capture.latestFrame() : null;
     return frame ? frame.peakFrequencyHz / HZ_PER_KHZ : null;
   });
   readonly levelDb = computed(() => (this.capture.isRecording() ? (this.capture.latestFrame()?.rmsDb ?? null) : null));
-  /** 0…1 signal level that grows the ring around the record button. */
+  /** Nivel de señal 0…1 que agranda el anillo del botón de grabar. */
   readonly levelRatio = computed(() => {
     const db = this.levelDb();
     return db === null ? 0 : Math.min(1, Math.max(0, 1 - db / LEVEL_FLOOR_DB));
@@ -143,9 +145,8 @@ export class RecordingComponent {
       return;
     }
 
-    // Reads the session directly rather than the `currentUser` signal, which
-    // only resolves after its initial getSession() promise settles — see
-    // UserService.isAuthenticated for the same rationale.
+    // Leo la sesión directamente y no el signal `currentUser`, que se llena cuando
+    // resuelve getSession() (ver UserService.isAuthenticated).
     const userId = await this.userService.getUserId();
     if (!userId) {
       this.classifyError.set(this.i18n.translate('recording.notSignedIn'));
@@ -182,7 +183,7 @@ export class RecordingComponent {
 
       await this.router.navigate(['/result', DRAFT_DETECTION_ID]);
     } catch (error) {
-      // Signal dropped mid-upload/classify: same as recording offline.
+      // Se cayó la señal al subir o clasificar: igual que grabar sin conexión.
       if (!navigator.onLine) {
         await this.saveForLater(audio, durationSeconds, peakFrequencyHz);
         return;
@@ -217,8 +218,9 @@ export class RecordingComponent {
    */
   private resolveClassifyErrorMessage(error: unknown): string {
     if (error instanceof HttpErrorResponse && error.status === 422) {
-      const detail = (error.error as { message?: string } | null)?.message;
-      if (detail === NO_SPECIES_IDENTIFIED_DETAIL) {
+      const body = error.error as { message?: string; errorCode?: string } | null;
+      const detail = body?.message;
+      if (body?.errorCode === NO_SPECIES_IDENTIFIED_CODE || detail === NO_SPECIES_IDENTIFIED_LEGACY_DETAIL) {
         return this.i18n.translate('recording.noSpeciesIdentified');
       }
       // Cualquier otro 422 (audio rechazado por AudioQualityAnalyzer) ya
@@ -237,7 +239,7 @@ export class RecordingComponent {
     return nyquistKhz;
   }
 
-  /** Only decoded for uploaded files: live recordings already track their own elapsed time. */
+  /** Solo decodifico archivos subidos: la grabación en vivo ya lleva su propio tiempo. */
   private async audioDurationSeconds(file: File): Promise<number> {
     const audioContext = new AudioContext();
     try {
@@ -248,7 +250,7 @@ export class RecordingComponent {
     }
   }
 
-  /** Resolves to `undefined` (never the field fallback) when no real GPS fix is available — see the call site for why. */
+  /** Devuelve `undefined` (nunca la ubicación de respaldo) si no hay GPS real; el porqué está donde se llama. */
   private currentLocation(): Promise<GeoLocation | undefined> {
     return new Promise((resolve) => {
       if (!navigator.geolocation) {

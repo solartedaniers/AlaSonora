@@ -44,7 +44,7 @@ export interface RecordingEncodedResponse {
   wavBuffer: ArrayBuffer;
 }
 
-/** Spectrogram of a whole recording (result screen), independent of any live capture session. */
+/** Espectrograma de una grabación completa (pantalla de resultado), independiente de la captura en vivo. */
 export interface RecordingSpectrogramRequest {
   type: 'compute-recording-spectrogram';
   samples: Float32Array;
@@ -55,7 +55,7 @@ export interface RecordingSpectrogramRequest {
 
 export interface RecordingSpectrogramResponse {
   type: 'recording-spectrogram';
-  /** One magnitude spectrum per time column, oldest first. */
+  /** Un espectro de magnitud por columna de tiempo, el más antiguo primero. */
   columns: Float32Array[];
 }
 

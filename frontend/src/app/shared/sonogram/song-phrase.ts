@@ -1,14 +1,14 @@
-/** One sonogram note: a pitch sweep from f0 to f1 (kHz) between x0 and x1 (phrase units). */
+/** Una nota del sonograma: un barrido de f0 a f1 (kHz) entre x0 y x1 (unidades de la frase). */
 export interface SongNote {
   x0: number;
   x1: number;
   f0: number;
   f1: number;
-  /** kHz offset of the sweep's control point (curvature). */
+  /** Desfase en kHz del punto de control del barrido (curvatura). */
   bend: number;
-  /** Stroke width ≈ loudness. */
+  /** Grosor del trazo ≈ volumen. */
   width: number;
-  /** Loudest notes get a sulfur energy core. */
+  /** Las notas más fuertes llevan un núcleo de energía azufre. */
   peak?: boolean;
 }
 
@@ -37,7 +37,7 @@ export const SONG_PHRASE: readonly SongNote[] = [
   ...TRILL_NOTES,
 ];
 
-/** Control-point frequency of a note's quadratic sweep, scaled to a harmonic. */
+/** Frecuencia del punto de control del barrido cuadrático de una nota, escalada a un armónico. */
 export function controlKhz(note: SongNote, harmonic = 1): number {
   return ((note.f0 + note.f1) / 2 + note.bend) * harmonic;
 }

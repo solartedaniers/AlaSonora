@@ -5,8 +5,8 @@ import { ConnectivityService } from '../../../core/services/connectivity.service
 import { TranslatePipe } from '../../pipes/translate.pipe';
 
 /**
- * Connection strip under the header: offline notice and/or recordings waiting
- * to sync. Lives in the header so every screen shows it.
+ * Franja de conexión bajo la cabecera: aviso sin conexión y/o grabaciones por
+ * sincronizar. Vive en la cabecera para que toda pantalla la muestre.
  */
 @Component({
   selector: 'app-offline-banner',

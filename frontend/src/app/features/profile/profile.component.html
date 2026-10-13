@@ -57,10 +57,14 @@
             <span class="material-symbols-outlined" aria-hidden="true">{{ editing() ? 'close' : 'edit' }}</span>
             {{ (editing() ? 'common.cancel' : 'profile.editProfile') | translate }}
           </button>
-          <button type="button" class="btn btn--quiet">
-            <span class="material-symbols-outlined" aria-hidden="true">badge</span>
-            {{ 'profile.credential' | translate }}
-          </button>
+          <!-- La credencial aún no existe: deshabilitada y con su etiqueta. -->
+          <div class="inline-flex flex-wrap items-center gap-3">
+            <button type="button" class="btn btn--quiet" disabled aria-disabled="true" aria-describedby="profile-credential-soon">
+              <span class="material-symbols-outlined" aria-hidden="true">badge</span>
+              {{ 'profile.credential' | translate }}
+            </button>
+            <span id="profile-credential-soon" class="soon-tag">{{ 'common.comingSoon' | translate }}</span>
+          </div>
         </div>
       </div>
     </section>
@@ -158,28 +162,6 @@
               {{ ('common.languages.' + lang) | translate }}
             </button>
           }
-        </div>
-      </div>
-
-      <div class="profile-setting">
-        <div>
-          <h3 class="text-xl font-extrabold">{{ 'profile.micHardware' | translate }}</h3>
-          <p class="mt-1 text-sm text-on-surface-variant">{{ 'recording.gainHelp' | translate }}</p>
-        </div>
-        <div class="flex flex-col gap-2 w-full sm:w-72">
-          <div class="flex items-baseline justify-between">
-            <label for="profile-gain" class="field-label">{{ 'recording.gain' | translate }}</label>
-            <span class="font-data font-semibold text-primary">+{{ gainDb() }} {{ 'units.decibels' | translate }}</span>
-          </div>
-          <input
-            id="profile-gain"
-            type="range"
-            min="0"
-            max="36"
-            class="w-full min-h-touch accent-primary"
-            [value]="gainDb()"
-            (input)="gainDb.set($any($event.target).valueAsNumber)"
-          />
         </div>
       </div>
 

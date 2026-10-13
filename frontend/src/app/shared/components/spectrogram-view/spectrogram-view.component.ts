@@ -48,14 +48,14 @@ import { LIVE_INTENSITY_GAIN } from './spectrogram-scale';
 })
 export class SpectrogramViewComponent implements AfterViewInit, OnDestroy {
   readonly getFrame = input.required<() => SpectrogramFrame | null>();
-  /** Visible columns: fewer = wider, more legible bars. */
+  /** Columnas visibles: menos = barras más anchas y legibles. */
   readonly columns = input(48);
-  /** Where new columns appear until the view fills: centered, or at the right edge like a scrolling sonogram. */
+  /** Dónde aparecen las columnas nuevas hasta llenar la vista: al centro, o al borde derecho como un sonograma que avanza. */
   readonly growFrom = input<'center' | 'end'>('center');
   readonly ariaLabelKey = input('common.spectrogramLabel');
-  /** Share of the spectrum drawn, from 0 Hz up (1 = everything the FFT computed). Display only. */
+  /** Fracción del espectro dibujada desde 0 Hz (1 = todo lo que calculó la FFT). Solo visual. */
   readonly visibleFraction = input(1);
-  /** Columns already on screen when the view starts (e.g. a demo that opens full). */
+  /** Columnas ya en pantalla al iniciar la vista (p. ej. una demo que abre llena). */
   readonly initialColumns = input<Float32Array[]>([]);
 
   @ViewChild('canvas') private canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -63,6 +63,7 @@ export class SpectrogramViewComponent implements AfterViewInit, OnDestroy {
   private painter?: SpectrogramPainter;
   private rafId?: number;
   private history: Float32Array[] = [];
+  private lastFrame: SpectrogramFrame | null = null;
   // En SSR/prerender no hay canvas real: no se pinta nada.
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
@@ -90,7 +91,12 @@ export class SpectrogramViewComponent implements AfterViewInit, OnDestroy {
 
   private loop = (): void => {
     const frame = this.getFrame()();
-    if (frame) this.pushAndDraw(frame);
+    // Una columna por frame nuevo del worker: el signal devuelve el mismo frame hasta que llega otro,
+    // y sin esta comparación la velocidad dependería de la pantalla (60 o 120 Hz) y no del audio.
+    if (frame && frame !== this.lastFrame) {
+      this.lastFrame = frame;
+      this.pushAndDraw(frame);
+    }
     this.rafId = requestAnimationFrame(this.loop);
   };
 

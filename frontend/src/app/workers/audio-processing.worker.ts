@@ -115,7 +115,7 @@ function computeMagnitudeSpectrum(samples: Float32Array, fftSize: number): Float
   return magnitudes;
 }
 
-/** Evenly spaced FFT windows across the whole recording, one per output column. */
+/** Ventanas FFT repartidas por toda la grabación, una por columna de salida. */
 function computeRecordingSpectrogram(samples: Float32Array, fftSize: number, columnCount: number): Float32Array[] {
   const lastStart = Math.max(0, samples.length - fftSize);
   const columns = Math.max(1, Math.min(columnCount, Math.floor(samples.length / fftSize) || 1));

@@ -35,8 +35,6 @@ export class ProfileComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
 
-  readonly gainDb = signal(18);
-
   readonly editing = signal(false);
   readonly saving = signal(false);
   readonly uploadingAvatar = signal(false);
@@ -89,11 +87,9 @@ export class ProfileComponent implements OnInit {
     this.avatarError.set(null);
     this.uploadingAvatar.set(true);
     try {
-      // Reads the session directly rather than the `currentUser` signal, which
-      // only resolves after its initial getSession() promise settles — see
-      // UserService.isAuthenticated for the same rationale. Reading
-      // `currentUser()?.id` here silently no-opped the whole upload whenever
-      // this page was opened before that signal had resolved.
+      // Leo la sesión directamente y no el signal `currentUser`, que se llena cuando
+      // resuelve getSession() (ver UserService.isAuthenticated). Con `currentUser()?.id`
+      // la subida no hacía nada si la página abría antes de que el signal resolviera.
       const userId = await this.user.getUserId();
       if (!userId) {
         this.avatarError.set(this.i18n.translate('profile.avatarUploadError'));

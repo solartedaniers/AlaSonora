@@ -27,7 +27,7 @@ const DEFAULT_PERIOD_MS = 20;
 const MS_PER_SECOND = 1000;
 
 /**
- * 3D waterfall view of spectrogram frames.
+ * Vista 3D en cascada de los frames del espectrograma.
  *
  * Igual que SpectrogramViewComponent: el bucle de requestAnimationFrame solo
  * LEE el último frame disponible y pinta; nunca pinta dentro de un mensaje,
@@ -43,14 +43,14 @@ const MS_PER_SECOND = 1000;
 })
 export class SpectrogramWaterfallComponent implements AfterViewInit, OnDestroy {
   readonly getFrame = input.required<() => SpectrogramFrame | null>();
-  /** Rows already on screen when the view starts, oldest first. */
+  /** Filas ya en pantalla al iniciar la vista, la más antigua primero. */
   readonly initialColumns = input<Float32Array[]>([]);
   readonly rows = input(56);
   readonly maxKhz = input.required<number>();
   readonly stepKhz = input(2);
-  /** Seconds shown front to back; without it, derived from the measured frame rate (live audio). */
+  /** Segundos mostrados de frente a fondo; sin él, lo derivo de la tasa de frames medida (audio en vivo). */
   readonly windowSeconds = input<number | null>(null);
-  /** Share of the spectrum drawn, from 0 Hz up (display-only crop). */
+  /** Fracción del espectro dibujada desde 0 Hz (recorte solo visual). */
   readonly visibleFraction = input(1);
   readonly stepSeconds = input(1);
   readonly ariaLabelKey = input('common.spectrogramLabel');

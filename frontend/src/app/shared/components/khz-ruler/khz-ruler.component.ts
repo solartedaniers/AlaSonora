@@ -1,14 +1,14 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 
-// Range of the scale: birdsong mostly lives between 1 and 10 kHz.
+// Rango de la escala: casi todo el canto de aves vive entre 1 y 10 kHz.
 const MAX_KHZ = 12;
 const LABEL_STEP_KHZ = 2;
 
 /**
- * Signature element: the frequency axis of a sonogram pinned to the left edge
- * of the window (desktop only). High pitches on top, low at the bottom; a
- * sulfur "reading line" follows the page scroll. Purely decorative.
+ * Elemento firma: el eje de frecuencias de un sonograma fijo al borde izquierdo
+ * (solo escritorio). Agudos arriba, graves abajo; una "línea de lectura" azufre
+ * sigue el scroll. Solo decorativo.
  */
 @Component({
   selector: 'app-khz-ruler',

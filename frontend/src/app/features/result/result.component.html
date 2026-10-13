@@ -212,10 +212,14 @@
             {{ 'result.viewHistory' | translate }}
           </a>
         </div>
-        <a href="#" class="self-start inline-flex items-center gap-2 min-h-touch text-sm text-on-surface-variant hover:text-error">
-          <span class="material-symbols-outlined text-lg" aria-hidden="true">flag</span>
-          {{ 'result.reportIncorrect' | translate }}
-        </a>
+        <!-- Aún sin función: deshabilitado y con su etiqueta, para que no parezca que reporta algo. -->
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <button type="button" class="inline-flex items-center gap-2 min-h-touch text-sm text-start text-on-surface-variant cursor-not-allowed" disabled aria-disabled="true" aria-describedby="result-report-soon">
+            <span class="material-symbols-outlined text-lg" aria-hidden="true">flag</span>
+            {{ 'result.reportIncorrect' | translate }}
+          </button>
+          <span id="result-report-soon" class="soon-tag">{{ 'common.comingSoon' | translate }}</span>
+        </div>
       </section>
     }
   </main>

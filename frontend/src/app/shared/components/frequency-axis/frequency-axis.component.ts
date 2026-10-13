@@ -3,7 +3,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 
 const DEFAULT_STEP_KHZ = 4;
 
-/** Vertical kHz axis for a spectrogram that spans 0…maxKhz (bottom to top). */
+/** Eje vertical en kHz para un espectrograma de 0…maxKhz (de abajo hacia arriba). */
 @Component({
   selector: 'app-frequency-axis',
   standalone: true,

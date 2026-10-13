@@ -1,9 +1,8 @@
 import { HeatRamp } from './heat-ramp';
 
 /**
- * Paints spectrogram columns on a canvas as a flat heat map, colored by the
- * theme's spectrogram ramp (HeatRamp). Shared by the live recorder view and
- * the saved-recording view.
+ * Pinta columnas de espectrograma en un canvas como mapa de calor plano, con la
+ * rampa del tema (HeatRamp). Lo comparten la vista en vivo y la de grabación guardada.
  */
 export class SpectrogramPainter {
   private readonly ctx: CanvasRenderingContext2D | null;
@@ -17,10 +16,10 @@ export class SpectrogramPainter {
   }
 
   /**
-   * @param columns magnitude spectra, low frequencies first (drawn at the bottom)
-   * @param intensity maps a magnitude to 0..1
-   * @param slotCount total column slots across the canvas width
-   * @param firstSlot slot where `columns[0]` is drawn
+   * @param columns espectros de magnitud, graves primero (se dibujan abajo)
+   * @param intensity convierte una magnitud a 0..1
+   * @param slotCount total de columnas a lo ancho del canvas
+   * @param firstSlot columna donde se dibuja `columns[0]`
    */
   draw(columns: Float32Array[], intensity: (magnitude: number) => number, slotCount = columns.length, firstSlot = 0): void {
     const ctx = this.ctx;
@@ -41,8 +40,8 @@ export class SpectrogramPainter {
   }
 
   /**
-   * Display-only crop: keeps the lowest `fraction` of each spectrum (e.g. 0–12 kHz of a
-   * 0–24 kHz FFT). Returns views, never copies, so the analysed data is untouched.
+   * Recorte solo visual: conservo la `fraction` más grave de cada espectro (p. ej. 0–12 kHz
+   * de una FFT de 0–24 kHz). Devuelvo vistas, no copias, así el dato analizado no cambia.
    */
   static cropToFraction(columns: Float32Array[], fraction: number): Float32Array[] {
     if (fraction >= 1) return columns;

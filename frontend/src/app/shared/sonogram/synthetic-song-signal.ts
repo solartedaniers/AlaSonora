@@ -15,9 +15,9 @@ const NOISE_FLOOR = 0.002;
 const DISPLAY_RMS_DB = -20;
 
 /**
- * Turns the stylized song phrase into spectrogram columns, so demos can feed
- * the real SpectrogramViewComponent without a microphone. Purely illustrative:
- * the UI must label it as an example.
+ * Convierto la frase de canto en columnas de espectrograma para alimentar el
+ * SpectrogramViewComponent real sin micrófono. Solo ilustrativo: la interfaz
+ * debe marcarlo como ejemplo.
  */
 export class SyntheticSongSignal {
   static readonly COLUMNS_PER_SECOND = COLUMNS_PER_SECOND;
@@ -28,19 +28,19 @@ export class SyntheticSongSignal {
   /** @param columnsPerSecond cadencia de columnas (menos columnas = ventana de tiempo más larga). */
   constructor(private readonly columnsPerSecond = COLUMNS_PER_SECOND) {}
 
-  /** Next column when one is due (fixed rate, independent of the screen refresh). */
+  /** Siguiente columna cuando toca (ritmo fijo, independiente del refresco de pantalla). */
   nextFrame(now = performance.now()): SpectrogramFrame | null {
     if (now - this.lastColumnAt < 1000 / this.columnsPerSecond) return null;
     this.lastColumnAt = now;
     return this.frameAt(this.columnIndex++ / this.columnsPerSecond);
   }
 
-  /** The first `count` columns at once, so a view can start already full; streaming continues after them. */
+  /** Las primeras `count` columnas de una vez, para que la vista arranque llena; el flujo sigue después. */
   backfill(count: number): Float32Array[] {
     return Array.from({ length: count }, () => this.frameAt(this.columnIndex++ / this.columnsPerSecond).magnitudes);
   }
 
-  /** Column at `seconds` into the looping phrase (phrase + silence). */
+  /** Columna a `seconds` dentro de la frase en bucle (frase + silencio). */
   frameAt(seconds: number): SpectrogramFrame {
     const t = seconds % (PHRASE_SECONDS + SILENCE_SECONDS);
     const x = (t / PHRASE_SECONDS) * PHRASE_WIDTH;
@@ -61,7 +61,7 @@ export class SyntheticSongSignal {
     return { magnitudes, peakFrequencyHz: Math.round(peakKhz * 1000), rmsDb: DISPLAY_RMS_DB };
   }
 
-  /** Same quadratic sweep the SVG sonogram draws. */
+  /** El mismo barrido cuadrático que dibuja el sonograma SVG. */
   private static sweepKhz(note: SongNote, u: number, harmonic: number): number {
     const a = note.f0 * harmonic;
     const b = controlKhz(note, harmonic);

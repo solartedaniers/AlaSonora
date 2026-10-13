@@ -6,7 +6,9 @@
     <label class="map-toolbar__search">
       <span class="sr-only">{{ 'common.search' | translate }}</span>
       <span class="material-symbols-outlined absolute inset-y-0 start-4 my-auto text-on-surface-variant pointer-events-none" aria-hidden="true">search</span>
-      <input type="search" class="field-input ps-12" [placeholder]="'map.searchPlaceholder' | translate" />
+      <!-- El buscador aún no filtra: deshabilitado y con su etiqueta. -->
+      <input type="search" class="field-input ps-12 pe-36" [placeholder]="'map.searchPlaceholder' | translate" disabled aria-disabled="true" aria-describedby="map-search-soon" />
+      <span id="map-search-soon" class="soon-tag map-toolbar__soon">{{ 'common.comingSoon' | translate }}</span>
     </label>
     <!-- En el celular los filtros se pliegan para que el mapa aparezca enseguida. -->
     <button
@@ -20,18 +22,22 @@
       {{ 'common.filter' | translate }}
     </button>
     <div id="map-filters" class="md:flex flex-wrap items-center gap-x-5 gap-y-2" [class.hidden]="!filtersOpen()" [class.flex]="filtersOpen()">
-      <button type="button" class="btn btn--quiet min-h-touch px-4">
-        <span class="material-symbols-outlined text-xl" aria-hidden="true">filter_alt</span>
-        {{ 'map.filterFamily' | translate }}
-      </button>
-      <label class="inline-flex items-center gap-2 min-h-touch cursor-pointer select-none">
-        <input type="checkbox" class="w-5 h-5 accent-primary" [checked]="threatenedOnly()" (change)="threatenedOnly.set($any($event.target).checked)" />
-        {{ 'map.threatenedOnly' | translate }}
-      </label>
-      <label class="inline-flex items-center gap-2 min-h-touch cursor-pointer select-none">
-        <input type="checkbox" class="w-5 h-5 accent-primary" [checked]="heatmapLayer()" (change)="heatmapLayer.set($any($event.target).checked)" />
-        {{ 'map.heatmapLayer' | translate }}
-      </label>
+      <!-- Filtros sin lógica todavía: un solo grupo deshabilitado bajo la etiqueta Próximamente. -->
+      <div role="group" class="flex flex-wrap items-center gap-x-5 gap-y-2" aria-describedby="map-filters-soon">
+        <span id="map-filters-soon" class="soon-tag">{{ 'common.comingSoon' | translate }}</span>
+        <button type="button" class="btn btn--quiet min-h-touch px-4" disabled aria-disabled="true">
+          <span class="material-symbols-outlined text-xl" aria-hidden="true">filter_alt</span>
+          {{ 'map.filterFamily' | translate }}
+        </button>
+        <label class="inline-flex items-center gap-2 min-h-touch cursor-not-allowed select-none text-on-surface-variant">
+          <input type="checkbox" class="w-5 h-5 accent-primary" disabled aria-disabled="true" />
+          {{ 'map.threatenedOnly' | translate }}
+        </label>
+        <label class="inline-flex items-center gap-2 min-h-touch cursor-not-allowed select-none text-on-surface-variant">
+          <input type="checkbox" class="w-5 h-5 accent-primary" disabled aria-disabled="true" />
+          {{ 'map.heatmapLayer' | translate }}
+        </label>
+      </div>
       @if (liveSync.activeTabCount() > 1) {
         <span class="inline-flex items-center gap-2 font-data text-sm text-primary" role="status">
           <span class="w-2 h-2 rounded-full bg-record" aria-hidden="true"></span>

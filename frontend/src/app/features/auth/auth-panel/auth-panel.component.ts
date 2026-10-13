@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { SongSonogramComponent } from '../../../shared/components/song-sonogram/song-sonogram.component';
 
-/** Ink side panel shared by the access screens (desktop only). */
+/** Panel lateral en tinta común a las pantallas de acceso (solo escritorio). */
 @Component({
   selector: 'app-auth-panel',
   standalone: true,

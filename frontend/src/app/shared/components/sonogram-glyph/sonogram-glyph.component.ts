@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
-/** Three-note sonogram glyph (the loudest note in sulfur). Sized by its host; ink is currentColor. */
+/** Glifo de sonograma de tres notas (la más fuerte en azufre). Su tamaño lo da el host; la tinta es currentColor. */
 @Component({
   selector: 'app-sonogram-glyph',
   standalone: true,

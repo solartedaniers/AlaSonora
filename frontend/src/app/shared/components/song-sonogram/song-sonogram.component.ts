@@ -30,8 +30,8 @@ const HARMONICS = SONG_PHRASE.filter((note) => Math.max(note.f0, note.f1) * 2 <=
 const PEAKS = SONG_PHRASE.filter((note) => note.peak).map((note) => stroke(note, 1, note.width * PEAK_WIDTH_RATIO));
 
 /**
- * Static ink sonogram of the stylized song phrase. Ink is `currentColor` so the
- * context decides it; intensities come from the `--sonogram-*` custom properties.
+ * Sonograma estático en tinta de la frase de canto. La tinta es `currentColor`, así
+ * la decide el contexto; las intensidades salen de las propiedades `--sonogram-*`.
  */
 @Component({
   selector: 'app-song-sonogram',
@@ -101,7 +101,7 @@ const PEAKS = SONG_PHRASE.filter((note) => note.peak).map((note) => stroke(note,
   `,
 })
 export class SongSonogramComponent {
-  /** Highlights the 2–8 kHz songbird band behind the notes. */
+  /** Resalto detrás de las notas la banda de 2–8 kHz de las aves canoras. */
   readonly band = input(true);
 
   readonly bandGradientId = `song-sonogram-band-${nextInstanceId++}`;

@@ -19,16 +19,16 @@ interface NavItem {
 }
 
 /**
- * App header, shared by every screen. Lives in the `.chrome` token scope (the
- * ink axis of the sonogram); signed-out visitors get a login call to action.
+ * Cabecera de la app, común a todas las pantallas. Vive en el ámbito de tokens
+ * `.chrome` (el eje en tinta del sonograma); sin sesión muestra el botón de entrar.
  */
 @Component({
   selector: 'app-nav-header',
   standalone: true,
   imports: [RouterLink, RouterLinkActive, BrandMarkComponent, OfflineBannerComponent, ThemeToggleComponent, LangToggleComponent, TranslatePipe, SpeciesNamePipe],
   changeDetection: ChangeDetectionStrategy.Eager,
-  // The host is the sticky stacking context: it must sit above the page
-  // sections (relative z-10 over the backdrop) or they paint over the menus.
+  // El host es el contexto sticky: debe quedar sobre las secciones de la página
+  // (relative z-10 sobre el fondo) o estas pintan encima de los menús.
   host: {
     class: 'chrome sticky top-0 z-40 block w-full border-b',
     '(document:keydown.escape)': 'closeMenus()',
@@ -80,7 +80,7 @@ export class NavHeaderComponent {
   private readonly allNavItems: NavItem[] = [
     { path: '/dashboard', labelKey: 'nav.dashboard', protected: true, adminOnly: false },
     { path: '/record', labelKey: 'nav.record', protected: true, adminOnly: false },
-    // Hidden intentionally — see environment.photoIdentificationEnabled.
+    // Oculto a propósito: ver environment.photoIdentificationEnabled.
     ...(environment.photoIdentificationEnabled ? [{ path: '/photo-id', labelKey: 'nav.photoId', protected: true, adminOnly: false }] : []),
     { path: '/history', labelKey: 'nav.history', protected: true, adminOnly: false },
     { path: '/map', labelKey: 'nav.map', protected: false, adminOnly: false },

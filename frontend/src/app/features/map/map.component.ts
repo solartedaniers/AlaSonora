@@ -51,8 +51,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('mapContainer', { static: true }) private readonly mapContainerRef!: ElementRef<HTMLDivElement>;
 
   readonly feed = signal<Detection[]>([]);
-  readonly threatenedOnly = signal(false);
-  readonly heatmapLayer = signal(true);
   readonly selected = signal<Detection | null>(null);
   /** Solo estado de vista: un fallo de red no debe leerse como "no hay avistamientos". */
   readonly loadState = signal<MapLoadState>('loading');

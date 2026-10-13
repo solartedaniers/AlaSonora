@@ -32,10 +32,9 @@ const MIN_RADIUS_FACTOR = 0.75;
 const EMPTY_FRAME_COUNT = 5;
 
 /**
- * 3D species ring ("Especies destacadas"). The spin itself is the original CSS
- * animation (rotateY + translateZ + perspective); this class only reads and
- * seeks that same animation through the Web Animations API to know which
- * species faces the viewer and to move to a chosen one.
+ * Anillo 3D de especies ("Especies destacadas"). El giro es la animación CSS original
+ * (rotateY + translateZ + perspective); esta clase solo la lee y la desplaza con la
+ * Web Animations API para saber qué especie queda al frente y llevar a la elegida.
  */
 @Component({
   selector: 'app-infinite-spiral',
@@ -59,11 +58,11 @@ export class InfiniteSpiralComponent implements AfterViewInit, OnDestroy {
   readonly announcement = signal('');
 
   readonly isEmpty = computed(() => this.items().length === 0);
-  /** Empty state keeps the ring spinning with blank frames: never invented species. */
+  /** Sin datos el anillo gira con marcos vacíos: nunca invento especies. */
   readonly frameCount = computed(() => (this.isEmpty() ? EMPTY_FRAME_COUNT : this.items().length));
   readonly emptyFrames = Array.from({ length: EMPTY_FRAME_COUNT }, (_, i) => i);
   readonly front = computed(() => this.items()[this.frontIndex()] ?? null);
-  /** Radius so frames never overlap: r = w / (2·tan(π/n)), plus a gap. */
+  /** Radio para que los marcos no se monten: r = w / (2·tan(π/n)), más un espacio. */
   readonly radiusFactor = computed(() => {
     const n = this.frameCount();
     return n < 3 ? MIN_RADIUS_FACTOR : 1 / (2 * Math.tan(Math.PI / n)) + RING_GAP_FACTOR;
@@ -120,7 +119,7 @@ export class InfiniteSpiralComponent implements AfterViewInit, OnDestroy {
     this.announcement.set(`${position}: ${item.commonName}, ${item.scientificName}`);
   }
 
-  /** The ring's running CSS animation; absent with reduced motion or before render. */
+  /** La animación CSS del anillo; no existe con movimiento reducido ni antes de renderizar. */
   private spinAnimation(): Animation | null {
     if (this.motion.reduced()) return null;
     return this.track()?.nativeElement.getAnimations()[0] ?? null;
@@ -142,7 +141,7 @@ export class InfiniteSpiralComponent implements AfterViewInit, OnDestroy {
     return Math.round(angle / (FULL_TURN_DEG / n)) % n;
   }
 
-  /** Smoothly moves the same CSS animation to the time where `index` faces the viewer. */
+  /** Llevo la misma animación CSS, con suavidad, al instante en que `index` queda al frente. */
   private seek(animation: Animation, index: number): void {
     const duration = this.durationOf(animation);
     const step = FULL_TURN_DEG / this.items().length;

@@ -3,7 +3,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 
 const BAR_COUNT = 7;
 
-/** Loading indicator in the app's language: a small sonogram "listening" while data arrives. */
+/** Indicador de carga en el idioma de la app: un sonograma pequeño "escuchando" mientras llegan los datos. */
 @Component({
   selector: 'app-loading-state',
   standalone: true,

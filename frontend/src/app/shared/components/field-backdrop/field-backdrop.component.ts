@@ -2,8 +2,8 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SongSonogramComponent } from '../song-sonogram/song-sonogram.component';
 
 /**
- * Page background: the ink sonogram of the stylized song phrase, anchored at the
- * top-right behind the content. Replaces the old blurred blobs. Decorative only.
+ * Fondo de página: el sonograma en tinta de la frase de canto, anclado arriba a la
+ * derecha detrás del contenido. Reemplaza las manchas difusas. Solo decorativo.
  */
 @Component({
   selector: 'app-field-backdrop',

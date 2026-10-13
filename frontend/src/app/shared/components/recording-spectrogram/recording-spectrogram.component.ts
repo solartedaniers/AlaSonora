@@ -6,11 +6,11 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 
 type SpectrogramStatus = 'loading' | 'ready' | 'unavailable';
 
-// Magnitudes this far below the recording's own peak render as background.
+// Las magnitudes así de lejos del pico de la grabación se pintan como fondo.
 const DYNAMIC_RANGE_DB = 60;
 const HZ_PER_KHZ = 1000;
 
-/** Heat-map spectrogram of a stored recording (result screen). */
+/** Espectrograma de calor de una grabación guardada (pantalla de resultado). */
 @Component({
   selector: 'app-recording-spectrogram',
   standalone: true,
@@ -28,7 +28,7 @@ const HZ_PER_KHZ = 1000;
 })
 export class RecordingSpectrogramComponent {
   readonly audioUrl = input<string | undefined>();
-  /** Top of the drawn band in kHz (display crop; the computed spectrum is untouched). */
+  /** Tope de la banda dibujada en kHz (recorte visual; el espectro calculado no cambia). */
   readonly maxKhz = input(MAX_DISPLAY_FREQUENCY_HZ / HZ_PER_KHZ);
 
   private readonly spectrogramService = inject(RecordingSpectrogramService);

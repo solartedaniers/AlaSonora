@@ -11,8 +11,8 @@ const STOPS: readonly { at: number; token: string }[] = [
 const LEVELS = 256;
 
 /**
- * Energy → color ramp read from the active theme tokens. Colors are
- * precomputed into a small lookup table so painters can ask per cell cheaply.
+ * Rampa energía → color leída de los tokens del tema activo. Precalculo los colores
+ * en una tabla pequeña para que los pintores consulten cada celda sin costo.
  */
 export class HeatRamp {
   private readonly table: string[];
@@ -28,13 +28,13 @@ export class HeatRamp {
     this.floor = this.table[0];
   }
 
-  /** CSS color for an intensity in 0…1 (clamped). */
+  /** Color CSS para una intensidad en 0…1 (acotada). */
   colorAt(intensity: number): string {
     const t = Math.max(0, Math.min(1, intensity));
     return this.table[Math.round(t * (LEVELS - 1))];
   }
 
-  /** Same color with transparency, for glows and fills. */
+  /** El mismo color con transparencia, para brillos y rellenos. */
   colorWithAlpha(intensity: number, alpha: number): string {
     const [r, g, b] = this.rgbTable[Math.round(Math.max(0, Math.min(1, intensity)) * (LEVELS - 1))];
     return `rgba(${r},${g},${b},${alpha})`;

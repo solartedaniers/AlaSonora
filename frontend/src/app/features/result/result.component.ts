@@ -42,8 +42,8 @@ export class ResultComponent implements OnInit {
   private readonly detection = signal<Detection | null>(null);
   private readonly draft = signal<DetectionDraft | null>(null);
 
-  // View model shared by both a not-yet-saved draft and an already-saved
-  // detection, since the result card renders the same fields for either.
+  // Modelo de vista común al borrador sin guardar y a la detección guardada:
+  // la tarjeta de resultado muestra los mismos campos en ambos casos.
   readonly view = computed(() => this.detection() ?? this.draft());
   readonly isDraft = computed(() => this.detection() === null && this.draft() !== null);
   /** Solo estado de vista: evita una pantalla en blanco si la detección no existe o falla al cargar. */

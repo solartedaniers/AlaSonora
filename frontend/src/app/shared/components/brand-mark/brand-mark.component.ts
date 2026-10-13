@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { SonogramGlyphComponent } from '../sonogram-glyph/sonogram-glyph.component';
 
-/** App logo: a three-note sonogram glyph (the loudest note in sulfur) plus the wordmark. */
+/** Logo: un glifo de sonograma de tres notas (la más fuerte en azufre) más el nombre. */
 @Component({
   selector: 'app-brand-mark',
   standalone: true,

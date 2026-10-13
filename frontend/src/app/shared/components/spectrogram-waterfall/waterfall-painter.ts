@@ -1,14 +1,14 @@
 import { HeatRamp } from '../spectrogram-view/heat-ramp';
 
 export interface WaterfallAxis {
-  /** Top of the frequency axis (kHz) and label step. */
+  /** Tope del eje de frecuencia (kHz) y paso de las etiquetas. */
   maxKhz: number;
   stepKhz: number;
-  /** Seconds covered from the front row to the back row, and label step. */
+  /** Segundos entre la fila del frente y la del fondo, y paso de las etiquetas. */
   windowSeconds: number;
   stepSeconds: number;
   khzUnit: string;
-  /** Label for a past instant; `{n}` is replaced by the seconds (e.g. "−{n} s"). */
+  /** Etiqueta para un instante pasado; `{n}` se reemplaza por los segundos (p. ej. "−{n} s"). */
   secondsAgo: string;
   nowLabel: string;
 }
@@ -30,10 +30,10 @@ const POINTS_PER_ROW = 72;
 const GLOW_ALPHA = 0.5;
 
 /**
- * Paints a 3D "waterfall" spectrogram on a 2D canvas: each row is one spectrum
- * drawn as a ridge in perspective (frequency → x, time → depth, energy →
- * height and color). Rows are painted back to front so nearer ridges occlude
- * farther ones. Only knows how to draw; timing belongs to its component.
+ * Pinta un espectrograma 3D en "cascada" sobre un canvas 2D: cada fila es un espectro
+ * dibujado como una cresta en perspectiva (frecuencia → x, tiempo → profundidad,
+ * energía → altura y color). Pinto del fondo al frente para que las crestas cercanas
+ * tapen las lejanas. Solo sabe dibujar; el ritmo lo lleva su componente.
  */
 export class WaterfallPainter {
   private readonly ctx: CanvasRenderingContext2D | null;
@@ -56,7 +56,7 @@ export class WaterfallPainter {
     this.resize();
   }
 
-  /** Matches the backing store to the element size and pixel density (crisp lines). */
+  /** Ajusto el búfer al tamaño del elemento y a la densidad de píxeles (líneas nítidas). */
   resize(): void {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     this.width = this.canvas.clientWidth || this.canvas.width;
@@ -67,10 +67,10 @@ export class WaterfallPainter {
   }
 
   /**
-   * @param rows spectra, oldest first (front) → newest last (back, at the horizon)
-   * @param rowCount total row slots between front and back
-   * @param advance 0…1 progress toward the next row, so ridges glide forward smoothly
-   * @param intensity maps a magnitude to 0…1
+   * @param rows espectros, el más antiguo primero (frente) → el más nuevo al final (fondo, en el horizonte)
+   * @param rowCount total de filas entre el frente y el fondo
+   * @param advance avance 0…1 hacia la siguiente fila, para que las crestas se deslicen suave
+   * @param intensity convierte una magnitud a 0…1
    */
   draw(rows: Float32Array[], rowCount: number, advance: number, intensity: (magnitude: number) => number, axis: WaterfallAxis): void {
     const ctx = this.ctx;
@@ -171,7 +171,7 @@ export class WaterfallPainter {
     }
   }
 
-  /** Side room for the axis labels, measured from their real width so nothing gets clipped. */
+  /** Espacio lateral para las etiquetas del eje, medido con su ancho real para no recortar nada. */
   private measurePads(ctx: CanvasRenderingContext2D, axis: WaterfallAxis): void {
     ctx.font = this.font;
     const timeLabel = axis.secondsAgo.replace('{n}', String(axis.windowSeconds));
@@ -181,7 +181,7 @@ export class WaterfallPainter {
     this.rightPad = Math.max(minimum, ctx.measureText(unitLabel).width / 2 + LABEL_GAP);
   }
 
-  /** Screen geometry of a row at `depth` (0 = front, 1 = back). */
+  /** Geometría en pantalla de una fila a profundidad `depth` (0 = frente, 1 = fondo). */
   private project(depth: number): { left: number; right: number; baseline: number; scale: number } {
     const scale = 1 / (1 + depth * DEPTH);
     const backScale = 1 / (1 + DEPTH);
