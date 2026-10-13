@@ -1,9 +1,9 @@
 import { ObserverRole } from './user.model';
 
-/** Access-control role, independent of `role` (the user's scientific/observer profile). */
+/** Rol de acceso, independiente de `role` (el perfil científico del observador). */
 export type SystemRole = 'user' | 'admin';
 
-/** Backend-persisted profile (Postgres `profiles` table), distinct from Supabase Auth's user_metadata. */
+/** Perfil guardado en el backend (tabla `profiles` de Postgres), distinto de user_metadata de Supabase Auth. */
 export interface Profile {
   id: string;
   displayName: string;

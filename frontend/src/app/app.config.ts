@@ -22,7 +22,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withComponentInputBinding()),
     { provide: TitleStrategy, useClass: I18nTitleStrategy },
     provideHttpClient(withXhr(), withInterceptors([authInterceptor])),
-    // sw.js = ngsw-worker.js (app-shell cache) + Background Sync handler.
+    // sw.js = ngsw-worker.js (caché del app shell) + manejador de Background Sync.
     provideServiceWorker('sw.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',

@@ -63,9 +63,8 @@ export const routes: Routes = [
     path: 'photo-id',
     loadComponent: () =>
       import('./features/photo-id/photo-id.component').then((m) => m.PhotoIdComponent),
-    // Hidden intentionally — see environment.photoIdentificationEnabled. While
-    // disabled the route never matches, so a direct visit falls through to the
-    // '**' wildcard and redirects home.
+    // Oculta a propósito (ver environment.photoIdentificationEnabled). Mientras esté
+    // apagada la ruta no coincide y una visita directa cae en '**' y vuelve al inicio.
     canMatch: [() => environment.photoIdentificationEnabled],
     canActivate: [authGuard],
     title: 'routeTitle.photoId',

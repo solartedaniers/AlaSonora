@@ -3,7 +3,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { ProfileService } from '../services/profile.service';
 
-/** Blocks /admin for anyone without an active session and systemRole 'admin'. */
+/** Bloqueo /admin a quien no tenga sesión activa y systemRole 'admin'. */
 export const adminGuard: CanActivateFn = async () => {
   const userService = inject(UserService);
   const profileService = inject(ProfileService);

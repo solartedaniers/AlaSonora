@@ -2,8 +2,8 @@ import { Species } from './species.model';
 
 export type SyncStatus = 'synced' | 'pending-sync';
 
-// Backend's Visibility enum is uppercase; kept as-is here (same convention as
-// Species.iucnStatus) instead of adding a casing-mapping layer for one field.
+// El enum Visibility del backend va en mayúsculas; lo dejo igual (como Species.iucnStatus)
+// en vez de crear una capa de conversión para un solo campo.
 export type Visibility = 'PRIVATE' | 'PUBLIC';
 
 export interface GeoLocation {
@@ -28,7 +28,7 @@ export interface Detection {
   id: string;
   recordedAt: string; // ISO 8601
   audioUrl?: string;
-  /** The observer's own photo for THIS detection, signed on demand like audioUrl — never the species' official reference photo. */
+  /** Foto del propio observador para ESTA detección, firmada al pedirla como audioUrl; nunca la foto oficial de la especie. */
   observerPhotoUrl?: string;
   durationSeconds: number;
   species: Species;
@@ -40,15 +40,15 @@ export interface Detection {
   fieldNotes?: string;
   visibility: Visibility;
   syncStatus: SyncStatus;
-  /** Scientific disclaimer from the classifier (AI output is a probabilistic reference, not ground truth); only set right after classification, not persisted by the backend. */
+  /** Aviso científico del clasificador (la IA da una referencia probabilística, no la verdad); solo existe justo después de clasificar, el backend no lo guarda. */
   disclaimer?: string;
 }
 
-/** Payload for POST /api/detections; mirrors the backend's CreateDetectionRequest. */
+/** Cuerpo de POST /api/detections; refleja CreateDetectionRequest del backend. */
 export interface CreateDetectionRequest {
   speciesId: string;
   recordedAt: string;
-  /** Object key in the private `recordings` bucket, never a signed URL. */
+  /** Ruta del objeto en el bucket privado `recordings`, nunca una URL firmada. */
   audioStoragePath?: string;
   durationSeconds: number;
   confidence: number;

@@ -13,7 +13,7 @@ export interface Species {
   iucnStatus: IucnStatus;
   imageUrl?: string;
   behaviorNotes?: string;
-  /** Reference only, sourced from Xeno-canto for the species overall — never an analysis of one specific recording. */
+  /** Solo referencia, de Xeno-canto para la especie en general; nunca el análisis de una grabación concreta. */
   typicalVocalizations: string[];
 }
 
