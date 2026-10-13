@@ -1,5 +1,7 @@
 package com.alasonora.backend.controller;
 
+import com.alasonora.backend.exception.ApiErrorMessages;
+
 import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
@@ -54,7 +56,7 @@ public class DetectionController {
     @GetMapping
     public List<DetectionDto> getPublicDetections(@RequestParam String visibility) {
         if (!PUBLIC_VISIBILITY_PARAM.equalsIgnoreCase(visibility)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only visibility=public is supported here");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ApiErrorMessages.ONLY_PUBLIC_VISIBILITY);
         }
         return detectionService.getPublicDetections();
     }
@@ -98,10 +100,9 @@ public class DetectionController {
         return detectionService.setObserverPhoto(id, UUID.fromString(jwt.getSubject()), request.observerPhotoStoragePath());
     }
 
-    // Returns a CompletableFuture: Spring MVC releases this Tomcat request
-    // thread immediately and resumes it once the future completes, so the
-    // (potentially multi-second) call to the AI engine never occupies the
-    // container's HTTP thread pool.
+    // Devuelvo un CompletableFuture: Spring MVC libera el hilo de Tomcat y retoma
+    // al completarse, así la llamada al motor de IA (que puede tardar segundos)
+    // nunca ocupa el pool HTTP del contenedor.
     @PostMapping("/classify")
     public CompletableFuture<ResponseEntity<ClassificationResultDto>> classify(
         @AuthenticationPrincipal Jwt jwt,

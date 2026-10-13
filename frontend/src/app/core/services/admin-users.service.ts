@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ObserverRole, Profile, SystemRole } from '../models';
 
-/** Shape returned/expected by the backend for admin user-management endpoints. */
+/** Forma que devuelve y espera el backend en los endpoints de gestión de usuarios. */
 interface BackendProfile {
   id: string;
   displayName: string;

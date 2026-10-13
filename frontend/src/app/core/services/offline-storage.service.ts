@@ -1,9 +1,11 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { GeoLocation } from '../models';
 
 const DB_NAME = 'alasonora-offline';
 const STORE_NAME = 'pending-recordings';
 const DB_VERSION = 1;
+const NO_INDEXED_DB = 'IndexedDB is only available in the browser';
 
 export interface PendingRecording {
   id: string;
@@ -11,7 +13,7 @@ export interface PendingRecording {
   audioBlob: Blob;
   durationSeconds: number;
   peakFrequencyHz: number;
-  /** Only a real GPS fix, never the field fallback — same rule as the online classify call. */
+  /** Solo un GPS real, nunca la ubicación de respaldo: la misma regla que al clasificar en línea. */
   gpsLocation?: GeoLocation;
 }
 
@@ -25,17 +27,18 @@ export interface PendingRecording {
 @Injectable({ providedIn: 'root' })
 export class OfflineStorageService {
   readonly pendingCount = signal(0);
+  // IndexedDB solo existe en el navegador: en SSR/prerender este servicio no la toca.
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private dbPromise: Promise<IDBDatabase> | null = null;
 
   constructor() {
-    // `pendingCount` used to start hardcoded at 0 and only ever refresh from
-    // enqueue()/remove() calls made *after* construction — any recordings
-    // already sitting in IndexedDB from a previous session stayed invisible
-    // to the banner until one of those methods happened to run again.
-    void this.refreshCount();
+    // Cuento al arrancar: antes empezaba en 0 y las grabaciones de una sesión anterior
+    // no aparecían en el aviso hasta el siguiente enqueue()/remove().
+    if (this.isBrowser) void this.refreshCount();
   }
 
   private openDb(): Promise<IDBDatabase> {
+    if (!this.isBrowser) return Promise.reject(new Error(NO_INDEXED_DB));
     if (this.dbPromise) return this.dbPromise;
 
     this.dbPromise = new Promise((resolve, reject) => {

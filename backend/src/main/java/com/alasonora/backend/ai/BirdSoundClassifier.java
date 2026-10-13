@@ -3,13 +3,12 @@ package com.alasonora.backend.ai;
 import java.util.List;
 
 /**
- * Port (dependency inversion) for whatever bioacoustic engine identifies
- * species from a recording. The domain/service layer depends only on this
- * interface, never on {@link BirdNetHttpClassifier} directly, so the engine
- * can be swapped (a different model, a mock for tests) without touching it.
+ * Puerto (inversión de dependencias) para el motor bioacústico que identifica especies
+ * en una grabación. La capa de servicio depende solo de esta interfaz, nunca de
+ * {@link BirdNetHttpClassifier}, así puedo cambiar el motor (otro modelo, un mock) sin tocarla.
  */
 public interface BirdSoundClassifier {
 
-    /** @return candidates ranked by confidence, highest first. Never null; empty when nothing was identified. */
+    /** @return candidatos ordenados por confianza, el mayor primero. Nunca null; vacío si no se identificó nada. */
     List<RawClassificationCandidate> classify(ClassificationRequest request);
 }

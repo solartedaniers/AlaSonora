@@ -12,7 +12,7 @@ import org.springframework.web.client.RestClient;
 
 import com.alasonora.backend.config.SupabaseProperties;
 
-/** Deletes Storage objects through the Storage API, which removes both the file and its metadata row. */
+/** Borro objetos con la API de Storage, que elimina el archivo y su fila de metadatos. */
 @Component
 public class SupabaseStorageObjectRemover {
 
@@ -21,7 +21,7 @@ public class SupabaseStorageObjectRemover {
     private final RestClient restClient;
 
     public SupabaseStorageObjectRemover(SupabaseProperties properties) {
-        // JDK client: it sends a request body with DELETE, which the Storage API requires.
+        // Cliente del JDK: envía cuerpo en un DELETE, como exige la API de Storage.
         JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory();
         requestFactory.setReadTimeout(TIMEOUT);
         this.restClient = RestClient.builder()
@@ -32,7 +32,7 @@ public class SupabaseStorageObjectRemover {
             .build();
     }
 
-    /** @return how many objects Storage reports as deleted */
+    /** @return cuántos objetos reporta Storage como borrados */
     public int remove(String bucket, List<String> objectNames) {
         List<?> deleted = restClient.method(HttpMethod.DELETE)
             .uri("/object/" + bucket)

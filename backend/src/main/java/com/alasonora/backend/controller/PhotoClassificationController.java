@@ -13,10 +13,8 @@ import com.alasonora.backend.dto.PhotoClassificationResultDto;
 import com.alasonora.backend.service.PhotoClassificationService;
 
 /**
- * Identifies a bird species from a photo — fully separate feature from
- * {@code /api/detections} (audio pipeline): no Detection is created, no
- * Storage bucket involved, the photo is only forwarded to the AI engine and
- * discarded.
+ * Identifica un ave a partir de una foto, aparte de {@code /api/detections} (audio):
+ * no crea Detection ni usa Storage; la foto pasa al motor de IA y se descarta.
  */
 @RestController
 @RequestMapping("/api/photo-classifications")
@@ -28,8 +26,8 @@ public class PhotoClassificationController {
         this.classificationService = classificationService;
     }
 
-    // Returns a CompletableFuture for the same reason as POST /api/detections/classify:
-    // frees the Tomcat request thread while the AI engine call is in flight.
+    // CompletableFuture por la misma razón que POST /api/detections/classify:
+    // libera el hilo de Tomcat mientras responde el motor de IA.
     @PostMapping
     public CompletableFuture<ResponseEntity<PhotoClassificationResultDto>> classify(@RequestParam MultipartFile photo) {
         return classificationService.classify(photo).thenApply(ResponseEntity::ok);

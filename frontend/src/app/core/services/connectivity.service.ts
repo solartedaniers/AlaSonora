@@ -1,7 +1,7 @@
 import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
-/** Reactive `navigator.onLine`, so any view can show the offline state without listening to window events itself. */
+/** `navigator.onLine` reactivo: cualquier vista muestra el estado sin conexión sin escuchar eventos de window. */
 @Injectable({ providedIn: 'root' })
 export class ConnectivityService {
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));

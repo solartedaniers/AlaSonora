@@ -8,9 +8,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 /**
- * Reads Supabase's own storage.objects table: the Storage REST API can only
- * list folder by folder and has no "not referenced by a detection" filter,
- * while this is a single anti-join in the same database.
+ * Leo la tabla storage.objects de Supabase: la API REST de Storage solo lista carpeta
+ * por carpeta y no filtra "sin detección", mientras que aquí es un solo anti-join.
  */
 @Repository
 public class OrphanRecordingRepository {

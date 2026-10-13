@@ -17,10 +17,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import tools.jackson.databind.ObjectMapper;
 
 /**
- * Adapter that talks to the decoupled Python/FastAPI BirdNET microservice
- * over plain HTTP. This is the only class in the app aware of that engine's
- * wire format (multipart request, X-Internal-Api-Key header, snake_case
- * JSON) — everything else depends on {@link BirdSoundClassifier} only.
+ * Adaptador que habla por HTTP con el microservicio BirdNET (Python/FastAPI).
+ * Es la única clase que conoce su formato (multipart, cabecera X-Internal-Api-Key,
+ * JSON snake_case); el resto depende solo de {@link BirdSoundClassifier}.
  */
 @Component
 public class BirdNetHttpClassifier implements BirdSoundClassifier {
@@ -42,7 +41,7 @@ public class BirdNetHttpClassifier implements BirdSoundClassifier {
             .baseUrl(engineProperties.baseUrl())
             .requestFactory(requestFactory)
             .build();
-        // No base URL: audioUrl is always an absolute Supabase Storage signed URL.
+        // Sin base URL: audioUrl siempre es una URL firmada absoluta de Supabase Storage.
         this.audioFetchClient = RestClient.builder().requestFactory(requestFactory).build();
     }
 
@@ -69,7 +68,7 @@ public class BirdNetHttpClassifier implements BirdSoundClassifier {
 
             if (response == null || response.candidates() == null) return List.of();
 
-            // BirdNET's native confidence is 0-1; the rest of the app works in 0-100.
+            // BirdNET da la confianza en 0-1; el resto de la app trabaja en 0-100.
             return response.candidates().stream()
                 .map(c -> new RawClassificationCandidate(c.scientificName(), c.commonName(), c.confidence() * 100))
                 .toList();

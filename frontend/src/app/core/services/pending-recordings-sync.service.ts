@@ -6,21 +6,21 @@ import { DetectionsService } from './detections.service';
 import { OfflineStorageService, PendingRecording } from './offline-storage.service';
 import { UserService } from './user.service';
 
-/** Must match PENDING_RECORDINGS_SYNC_TAG in public/sw.js. */
+/** Debe coincidir con PENDING_RECORDINGS_SYNC_TAG en public/sw.js. */
 export const PENDING_RECORDINGS_SYNC_TAG = 'alasonora-pending-recordings';
 
-// Bogotá's Eastern Hills as a stand-in field location when geolocation is
-// denied/unavailable: a detection always needs a map location.
+// Cerros Orientales de Bogotá como ubicación de respaldo si se niega o falla la
+// geolocalización: toda detección necesita un punto en el mapa.
 export const FALLBACK_LOCATION: GeoLocation = { latitude: 4.6097, longitude: -74.0817 };
 
 /**
- * Field mode: recordings made without signal are queued in IndexedDB
- * (OfflineStorageService) and sent automatically once connectivity returns.
- * Triggers, any of which drains the queue:
- *  - Background Sync: the service worker (public/sw.js) fires `sync` when the
- *    connection comes back and messages the open tabs (Chromium only).
- *  - The window `online` event (Firefox/Safari have no Background Sync).
- *  - App start, for anything left over from a previous session.
+ * Modo campo: las grabaciones hechas sin señal quedan en IndexedDB
+ * (OfflineStorageService) y las envío solas al volver la conexión.
+ * Cualquiera de estos disparadores vacía la cola:
+ *  - Background Sync: el service worker (public/sw.js) lanza `sync` al volver
+ *    la conexión y avisa a las pestañas abiertas (solo Chromium).
+ *  - El evento `online` de window (Firefox/Safari no tienen Background Sync).
+ *  - El arranque de la app, por lo que quedó de una sesión anterior.
  */
 @Injectable({ providedIn: 'root' })
 export class PendingRecordingsSyncService {
@@ -29,14 +29,14 @@ export class PendingRecordingsSyncService {
   private readonly detectionsService = inject(DetectionsService);
   private readonly userService = inject(UserService);
 
-  /** Browser only — call once at app start. */
+  /** Solo en el navegador; se llama una vez al arrancar. */
   start(): void {
     window.addEventListener('online', () => void this.syncNow());
     navigator.serviceWorker?.addEventListener('message', async ({ data, ports }) => {
       if (data?.type !== PENDING_RECORDINGS_SYNC_TAG) return;
       await this.syncNow();
-      // Tells the SW whether the sync really finished, so it can fail the
-      // `sync` event and let the browser retry it otherwise.
+      // Le digo al SW si la sincronización terminó de verdad; si no, falla el
+      // evento `sync` y el navegador lo reintenta.
       ports[0]?.postMessage({ remaining: (await this.offlineStorage.listPending()).length });
     });
     void this.syncNow();
@@ -45,18 +45,17 @@ export class PendingRecordingsSyncService {
   async enqueue(recording: Omit<PendingRecording, 'id'>): Promise<void> {
     await this.offlineStorage.enqueue({ id: crypto.randomUUID(), ...recording });
     const registration = await navigator.serviceWorker?.getRegistration();
-    // SyncManager is not in TypeScript's DOM lib yet; it's absent outside
-    // Chromium, where the `online` listener above covers the same case.
+    // SyncManager aún no está en la lib DOM de TypeScript; fuera de Chromium no
+    // existe y el listener `online` de arriba cubre el mismo caso.
     const sync = (registration as { sync?: { register(tag: string): Promise<void> } } | undefined)?.sync;
     await sync?.register(PENDING_RECORDINGS_SYNC_TAG).catch(() => undefined);
   }
 
   async syncNow(): Promise<void> {
     if (!navigator.onLine) return;
-    // Web Lock: the SW message and the `online` event arrive together, in
-    // every open tab — drains run one at a time (across tabs too), and each
-    // reads the queue only once it holds the lock, so a recording the
-    // previous drain already sent is never uploaded/saved twice.
+    // Web Lock: el mensaje del SW y el evento `online` llegan juntos a cada pestaña.
+    // Vacío la cola de a una vez (también entre pestañas) y la leo solo con el lock,
+    // así una grabación ya enviada nunca se sube ni se guarda dos veces.
     await navigator.locks.request(PENDING_RECORDINGS_SYNC_TAG, () => this.drain());
   }
 
@@ -68,10 +67,9 @@ export class PendingRecordingsSyncService {
       try {
         await this.send(userId, recording);
       } catch (error) {
-        // 422 = the classifier rejected this audio for good (no species /
-        // bad quality): retrying would only fail again, so it leaves the
-        // queue. Anything else (network, backend down) stays queued and is
-        // retried on the next trigger.
+        // 422 = el clasificador rechazó este audio para siempre (sin especie o mala
+        // calidad): reintentar fallaría igual, así que sale de la cola. Cualquier
+        // otro fallo (red, backend caído) se queda y se reintenta en el siguiente disparo.
         if (!(error instanceof HttpErrorResponse && error.status === 422)) return;
         console.warn('Queued recording rejected by the classifier, dropping it', error);
       }
@@ -79,9 +77,8 @@ export class PendingRecordingsSyncService {
     }
   }
 
-  // Same steps as the online flow (RecordingComponent → ResultComponent),
-  // minus the review screen: there is no one to review it, so it is saved
-  // with the default PRIVATE visibility and shows up in the user's history.
+  // Los mismos pasos del flujo en línea (RecordingComponent → ResultComponent) sin la
+  // pantalla de revisión: nadie la revisa, así que la guardo PRIVATE y aparece en el historial.
   private async send(userId: string, recording: PendingRecording): Promise<void> {
     const { storagePath, signedUrl } = await this.classificationService.uploadRecording(userId, recording.audioBlob);
     const result = await this.classificationService.classify(signedUrl, recording.recordedAt, recording.gpsLocation);

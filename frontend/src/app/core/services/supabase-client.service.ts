@@ -4,18 +4,17 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 
 /**
- * localStorage key holding the Supabase session. Same value the SDK derives
- * by default (`sb-<project-ref>-auth-token`), so existing sessions survive;
- * it's spelled out only so UserService can read the stored session offline
- * without going through getSession(), which tries to refresh an expired token.
+ * Clave de localStorage con la sesión de Supabase. Es la misma que el SDK deriva
+ * (`sb-<project-ref>-auth-token`), así las sesiones existentes siguen vivas; la
+ * escribo para que UserService lea la sesión sin conexión sin pasar por
+ * getSession(), que intenta refrescar un token vencido.
  */
 export const SUPABASE_SESSION_STORAGE_KEY = `sb-${new URL(environment.supabaseUrl).hostname.split('.')[0]}-auth-token`;
 
 /**
- * Holds the one Supabase client instance for the whole app, so Auth here,
- * Storage uploads (profile avatars) and Realtime (public detection
- * notifications) all share the same connection/session instead of each
- * creating their own client.
+ * Único cliente de Supabase de la app: Auth, Storage (avatares) y Realtime
+ * (avisos de detecciones públicas) comparten conexión y sesión en vez de crear
+ * cada uno su propio cliente.
  */
 @Injectable({ providedIn: 'root' })
 export class SupabaseClientService {

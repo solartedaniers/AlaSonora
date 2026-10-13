@@ -22,9 +22,9 @@ export class DetectionsService {
   private readonly baseUrl = `${environment.apiBaseUrl}/detections`;
 
   /**
-   * `fresh` skips the SSR HTTP transfer cache, which keeps answering this
-   * same URL with the snapshot taken at render time until the app becomes
-   * stable — so a detection saved after the page loaded would never show up.
+   * `fresh` salta la caché de transferencia del SSR, que responde esta URL con la
+   * foto tomada al renderizar hasta que la app se estabiliza; sin esto, una detección
+   * guardada después de cargar la página nunca aparecería.
    */
   async getAll(fresh = false): Promise<Detection[]> {
     const params = new HttpParams().set('visibility', 'public');

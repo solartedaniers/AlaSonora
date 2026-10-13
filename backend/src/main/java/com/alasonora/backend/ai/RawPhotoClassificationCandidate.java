@@ -1,5 +1,5 @@
 package com.alasonora.backend.ai;
 
-/** One species label returned by the photo-classification engine, confidence already normalized to the app-wide 0-100 scale. */
+/** Una especie devuelta por el motor de fotos, con la confianza ya normalizada a la escala 0-100 de la app. */
 public record RawPhotoClassificationCandidate(String label, double confidence) {
 }

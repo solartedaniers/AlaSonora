@@ -1,10 +1,9 @@
 package com.alasonora.backend.ai;
 
 /**
- * Wraps any failure talking to the bioacoustic engine (network error, bad
- * response, timeout). Kept as a plain runtime exception here — the `ai`
- * package has no HTTP/web dependency, so translating it into an HTTP status
- * is the caller's (service layer's) job.
+ * Envuelve cualquier fallo al hablar con el motor bioacústico (red, respuesta
+ * inválida, timeout). La dejo como excepción simple: el paquete `ai` no depende
+ * de HTTP, así que traducirla a un status es tarea de la capa de servicio.
  */
 public class AudioClassificationException extends RuntimeException {
 

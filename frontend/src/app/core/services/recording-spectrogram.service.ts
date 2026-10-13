@@ -5,17 +5,17 @@ import { AudioWorkerOutboundMessage, RecordingSpectrogramRequest } from '../../w
 
 const FFT_SIZE = 512;
 const COLUMN_COUNT = 160;
-// BirdNET analyzes 0–15 kHz; bins above that are only noise on screen.
+// BirdNET analiza 0–15 kHz; por encima, en pantalla solo hay ruido.
 export const MAX_DISPLAY_FREQUENCY_HZ = 15_000;
-// Any sample rate works here: decodeAudioData keeps the file's own rate.
+// Cualquier frecuencia de muestreo sirve: decodeAudioData conserva la del archivo.
 const DECODER_SAMPLE_RATE = 44_100;
 
-/** Spectrogram of a stored recording, computed by the same FFT Web Worker the live recorder uses. */
+/** Espectrograma de una grabación guardada, calculado con el mismo Web Worker de FFT que la grabación en vivo. */
 @Injectable({ providedIn: 'root' })
 export class RecordingSpectrogramService {
   private readonly http = inject(HttpClient);
 
-  /** Magnitude spectra over time, low frequencies first, cropped to the display band. */
+  /** Espectros de magnitud en el tiempo, graves primero, recortados a la banda visible. */
   async compute(audioUrl: string): Promise<Float32Array[]> {
     const encoded = await firstValueFrom(this.http.get(audioUrl, { responseType: 'arraybuffer' }));
     const audio = await new OfflineAudioContext(1, 1, DECODER_SAMPLE_RATE).decodeAudioData(encoded);

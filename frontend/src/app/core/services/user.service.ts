@@ -9,10 +9,9 @@ import { environment } from '../../../environments/environment';
 const DEFAULT_ROLE: ObserverRole = 'hobbyist';
 
 /**
- * Session state backed by Supabase Auth directly (sign in/up/out, password
- * reset, session refresh all handled by the SDK). Profile fields beyond
- * what Supabase Auth stores in user_metadata (institution, avatarUrl, etc.)
- * are filled in from our backend's Profile once that integration lands.
+ * Estado de sesión sobre Supabase Auth (el SDK maneja entrar, registrarse, salir,
+ * recuperar contraseña y refrescar la sesión). Los campos de perfil que no están
+ * en user_metadata (institución, avatarUrl, etc.) vienen del Profile del backend.
  */
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -31,29 +30,27 @@ export class UserService {
   }
 
   /**
-   * Reads Supabase's local session directly instead of the `currentUser`
-   * signal, which is only populated once the initial getSession() promise
-   * resolves — route guards run before that, so relying on the signal here
-   * would bounce a logged-in user on a hard refresh.
+   * Leo la sesión local de Supabase directamente y no el signal `currentUser`, que
+   * se llena cuando resuelve getSession(); los guards corren antes y, con el signal,
+   * sacarían a un usuario con sesión al recargar la página.
    */
   async isAuthenticated(): Promise<boolean> {
-    // Field mode: offline, an expired access token can't be refreshed and
-    // getSession() would retry for ~25s and then report no session, bouncing
-    // the user to a /login that can't work without signal. A session stored
-    // on this device is enough to keep recording; requests made once back
-    // online refresh it as usual (or fail and require a new login).
+    // Modo campo: sin conexión un token vencido no se puede refrescar y getSession()
+    // reintentaría ~25 s para luego decir que no hay sesión, mandando al usuario a un
+    // /login que no sirve sin señal. Me basta la sesión guardada en el dispositivo; al
+    // volver la conexión se refresca como siempre (o falla y pide entrar de nuevo).
     if (!navigator.onLine) return this.storedSession() !== null;
     const { data } = await this.supabase.auth.getSession();
     return data.session !== null;
   }
 
-  /** Supabase access token (JWT) for the current session, if any — used by authInterceptor. */
+  /** Token de acceso (JWT) de la sesión actual, si la hay; lo usa authInterceptor. */
   async getAccessToken(): Promise<string | null> {
     const { data } = await this.supabase.auth.getSession();
     return data.session?.access_token ?? null;
   }
 
-  /** Same rationale as {@link isAuthenticated}: reads the session directly instead of the `currentUser` signal. */
+  /** Igual que {@link isAuthenticated}: leo la sesión directamente y no el signal `currentUser`. */
   async getUserId(): Promise<string | null> {
     const { data } = await this.supabase.auth.getSession();
     return data.session?.user.id ?? null;
@@ -100,9 +97,9 @@ export class UserService {
   }
 
   /**
-   * Mirrors a backend Profile edit into Supabase Auth's user_metadata, so
-   * `currentUser` (and anything reading it, like nav-header's avatar) stays
-   * in sync without a second data source for the same display fields.
+   * Copio la edición del Profile del backend a user_metadata de Supabase Auth, así
+   * `currentUser` (y quien lo lee, como el avatar del nav-header) queda al día sin
+   * una segunda fuente para los mismos campos.
    */
   async syncMetadata(patch: {
     full_name?: string;

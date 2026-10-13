@@ -2,6 +2,6 @@ package com.alasonora.backend.ai;
 
 import java.time.Instant;
 
-/** Everything the bioacoustic engine needs to analyze one recording. Deliberately free of any JPA/DTO type so the `ai` package stays decoupled from the persistence and web layers. */
+/** Todo lo que el motor bioacústico necesita para analizar una grabación. Sin tipos JPA/DTO a propósito, para que `ai` no dependa de persistencia ni de web. */
 public record ClassificationRequest(String audioUrl, Double latitude, Double longitude, Instant recordedAt) {
 }

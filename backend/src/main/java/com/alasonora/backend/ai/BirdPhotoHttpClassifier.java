@@ -16,9 +16,8 @@ import com.alasonora.backend.config.AiProperties;
 import tools.jackson.databind.ObjectMapper;
 
 /**
- * Adapter that talks to the same decoupled Python/FastAPI AI engine as
- * {@link BirdNetHttpClassifier}, but to its separate photo-classification
- * endpoint — a different model, never touching the audio pipeline.
+ * Adaptador que habla con el mismo motor Python/FastAPI que {@link BirdNetHttpClassifier},
+ * pero con su endpoint de fotos: otro modelo, sin tocar el flujo de audio.
  */
 @Component
 public class BirdPhotoHttpClassifier implements BirdPhotoClassifier {

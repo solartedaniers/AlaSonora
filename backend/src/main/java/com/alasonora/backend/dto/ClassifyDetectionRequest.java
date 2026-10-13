@@ -9,8 +9,8 @@ import jakarta.validation.constraints.NotNull;
 public record ClassifyDetectionRequest(
     @NotBlank String audioUrl,
     @NotNull Instant recordedAt,
-    // Optional: when known, narrows BirdNET's candidates to that region;
-    // when absent, BirdNET falls back to its global species catalog.
+    // Opcional: si se conoce, acota los candidatos de BirdNET a esa región;
+    // si falta, BirdNET usa su catálogo global.
     @Valid GeoLocationDto location
 ) {
 }

@@ -2,7 +2,7 @@ package com.alasonora.backend.dto;
 
 import java.util.List;
 
-/** Result of POST /api/photo-classifications, shaped the same way as ClassificationResultDto (top result + ranked alternatives) so the frontend can reuse the same result-card UI pattern. */
+/** Resultado de POST /api/photo-classifications, con la forma de ClassificationResultDto (mejor resultado + alternativas) para reutilizar la misma tarjeta en el frontend. */
 public record PhotoClassificationResultDto(
     PhotoClassificationCandidateDto top,
     List<PhotoClassificationCandidateDto> alternatives

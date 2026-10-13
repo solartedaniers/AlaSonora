@@ -13,10 +13,9 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 /**
- * id is auth.users.id from Supabase Auth, assigned (not generated) when the
- * profile is first created for a signed-up user. The FK constraint to
- * auth.users must be added manually via SQL, since Hibernate's ddl-auto only
- * manages tables in the application's own schema, not Supabase Auth's.
+ * id es auth.users.id de Supabase Auth, asignado (no generado) al crear el perfil del
+ * usuario registrado. La FK a auth.users se agrega a mano por SQL, porque ddl-auto de
+ * Hibernate solo maneja el esquema de la aplicación, no el de Supabase Auth.
  */
 @Entity
 @Table(name = "profiles")

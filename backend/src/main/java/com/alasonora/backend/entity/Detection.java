@@ -34,23 +34,21 @@ public class Detection {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // References auth.users.id in Supabase; not a JPA relation since that
-    // table is owned and managed by Supabase Auth, not by this application.
+    // Referencia a auth.users.id de Supabase; no es relación JPA porque esa tabla
+    // la gestiona Supabase Auth, no esta aplicación.
     @Column(nullable = false)
     private UUID ownerId;
 
     @Column(nullable = false)
     private Instant recordedAt;
 
-    // Object key within the private "recordings" Supabase Storage bucket
-    // (e.g. "{ownerId}/{timestamp}.wav"), never a signed URL: those expire
-    // and must be generated on demand, see PrivateObjectSignedUrlResolver.
+    // Ruta dentro del bucket privado "recordings" (p. ej. "{ownerId}/{timestamp}.wav"),
+    // nunca una URL firmada: esas vencen y se generan al pedirlas (ver PrivateObjectSignedUrlResolver).
     @Column(columnDefinition = "TEXT")
     private String audioStoragePath;
 
-    // Object key within the private "observer-photos" bucket for the photo
-    // the observer attached to THIS detection (not the species' official
-    // reference photo). Null when the observer didn't upload one.
+    // Ruta en el bucket privado "observer-photos" de la foto que el observador adjuntó
+    // a ESTA detección (no la foto oficial de la especie). Null si no subió ninguna.
     @Column(columnDefinition = "TEXT")
     private String observerPhotoStoragePath;
 

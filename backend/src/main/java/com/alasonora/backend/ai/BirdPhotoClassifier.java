@@ -3,13 +3,12 @@ package com.alasonora.backend.ai;
 import java.util.List;
 
 /**
- * Port (dependency inversion) for whatever engine identifies bird species
- * from a photo. Mirrors {@link BirdSoundClassifier}'s role for audio, but
- * kept as a separate interface since the two are unrelated modalities with
- * independent inputs/failure modes.
+ * Puerto (inversión de dependencias) para el motor que identifica aves en una foto.
+ * Cumple el papel de {@link BirdSoundClassifier} para el audio, pero lo separo porque
+ * son modalidades distintas, con entradas y fallos independientes.
  */
 public interface BirdPhotoClassifier {
 
-    /** @return candidates ranked by confidence, highest first. Never null; empty when nothing was identified. */
+    /** @return candidatos ordenados por confianza, el mayor primero. Nunca null; vacío si no se identificó nada. */
     List<RawPhotoClassificationCandidate> classify(byte[] photoBytes);
 }

@@ -2,7 +2,7 @@ package com.alasonora.backend.dto;
 
 import java.util.List;
 
-/** Result of POST /api/detections/classify, shaped so the frontend can reuse the same fields it already sends back to POST /api/detections. */
+/** Resultado de POST /api/detections/classify, con la forma que el frontend reenvía tal cual a POST /api/detections. */
 public record ClassificationResultDto(
     SpeciesDto species,
     double confidence,

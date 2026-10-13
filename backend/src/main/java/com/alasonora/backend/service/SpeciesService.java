@@ -1,5 +1,7 @@
 package com.alasonora.backend.service;
 
+import com.alasonora.backend.exception.ApiErrorMessages;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -51,15 +53,14 @@ public class SpeciesService {
 
     Species findEntity(Long id) {
         return speciesRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Species not found: " + id));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ApiErrorMessages.SPECIES_NOT_FOUND + id));
     }
 
     /**
-     * Organic catalog growth: reuses an existing species by scientific name,
-     * or registers a new one from what the AI engine reported. Curated
-     * fields the engine can't provide (IUCN status, taxonomy) get honest
-     * placeholders rather than guessed values, so a human curator can fill
-     * them in later without the data looking authoritative in the meantime.
+     * Crecimiento del catálogo: reutilizo la especie por nombre científico o registro
+     * una nueva con lo que reportó la IA. Los campos que el motor no da (estado UICN,
+     * taxonomía) quedan con valores honestos de relleno, no adivinados, para que un
+     * curador los complete sin que parezcan datos oficiales mientras tanto.
      */
     @Transactional
     public Species findOrCreateByScientificName(String scientificName, String commonNameEn) {

@@ -13,10 +13,9 @@ import com.alasonora.backend.config.OrphanRecordingCleanupProperties;
 import com.alasonora.backend.config.SupabaseProperties;
 
 /**
- * Deletes recordings that were uploaded but never saved as a detection
- * (result discarded or classification failed). Objects younger than min-age
- * are never touched: they may belong to a result the user is still reviewing
- * or to an offline-queue sync still in progress.
+ * Borra grabaciones subidas que nunca se guardaron como detección (resultado
+ * descartado o clasificación fallida). No toco objetos más nuevos que min-age:
+ * pueden ser de un resultado en revisión o de una sincronización offline en curso.
  */
 @Component
 @ConditionalOnProperty(prefix = "storage.orphan-recordings", name = "enabled", havingValue = "true")
@@ -41,8 +40,8 @@ public class OrphanRecordingCleanupJob {
         this.bucket = supabaseProperties.storage().recordingsBucket();
     }
 
-    // Also runs shortly after every start: an idle Render instance sleeps, so
-    // a fixed time of day could be missed for days.
+    // También corre poco después de cada arranque: Render duerme la instancia inactiva
+    // y una hora fija podría saltarse por días.
     @Scheduled(
         initialDelayString = "${storage.orphan-recordings.initial-delay}",
         fixedDelayString = "${storage.orphan-recordings.interval}"
@@ -56,7 +55,7 @@ public class OrphanRecordingCleanupJob {
         }
     }
 
-    /** @return number of objects deleted */
+    /** @return cantidad de objetos borrados */
     int cleanUp(Instant now) {
         Instant createdBefore = now.minus(properties.minAge());
         int removed = 0;
@@ -65,7 +64,7 @@ public class OrphanRecordingCleanupJob {
             batch = repository.findOrphans(bucket, createdBefore, properties.batchSize());
             if (batch.isEmpty()) break;
             int deleted = remover.remove(bucket, batch);
-            // Nothing deleted means Storage rejected the batch: stop instead of re-reading it forever.
+            // Si no se borró nada, Storage rechazó el lote: paro en vez de releerlo para siempre.
             if (deleted == 0) break;
             removed += deleted;
         } while (batch.size() == properties.batchSize());

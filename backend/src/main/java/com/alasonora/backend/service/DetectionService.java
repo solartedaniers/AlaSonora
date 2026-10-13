@@ -1,5 +1,7 @@
 package com.alasonora.backend.service;
 
+import com.alasonora.backend.exception.ApiErrorMessages;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -39,8 +41,8 @@ public class DetectionService {
         this.storageProperties = supabaseProperties.storage();
     }
 
-    // readOnly: keeps the Hibernate session open while mapping to DTOs, since
-    // species/alternatives are lazy and open-in-view is disabled.
+    // readOnly: mantiene abierta la sesión de Hibernate al mapear a DTO, porque
+    // species/alternatives son lazy y open-in-view está desactivado.
     @Transactional(readOnly = true)
     public List<DetectionDto> getPublicDetections() {
         return detectionRepository.findByVisibilityOrderByRecordedAtDesc(Visibility.PUBLIC).stream()
@@ -60,9 +62,9 @@ public class DetectionService {
     @Transactional(readOnly = true)
     public DetectionDto getByIdForRequester(Long id, UUID requesterId) {
         Detection detection = detectionRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Detection not found"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ApiErrorMessages.DETECTION_NOT_FOUND));
         if (detection.getVisibility() == Visibility.PRIVATE && !detection.getOwnerId().equals(requesterId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Detection not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ApiErrorMessages.DETECTION_NOT_FOUND);
         }
         return toDto(detection);
     }
@@ -102,9 +104,9 @@ public class DetectionService {
     @Transactional
     public DetectionDto setObserverPhoto(Long id, UUID requesterId, String observerPhotoStoragePath) {
         Detection detection = detectionRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Detection not found"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ApiErrorMessages.DETECTION_NOT_FOUND));
         if (!detection.getOwnerId().equals(requesterId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Detection not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ApiErrorMessages.DETECTION_NOT_FOUND);
         }
         requireOwnedStoragePath(requesterId, observerPhotoStoragePath);
         detection.setObserverPhotoStoragePath(observerPhotoStoragePath);
@@ -116,7 +118,7 @@ public class DetectionService {
     // historial privado del dueño, que son la misma tabla.
     public void deleteDetection(Long id) {
         if (!detectionRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Detection not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ApiErrorMessages.DETECTION_NOT_FOUND);
         }
         detectionRepository.deleteById(id);
     }
@@ -131,7 +133,7 @@ public class DetectionService {
 
     private static void requireOwnedStoragePath(UUID ownerId, String storagePath) {
         if (storagePath != null && !isOwnedStoragePath(ownerId, storagePath)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Storage path must be inside the requester's own folder");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ApiErrorMessages.STORAGE_PATH_OUTSIDE_OWN_FOLDER);
         }
     }
 

@@ -13,7 +13,7 @@ export interface PhotoClassificationResult {
   alternatives: PhotoClassificationCandidate[];
 }
 
-/** Uploads a bird photo straight to the backend for classification; unlike recordings, the photo is never persisted to Storage — it's only forwarded to the AI engine and discarded. */
+/** Envío la foto directo al backend para clasificarla; a diferencia del audio, nunca va a Storage: pasa al motor de IA y se descarta. */
 @Injectable({ providedIn: 'root' })
 export class PhotoClassificationService {
   private readonly http = inject(HttpClient);

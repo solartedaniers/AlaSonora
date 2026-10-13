@@ -5,10 +5,9 @@ import { DOCUMENT } from '@angular/common';
 const GLOW_TARGETS = '.btn, [data-glow]';
 
 /**
- * Cursor-following glow for every button and `[data-glow]` surface, with a
- * single delegated, passive pointer listener (throttled to one update per
- * frame) instead of one directive per element. It only writes the pointer
- * position as CSS variables; the glow itself is pure CSS.
+ * Brillo que sigue al cursor en botones y superficies `[data-glow]`, con un solo
+ * listener delegado y pasivo (una actualización por frame) en vez de una directiva
+ * por elemento. Solo escribo la posición en variables CSS; el brillo es CSS puro.
  */
 @Injectable({ providedIn: 'root' })
 export class CursorGlowService {
@@ -17,7 +16,7 @@ export class CursorGlowService {
   private pending?: PointerEvent;
   private frameId = 0;
 
-  /** Call once in the browser. */
+  /** Se llama una vez, en el navegador. */
   start(): void {
     // Sin puntero con hover (táctil) no hay brillo que seguir: no escucho nada.
     if (!this.document.defaultView?.matchMedia('(hover: hover)').matches) return;

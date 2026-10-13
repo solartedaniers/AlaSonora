@@ -15,8 +15,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
- * Resource server only: Supabase Auth issues and refreshes the JWTs, this
- * app just validates them against Supabase's JWKS endpoint.
+ * Solo resource server: Supabase Auth emite y refresca los JWT; esta app solo
+ * los valida contra el endpoint JWKS de Supabase.
  */
 @Configuration
 @EnableWebSecurity
@@ -38,15 +38,15 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/species/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/network-stats").permitAll()
+                .requestMatchers(PublicEndpoints.READ_ONLY).permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/detections/mine").authenticated()
-                .requestMatchers(HttpMethod.GET, "/api/detections").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/detections").authenticated()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/profile/**").authenticated()
                 .anyRequest().authenticated())
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
+            .oauth2ResourceServer(oauth2 -> oauth2
+                .bearerTokenResolver(new PublicEndpointBearerTokenResolver())
+                .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
 
         return http.build();
     }

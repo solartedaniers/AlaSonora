@@ -1,5 +1,9 @@
 package com.alasonora.backend.service;
 
+import com.alasonora.backend.exception.ApiErrorMessages;
+import com.alasonora.backend.exception.ApiErrorCode;
+import com.alasonora.backend.exception.CodedResponseStatusException;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -22,11 +26,9 @@ import com.alasonora.backend.dto.GeoLocationDto;
 import com.alasonora.backend.dto.SpeciesDto;
 
 /**
- * Orchestrates one classification: runs entirely on the dedicated
- * {@code aiTaskExecutor} bulkhead (never on a Tomcat request thread), calls
- * the {@link BirdSoundClassifier} port, and lets the catalog grow via
- * {@link SpeciesService} for any species BirdNET reports that isn't in the
- * database yet.
+ * Orquesta una clasificación: corre en el bulkhead {@code aiTaskExecutor} (nunca en un
+ * hilo de Tomcat), llama al puerto {@link BirdSoundClassifier} y deja crecer el catálogo
+ * con {@link SpeciesService} para las especies de BirdNET que aún no están en la base.
  */
 @Service
 public class DetectionClassificationService {
@@ -65,11 +67,11 @@ public class DetectionClassificationService {
         } catch (AudioQualityException ex) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage(), ex);
         } catch (AudioClassificationException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "The bioacoustic engine is unavailable", ex);
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, ApiErrorMessages.BIOACOUSTIC_ENGINE_UNAVAILABLE, ex);
         }
 
         if (raw.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT, "No bird species were identified in this recording");
+            throw new CodedResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT, ApiErrorMessages.NO_SPECIES_IN_RECORDING, ApiErrorCode.NO_SPECIES_IDENTIFIED);
         }
 
         List<DetectionCandidateDto> ranked = raw.stream()

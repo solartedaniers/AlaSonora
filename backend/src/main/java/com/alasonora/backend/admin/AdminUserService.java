@@ -1,5 +1,7 @@
 package com.alasonora.backend.admin;
 
+import com.alasonora.backend.exception.ApiErrorMessages;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -60,6 +62,6 @@ public class AdminUserService {
 
     private Profile findProfile(UUID userId) {
         return profileRepository.findById(userId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ApiErrorMessages.USER_NOT_FOUND));
     }
 }

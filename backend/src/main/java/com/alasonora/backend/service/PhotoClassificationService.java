@@ -1,5 +1,9 @@
 package com.alasonora.backend.service;
 
+import com.alasonora.backend.exception.ApiErrorMessages;
+import com.alasonora.backend.exception.ApiErrorCode;
+import com.alasonora.backend.exception.CodedResponseStatusException;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -18,10 +22,9 @@ import com.alasonora.backend.dto.PhotoClassificationCandidateDto;
 import com.alasonora.backend.dto.PhotoClassificationResultDto;
 
 /**
- * Orchestrates one photo classification, mirroring {@link DetectionClassificationService}'s
- * shape (bulkhead executor, port call, ranked result) but deliberately not
- * touching the species catalog or the Detection entity — this feature only
- * shows the AI's result, it does not persist a detection record.
+ * Orquesta una clasificación de foto con la forma de {@link DetectionClassificationService}
+ * (bulkhead, llamada al puerto, resultado ordenado), pero sin tocar el catálogo ni
+ * Detection: solo muestra el resultado de la IA, no guarda ninguna detección.
  */
 @Service
 public class PhotoClassificationService {
@@ -39,7 +42,7 @@ public class PhotoClassificationService {
         try {
             photoBytes = photo.getBytes();
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not read the uploaded photo", ex);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ApiErrorMessages.PHOTO_UNREADABLE, ex);
         }
         return CompletableFuture.supplyAsync(() -> runClassification(photoBytes), aiTaskExecutor);
     }
@@ -51,11 +54,11 @@ public class PhotoClassificationService {
         } catch (NoBirdInPhotoException ex) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage(), ex);
         } catch (PhotoClassificationException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "The photo-classification engine is unavailable", ex);
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, ApiErrorMessages.PHOTO_ENGINE_UNAVAILABLE, ex);
         }
 
         if (raw.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT, "No bird species were identified in this photo");
+            throw new CodedResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT, ApiErrorMessages.NO_SPECIES_IN_PHOTO, ApiErrorCode.NO_SPECIES_IDENTIFIED);
         }
 
         List<PhotoClassificationCandidateDto> ranked = raw.stream()

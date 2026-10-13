@@ -1,12 +1,12 @@
 import { Injectable, signal } from '@angular/core';
 import { GeoLocation, Species } from '../models';
 
-/** Route id used for a not-yet-saved classification result, before the user confirms and it gets a real backend id. */
+/** Id de ruta para un resultado aún sin guardar, antes de que el usuario confirme y el backend le dé un id real. */
 export const DRAFT_DETECTION_ID = 'draft';
 
 export interface DetectionDraft {
   species: Species;
-  /** Object key in the private `recordings` bucket; this, not `audioUrl`, is what gets persisted. */
+  /** Ruta en el bucket privado `recordings`; esto, y no `audioUrl`, es lo que se guarda. */
   audioStoragePath?: string;
   recordedAt: string;
   audioUrl?: string;
@@ -18,14 +18,13 @@ export interface DetectionDraft {
   peakFrequencyHz: number;
   alternatives: { species: Species; confidence: number }[];
   location: GeoLocation;
-  /** Scientific disclaimer returned by the classifier: AI output is a probabilistic reference, not ground truth. */
+  /** Aviso científico del clasificador: la IA da una referencia probabilística, no la verdad. */
   disclaimer?: string;
 }
 
 /**
- * Hands off the just-classified (not yet persisted) detection from
- * /record to /result, since the real AI classifier lives in a future
- * async phase and doesn't yet return a backend-issued id to route by.
+ * Paso la detección recién clasificada (aún sin guardar) de /record a /result,
+ * porque todavía no tiene un id del backend con el cual enrutar.
  */
 @Injectable({ providedIn: 'root' })
 export class DetectionDraftService {

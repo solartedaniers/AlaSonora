@@ -21,8 +21,8 @@ public class ProfileService {
         this.profileRepository = profileRepository;
     }
 
-    // Supabase Auth creates the user; the profiles row is created lazily on
-    // first access here since there is no separate sign-up hook yet.
+    // Supabase Auth crea el usuario; la fila de profiles la creo aquí en el primer
+    // acceso, porque aún no hay un hook de registro.
     public ProfileDto getOrCreate(UUID id, String defaultDisplayName) {
         Profile profile = profileRepository.findById(id).orElseGet(() -> {
             Profile created = new Profile();

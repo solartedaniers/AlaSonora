@@ -33,7 +33,7 @@ public class Species {
     @Column(columnDefinition = "TEXT")
     private String family;
 
-    // "order" is a reserved word in Postgres, so the column is renamed.
+    // "order" es palabra reservada en Postgres, por eso renombro la columna.
     @Column(name = "taxon_order", columnDefinition = "TEXT")
     private String order;
 

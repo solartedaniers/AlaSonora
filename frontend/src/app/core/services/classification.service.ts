@@ -17,7 +17,7 @@ export interface ClassificationResult {
   disclaimer: string;
 }
 
-/** Result of uploading a recording: its permanent storage path plus a short-lived URL for the immediate classification call. */
+/** Resultado de subir una grabación: su ruta permanente y una URL de vida corta para clasificarla enseguida. */
 export interface UploadedRecording {
   storagePath: string;
   signedUrl: string;
@@ -29,18 +29,16 @@ interface ClassifyDetectionPayload {
   location?: GeoLocation;
 }
 
-/** Uploads a recording to private Supabase Storage and requests its BirdNET classification from the backend. */
+/** Subo la grabación al Storage privado de Supabase y pido al backend su clasificación con BirdNET. */
 @Injectable({ providedIn: 'root' })
 export class ClassificationService {
   private readonly http = inject(HttpClient);
   private readonly supabase = inject(SupabaseClientService).client;
 
   /**
-   * Uploads the WAV blob to the private `recordings` bucket. Only the
-   * storage path should be persisted long-term (`Detection.audioStoragePath`
-   * on the backend); the signed URL is for the immediate classify() call and
-   * for local playback before the detection is saved, nothing else — it
-   * expires and must never be stored.
+   * Subo el WAV al bucket privado `recordings`. Solo la ruta se guarda a largo
+   * plazo (`Detection.audioStoragePath` en el backend); la URL firmada sirve para
+   * classify() y para reproducir antes de guardar, nada más: vence y nunca se guarda.
    */
   async uploadRecording(userId: string, blob: Blob): Promise<UploadedRecording> {
     const storagePath = `${userId}/${Date.now()}.wav`;
@@ -56,7 +54,7 @@ export class ClassificationService {
     return { storagePath, signedUrl: data.signedUrl };
   }
 
-  /** `location` should only be passed when it's a real GPS fix — narrows BirdNET's candidates to that region; omit it to use the global catalog. */
+  /** Paso `location` solo si es un GPS real: acota los candidatos de BirdNET a la región; sin ella uso el catálogo global. */
   async classify(audioUrl: string, recordedAt: string, location?: GeoLocation): Promise<ClassificationResult> {
     const payload: ClassifyDetectionPayload = { audioUrl, recordedAt, location };
     return firstValueFrom(

@@ -1,5 +1,5 @@
 package com.alasonora.backend.ai;
 
-/** One species candidate returned by the bioacoustic engine, confidence already normalized to the app-wide 0-100 scale. */
+/** Un candidato de especie del motor bioacústico, con la confianza ya normalizada a la escala 0-100 de la app. */
 public record RawClassificationCandidate(String scientificName, String commonName, double confidence) {
 }
