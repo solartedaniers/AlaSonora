@@ -36,7 +36,7 @@ public record AiProperties(Engine engine, Executor executor, Catalog catalog, Ph
     public record Executor(int corePoolSize, int maxPoolSize, int queueCapacity) {
     }
 
-    /** Valores por defecto cuando el catálogo crece a partir de una clasificación de IA. */
-    public record Catalog(String defaultSpeciesImageUrl, String disclaimer) {
+    /** Aviso científico que acompaña a cada clasificación de IA. */
+    public record Catalog(String disclaimer) {
     }
 }
