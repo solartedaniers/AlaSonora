@@ -8,14 +8,14 @@ from app.schemas import PhotoClassificationCandidate
 
 
 class NoBirdInPhotoError(Exception):
-    """Raised when even the top prediction falls below the confidence floor."""
+    """Ni la mejor predicción alcanza el umbral de confianza."""
 
 
 class BirdPhotoClassifier:
-    """Wraps a Hugging Face image-classification model (EfficientNetB2 fine-tuned
-    on 525 bird species), fully independent from BirdNetClassifier — a different
-    model, a different input modality (photo, not audio), loaded once here for
-    the same reason: reloading per request would be wasteful.
+    """Envuelvo un modelo de clasificación de imágenes de Hugging Face (EfficientNetB2
+    ajustado con 525 especies de aves), independiente de BirdNetClassifier: otro modelo
+    y otra entrada (foto, no audio). Lo cargo una vez por la misma razón: recargarlo
+    en cada petición sería un desperdicio.
     """
 
     def __init__(self, model_id: str) -> None:
