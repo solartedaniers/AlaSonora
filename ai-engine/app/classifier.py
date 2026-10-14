@@ -49,11 +49,10 @@ NON_EVENT_LABELS = frozenset({
 
 
 class BirdNetClassifier:
-    """Wraps birdnetlib's BirdNET-Analyzer model.
+    """Envuelvo el modelo BirdNET-Analyzer de birdnetlib.
 
-    The model is loaded once (in __init__) and reused for every request —
-    reloading it per request would be wasteful, since it's the same
-    interpreter/weights regardless of which recording is being analyzed.
+    Lo cargo una sola vez (en __init__) y lo reutilizo en cada petición: el
+    intérprete y los pesos son los mismos para cualquier grabación.
     """
 
     def __init__(self) -> None:
@@ -88,8 +87,8 @@ class BirdNetClassifier:
         try:
             # lat/lon es opcional a propósito: solo se debe pasar cuando
             # viene de una ubicación real (GPS del dispositivo), nunca de un
-            # valor inventado/por defecto — pasarla activa birdnetlib's
-            # set_predicted_species_list_from_position, que excluye de
+            # valor inventado/por defecto — pasarla activa
+            # set_predicted_species_list_from_position de birdnetlib, que excluye de
             # entrada cualquier especie fuera de la lista "esperable" para
             # esas coordenadas. Sin ubicación real, se evalúa contra el
             # catálogo global completo (comportamiento anterior).
@@ -115,14 +114,13 @@ class BirdNetClassifier:
 
 
 def rank_candidates(detections: list[dict], max_results: int) -> list[ClassificationCandidate]:
-    """Turns birdnetlib's raw per-chunk detections into ranked, deduplicated
-    species candidates. Pure function (no model, no I/O) so the non-event
-    filtering can be unit-tested without loading BirdNET — see
-    test_classifier.py.
+    """Convierto las detecciones crudas por fragmento en candidatos por especie,
+    sin repetidos y ordenados. Es una función pura (sin modelo ni E/S) para
+    probar el filtrado de no-eventos sin cargar BirdNET (ver test_classifier.py).
 
-    BirdNET scores audio in 3-second chunks, so the same species can show up
-    several times across one recording — keep only its best confidence, then
-    rank species (not chunks) highest-first.
+    BirdNET puntúa el audio en fragmentos de 3 s, así que una especie puede
+    aparecer varias veces: me quedo con su mejor confianza y ordeno especies,
+    no fragmentos, de mayor a menor.
     """
     best_by_species: dict[str, ClassificationCandidate] = {}
     for detection in detections:
