@@ -43,7 +43,9 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="AlaSonora AI Engine", lifespan=lifespan)
 
 
-@app.get("/health")
+# Render revisa la ruta de salud con HEAD: sin aceptarlo respondía 405 y el servicio no quedaba sano al
+# despertar. No carga nada pesado: el modelo ya se cargó al arrancar.
+@app.api_route("/health", methods=["GET", "HEAD"])
 def health() -> dict[str, str]:
     return {"status": "ok"}
 
