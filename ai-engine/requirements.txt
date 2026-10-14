@@ -4,11 +4,10 @@ python-multipart
 pydantic-settings
 birdnetlib
 librosa
-# librosa's default resample path (used by birdnetlib to bring audio to its
-# 48kHz target) needs this; without it, any recording whose original sample
-# rate isn't already 48kHz fails with "Generic audio read error occurred
-# from librosa." (the real underlying error, ModuleNotFoundError: No module
-# named 'resampy', gets swallowed into that generic message by birdnetlib).
+# El remuestreo por defecto de librosa (birdnetlib lo usa para llevar el audio a
+# 48 kHz) necesita esto. Sin él, toda grabación que no venga a 48 kHz falla con
+# "Generic audio read error occurred from librosa." (birdnetlib oculta el error
+# real, ModuleNotFoundError: No module named 'resampy', tras ese mensaje).
 resampy
 audioread
 numpy
