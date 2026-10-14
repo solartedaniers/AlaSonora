@@ -62,9 +62,9 @@ def demo() -> None:
         0.8 * np.sin(2 * np.pi * 3500 * TIME) + 0.25 * rng.normal(0, 1, SAMPLE_RATE * DURATION_S), None
     )
 
-    # Low-frequency vocalization (owl-like), same predominant/leve/moderate
-    # noise gradient as the passerine case above — must not be rejected just
-    # because its energy sits below the passerine-typical 1-8 kHz band.
+    # Vocalización grave (tipo búho) con el mismo gradiente de ruido que el caso
+    # del paseriforme: no debe rechazarse solo porque su energía quede por debajo
+    # de la banda típica de 1-8 kHz.
     _assert_quality(_with_noise(owl_call, rng.normal(0, 1, owl_call.shape), 0.15), None)
     _assert_quality(_with_noise(owl_call, rng.normal(0, 1, owl_call.shape), 0.35), None)
     _assert_quality(_with_noise(owl_call, rng.normal(0, 1, owl_call.shape), 0.8), TooNoisyAudioError)
