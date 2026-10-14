@@ -1,5 +1,5 @@
 /**
- * Contratos de mensajes tipados para la comunicación con los 3 Web Workers
+ * Contratos de mensajes tipados para la comunicación con los 2 workers
  * de AlaSonora. Definir interfaces explícitas (en vez de pasar objetos
  * sueltos sin tipar por postMessage) evita errores silenciosos: TypeScript
  * verifica en tiempo de compilación que el hilo principal y cada worker
@@ -88,18 +88,3 @@ export interface SharedWorkerTabCount {
 
 export type SharedWorkerInboundMessage = SharedWorkerHello | SharedWorkerDetectionBroadcast;
 export type SharedWorkerOutboundMessage = SharedWorkerDetectionBroadcast | SharedWorkerTabCount;
-
-// ---------------------------------------------------------------------------
-// 3. Service Worker: mensajes de sincronización en segundo plano
-// ---------------------------------------------------------------------------
-
-export interface ServiceWorkerSyncRequest {
-  type: 'request-sync';
-}
-
-export interface ServiceWorkerSyncComplete {
-  type: 'sync-complete';
-  syncedCount: number;
-}
-
-export type ServiceWorkerMessage = ServiceWorkerSyncRequest | ServiceWorkerSyncComplete;

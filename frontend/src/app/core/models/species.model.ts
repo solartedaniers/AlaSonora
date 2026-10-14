@@ -30,18 +30,6 @@ export function speciesDisplayName(species: Species, lang: 'es' | 'en'): string 
 
 export type IucnStatus = 'LC' | 'NT' | 'VU' | 'EN' | 'CR' | 'DD' | 'NE' | 'EW' | 'EX';
 
-export const IUCN_LABELS: Record<IucnStatus, string> = {
-  LC: 'iucn.lc',
-  NT: 'iucn.nt',
-  VU: 'iucn.vu',
-  EN: 'iucn.en',
-  CR: 'iucn.cr',
-  DD: 'iucn.dd',
-  NE: 'iucn.ne',
-  EW: 'iucn.ew',
-  EX: 'iucn.ex',
-};
-
 /**
  * Traducción de los valores del campo `type` de Xeno-canto (species.typicalVocalizations),
  * texto semi-libre de un recolector de datos externo, no un enum cerrado.

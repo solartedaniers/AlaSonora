@@ -2,10 +2,12 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { ProfileService } from '../services/profile.service';
+import { LoggerService } from '../services/logger.service';
 
 /** Bloqueo /admin a quien no tenga sesión activa y systemRole 'admin'. */
 export const adminGuard: CanActivateFn = async () => {
   const userService = inject(UserService);
+  const logger = inject(LoggerService);
   const profileService = inject(ProfileService);
   const router = inject(Router);
 
@@ -20,7 +22,7 @@ export const adminGuard: CanActivateFn = async () => {
     // Un getMine() rechazado sin capturar dejaba la promesa de la guardia
     // colgada (Angular Router la trata como navegación cancelada, sin
     // redirigir ni mostrar nada) en vez de degradar de forma visible.
-    console.error('adminGuard: no se pudo verificar el rol de administrador', error);
+    logger.error('AdminGuard', 'could not verify the admin role', error);
     return router.createUrlTree(['/dashboard']);
   }
 };

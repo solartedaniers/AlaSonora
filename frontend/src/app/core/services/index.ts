@@ -1,6 +1,5 @@
 export * from './theme.service';
 export * from './i18n.service';
-export * from './species-catalog.service';
 export * from './detections.service';
 export * from './network-stats.service';
 export * from './user.service';

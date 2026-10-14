@@ -5,6 +5,7 @@ import { ClassificationService } from './classification.service';
 import { DetectionsService } from './detections.service';
 import { OfflineStorageService, PendingRecording } from './offline-storage.service';
 import { UserService } from './user.service';
+import { LoggerService } from './logger.service';
 
 /** Debe coincidir con PENDING_RECORDINGS_SYNC_TAG en public/sw.js. */
 export const PENDING_RECORDINGS_SYNC_TAG = 'alasonora-pending-recordings';
@@ -25,6 +26,7 @@ export const FALLBACK_LOCATION: GeoLocation = { latitude: 4.6097, longitude: -74
 @Injectable({ providedIn: 'root' })
 export class PendingRecordingsSyncService {
   private readonly offlineStorage = inject(OfflineStorageService);
+  private readonly logger = inject(LoggerService);
   private readonly classificationService = inject(ClassificationService);
   private readonly detectionsService = inject(DetectionsService);
   private readonly userService = inject(UserService);
@@ -71,7 +73,7 @@ export class PendingRecordingsSyncService {
         // calidad): reintentar fallaría igual, así que sale de la cola. Cualquier
         // otro fallo (red, backend caído) se queda y se reintenta en el siguiente disparo.
         if (!(error instanceof HttpErrorResponse && error.status === 422)) return;
-        console.warn('Queued recording rejected by the classifier, dropping it', error);
+        this.logger.warn('PendingSync', 'queued recording rejected by the classifier, dropping it', error);
       }
       await this.offlineStorage.remove(recording.id);
     }

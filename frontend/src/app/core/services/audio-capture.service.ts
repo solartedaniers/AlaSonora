@@ -68,6 +68,11 @@ export class AudioCaptureService {
 
   constructor(private readonly zone: NgZone) {}
 
+  /** Web Audio y micrófono disponibles. Se consulta antes de crear cualquier AudioContext. */
+  static isSupported(): boolean {
+    return typeof AudioContext !== 'undefined' && typeof navigator.mediaDevices?.getUserMedia === 'function';
+  }
+
   /** Aplicado de inmediato al GainNode en vivo si hay una grabación en curso. */
   setGainDb(db: number): void {
     this.gainDb.set(db);

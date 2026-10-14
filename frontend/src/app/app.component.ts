@@ -6,6 +6,7 @@ import { ThemeService } from './core/services/theme.service';
 import { PendingRecordingsSyncService } from './core/services/pending-recordings-sync.service';
 import { CursorGlowService } from './core/services/cursor-glow.service';
 import { AppUpdateService } from './core/services/app-update.service';
+import { RouteMetaService } from './core/services/route-meta.service';
 import { UpdatePromptComponent } from './shared/components/update-prompt/update-prompt.component';
 
 @Component({
@@ -23,6 +24,8 @@ export class AppComponent {
   constructor() {
     // Lo inyecto aquí para que el tema se aplique al arrancar, aunque ninguna pantalla lo use.
     inject(ThemeService);
+    // En servidor y navegador: la descripción de cada ruta debe salir en el HTML generado.
+    inject(RouteMetaService);
     // IndexedDB, Service Worker y eventos de red solo existen en el navegador.
     if (isPlatformBrowser(inject(PLATFORM_ID))) {
       inject(PendingRecordingsSyncService).start();

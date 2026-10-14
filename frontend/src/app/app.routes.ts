@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
 import { environment } from '../environments/environment';
+import { DESCRIPTION_KEY } from './core/services/route-meta.service';
 
 export const routes: Routes = [
   {
@@ -9,18 +10,21 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/landing/landing.component').then((m) => m.LandingComponent),
     title: 'app.tagline',
+    data: { [DESCRIPTION_KEY]: 'seo.landing' },
   },
   {
     path: 'login',
     loadComponent: () =>
       import('./features/auth/login/login.component').then((m) => m.LoginComponent),
     title: 'routeTitle.login',
+    data: { [DESCRIPTION_KEY]: 'seo.login' },
   },
   {
     path: 'register',
     loadComponent: () =>
       import('./features/auth/register/register.component').then((m) => m.RegisterComponent),
     title: 'routeTitle.register',
+    data: { [DESCRIPTION_KEY]: 'seo.register' },
   },
   {
     path: 'forgot-password',
@@ -29,6 +33,7 @@ export const routes: Routes = [
         (m) => m.ForgotPasswordComponent
       ),
     title: 'routeTitle.forgotPassword',
+    data: { [DESCRIPTION_KEY]: 'seo.forgotPassword' },
   },
   {
     path: 'reset-password',
@@ -80,6 +85,7 @@ export const routes: Routes = [
     path: 'map',
     loadComponent: () => import('./features/map/map.component').then((m) => m.MapComponent),
     title: 'routeTitle.map',
+    data: { [DESCRIPTION_KEY]: 'seo.map' },
   },
   {
     path: 'profile',
