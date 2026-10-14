@@ -10,8 +10,22 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "ai")
 public record AiProperties(Engine engine, Executor executor, Catalog catalog, Photo photo) {
 
-    /** Datos de conexión al motor bioacústico Python/FastAPI. */
-    public record Engine(String baseUrl, String apiKey, long timeoutMs, double minConfidence, int maxResults) {
+    /**
+     * Datos de conexión al motor bioacústico Python/FastAPI. healthTimeoutMs es corto (solo despierta y pregunta);
+     * el reintento solo ocurre ante fallos rápidos y si aún cabe en el tiempo de la petición asíncrona.
+     */
+    public record Engine(
+        String baseUrl,
+        String apiKey,
+        long timeoutMs,
+        double minConfidence,
+        int maxResults,
+        long audioFetchTimeoutMs,
+        long healthTimeoutMs,
+        int retryAttempts,
+        long retryBackoffMs,
+        long asyncSafetyMarginMs
+    ) {
     }
 
     /** Umbrales de clasificación de fotos; reutiliza la conexión del motor (baseUrl/apiKey/timeoutMs) porque es el mismo servicio Python, otro endpoint. */
