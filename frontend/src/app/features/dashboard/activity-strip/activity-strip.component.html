@@ -1,0 +1,23 @@
+<figure class="activity">
+  <figcaption class="activity__summary">
+    <span class="activity__pair">
+      <span class="font-data text-3xl font-semibold leading-none text-on-surface">{{ recordings() }}</span>
+      <span class="text-sm text-on-surface-variant">{{ 'dashboard.activity.recordings' | translate }}</span>
+    </span>
+    <span class="activity__dot" aria-hidden="true"></span>
+    <span class="activity__pair">
+      <span class="font-data text-3xl font-semibold leading-none text-on-surface">{{ activeDays() }}</span>
+      <span class="text-sm text-on-surface-variant">{{ 'dashboard.activity.activeDays' | translate }}</span>
+    </span>
+  </figcaption>
+
+  <div class="activity__plate" aria-hidden="true">
+    @for (day of days(); track day.key; let i = $index) {
+      <span class="activity__day" [attr.data-level]="day.level" [style.--i]="i"></span>
+    }
+  </div>
+  <div class="activity__axis font-data text-xs text-on-surface-variant" aria-hidden="true">
+    <span>{{ 'dashboard.activity.start' | translate }}</span>
+    <span>{{ 'dashboard.activity.today' | translate }}</span>
+  </div>
+</figure>

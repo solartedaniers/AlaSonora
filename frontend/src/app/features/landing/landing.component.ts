@@ -11,6 +11,7 @@ import { SpectrogramWaterfallComponent } from '../../shared/components/spectrogr
 import { SyntheticSongSignal } from '../../shared/sonogram/synthetic-song-signal';
 import { PHRASE_MAX_KHZ } from '../../shared/sonogram/song-phrase';
 import { NetworkStatsService } from '../../core/services/network-stats.service';
+import { ViewportService } from '../../core/services/viewport.service';
 import { NetworkStats } from '../../core/models';
 
 interface NetworkReading {
@@ -39,6 +40,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   private readonly statsService = inject(NetworkStatsService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly document = inject(DOCUMENT);
+  readonly viewport = inject(ViewportService);
 
   readonly stats = signal<NetworkStats | null>(null);
   readonly readings = computed<NetworkReading[]>(() => {

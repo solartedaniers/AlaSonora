@@ -5,6 +5,8 @@ import { ConfidenceBadgeComponent } from '../../shared/components/confidence-bad
 import { CountUpComponent } from '../../shared/components/count-up/count-up.component';
 import { InfiniteSpiralComponent, SpiralItem } from '../../shared/components/infinite-spiral/infinite-spiral.component';
 import { SongSonogramComponent } from '../../shared/components/song-sonogram/song-sonogram.component';
+import { RecordingSpectrogramComponent } from '../../shared/components/recording-spectrogram/recording-spectrogram.component';
+import { ActivityStripComponent } from './activity-strip/activity-strip.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
 import { UserService } from '../../core/services/user.service';
@@ -14,11 +16,13 @@ import { Detection, UserStats, speciesDisplayName } from '../../core/models';
 
 interface PersonalReading {
   labelKey: string;
+  icon: string;
   value: number;
   suffixKey?: string;
 }
 
 const RECENT_DETECTIONS = 5;
+const LATEST_PLATE_MAX_KHZ = 12;
 
 @Component({
   selector: 'app-dashboard',
@@ -30,6 +34,8 @@ const RECENT_DETECTIONS = 5;
     CountUpComponent,
     InfiniteSpiralComponent,
     SongSonogramComponent,
+    RecordingSpectrogramComponent,
+    ActivityStripComponent,
     TranslatePipe,
     SpeciesNamePipe,
   ],
@@ -42,21 +48,26 @@ export class DashboardComponent implements OnInit {
   private readonly detectionsService = inject(DetectionsService);
   private readonly i18n = inject(I18nService);
 
+  /** La miniatura del canto usa la misma banda que Grabar y Resultado. */
+  readonly latestMaxKhz = LATEST_PLATE_MAX_KHZ;
+
   /** Abre Grabar directo en la pestaña de subir archivo. */
   readonly uploadTabQuery = { tab: 'upload' };
 
   readonly stats = signal<UserStats | null>(null);
-  readonly latest = signal<Detection | null>(null);
-  readonly recent = signal<Detection[]>([]);
+  /** Todo mi historial, de la más reciente a la más antigua; null mientras carga. */
+  readonly mine = signal<Detection[] | null>(null);
+  readonly recent = computed(() => (this.mine() ?? []).slice(0, RECENT_DETECTIONS));
+  readonly latest = computed(() => this.mine()?.[0] ?? null);
 
   readonly readings = computed<PersonalReading[]>(() => {
     const s = this.stats();
     if (!s) return [];
     return [
-      { labelKey: 'dashboard.metrics.species', value: s.distinctSpecies },
-      { labelKey: 'dashboard.metrics.recordings', value: s.totalRecordings },
-      { labelKey: 'dashboard.metrics.streak', value: s.activeStreakDays },
-      { labelKey: 'dashboard.metrics.confidence', value: s.averageConfidence, suffixKey: 'units.percent' },
+      { labelKey: 'dashboard.metrics.species', icon: 'flutter_dash', value: s.distinctSpecies },
+      { labelKey: 'dashboard.metrics.recordings', icon: 'mic', value: s.totalRecordings },
+      { labelKey: 'dashboard.metrics.streak', icon: 'forest', value: s.activeStreakDays },
+      { labelKey: 'dashboard.metrics.confidence', icon: 'check_circle', value: s.averageConfidence, suffixKey: 'units.percent' },
     ];
   });
 
@@ -75,8 +86,7 @@ export class DashboardComponent implements OnInit {
     // Sin catch, un fallo de las métricas impediría cargar también las
     // detecciones recientes; si fallan, la sección simplemente no se muestra.
     this.user.getStats().then((stats) => this.stats.set(stats)).catch(() => undefined);
-    const recent = await this.detectionsService.getRecent(RECENT_DETECTIONS);
-    this.recent.set(recent);
-    this.latest.set(recent[0] ?? null);
+    // Una sola petición alimenta el carrusel, la última detección y la franja de actividad.
+    this.mine.set(await this.detectionsService.getMineNewestFirst());
   }
 }

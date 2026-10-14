@@ -7,4 +7,9 @@ export const environment = {
   // alcance actual. El backend la conserva (PHOTO_CLASSIFICATION_ENABLED), así que
   // basta poner esto en true para reactivarla.
   photoIdentificationEnabled: false,
+  // Cuenta de ejemplo que pidió el profesor: solo se muestra como placeholder en el login.
+  demoAccount: {
+    email: 'omairalimas05@gmail.com',
+    password: 'Omaira25*',
+  },
 };

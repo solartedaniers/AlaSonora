@@ -80,17 +80,217 @@
   }
 }
 
-// Última detección: una línea de lectura entre dos filetes, no una tarjeta.
+// Última detección: su nombre y, al lado, el sonograma real de esa grabación.
 .dashboard-latest {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: calc(var(--space-unit) * 4);
-  padding-block: calc(var(--space-unit) * 6);
-  border-block: var(--stroke-hairline) solid var(--color-outline-variant);
+  gap: calc(var(--space-unit) * 4) calc(var(--space-unit) * 8);
+  padding: calc(var(--space-unit) * 5);
+  border: var(--stroke-hairline) solid var(--color-outline-variant);
+  border-inline-start: var(--stroke-accent) solid var(--color-sky);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--color-sky) 7%, var(--color-surface-container-lowest));
+
+  @screen sm {
+    padding: calc(var(--space-unit) * 6);
+  }
+}
+
+.dashboard-latest__plate {
+  position: relative;
+  flex: 1 1 100%;
+  height: calc(var(--space-unit) * 24);
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border: var(--stroke-hairline) solid var(--color-outline-variant);
+  background: var(--color-spectro-floor);
+
+  @screen md {
+    flex: 0 1 45%;
+  }
+}
+
+// La línea azufre recorre el canto una vez al aparecer y otra vez al pasar el cursor o enfocar.
+.dashboard-latest__sweep {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: var(--stroke-thick);
+    background: var(--color-sulfur);
+    box-shadow: 0 0 calc(var(--space-unit) * 3) var(--color-sulfur);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: latest-sweep calc(var(--duration-pulse) * 1.2) var(--ease-in-out) var(--duration-slow) 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dashboard-latest:hover .dashboard-latest__sweep,
+  .dashboard-latest:focus-visible .dashboard-latest__sweep {
+    animation-name: latest-sweep-again;
+    animation-delay: 0s;
+  }
+  // Los trazos se encienden mientras la línea pasa.
+  .dashboard-latest:hover app-recording-spectrogram,
+  .dashboard-latest:focus-visible app-recording-spectrogram {
+    animation: latest-glow calc(var(--duration-pulse) * 1.2) var(--ease-in-out);
+  }
+}
+
+@keyframes latest-sweep {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+@keyframes latest-sweep-again {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+@keyframes latest-glow {
+  50% {
+    filter: saturate(1.6) brightness(1.08);
+  }
 }
 
 a.dashboard-latest:hover {
   border-color: var(--color-primary);
+  border-inline-start-color: var(--color-sky);
+}
+
+// --- Lecturas con plumaje: cada métrica lleva su color en el ícono, el filete y un velo suave.
+.dashboard-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: calc(var(--space-unit) * 3);
+  margin: 0;
+
+  @screen lg {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: calc(var(--space-unit) * 4);
+  }
+}
+
+.dashboard-metric {
+  --plumage: var(--color-cyan);
+  --plumage-ink: var(--color-cyan-ink);
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: calc(var(--space-unit) * 1);
+  padding: calc(var(--space-unit) * 4);
+  border-radius: var(--radius-xl);
+  border-inline-start: var(--stroke-accent) solid var(--plumage);
+  background: color-mix(in srgb, var(--plumage) 9%, var(--color-surface-container-lowest));
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out);
+
+  @screen sm {
+    padding: calc(var(--space-unit) * 5);
+  }
+
+  &:nth-child(2) {
+    --plumage: var(--color-sulfur);
+    --plumage-ink: var(--color-on-sulfur);
+  }
+  &:nth-child(3) {
+    --plumage: var(--color-coral);
+    --plumage-ink: var(--color-coral-ink);
+  }
+  &:nth-child(4) {
+    --plumage: var(--color-moss);
+    --plumage-ink: var(--color-moss-ink);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(calc(var(--space-unit) * -1));
+      box-shadow: var(--shadow-lg);
+    }
+  }
+}
+
+// El ícono va primero en pantalla aunque en el DOM quede antes del término (column-reverse).
+.dashboard-metric__icon {
+  order: 3;
+  display: grid;
+  place-items: center;
+  width: calc(var(--space-unit) * 10);
+  height: calc(var(--space-unit) * 10);
+  margin-block-end: calc(var(--space-unit) * 2);
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--plumage) 22%, transparent);
+  color: var(--plumage-ink);
+  font-size: var(--text-xl);
+}
+
+// --- Subir archivo: ícono en un círculo cielo y elevación difusa al pasar.
+.dashboard-upload__icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: calc(var(--space-unit) * 14);
+  height: calc(var(--space-unit) * 14);
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-sky) 22%, transparent);
+  color: var(--color-sky-ink);
+}
+
+.dashboard-upload,
+.dashboard-latest {
+  transition:
+    border-color var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out);
+
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(calc(var(--space-unit) * -1));
+      box-shadow: var(--shadow-lg);
+    }
+  }
+}
+
+// --- Banda de grabar: una franja espectral de plumaje en el borde inferior.
+.dashboard-record::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: var(--stroke-accent);
+  background: linear-gradient(
+    to right,
+    var(--color-cyan),
+    var(--color-sky) 30%,
+    var(--color-sulfur) 60%,
+    var(--color-coral)
+  );
+  pointer-events: none;
 }

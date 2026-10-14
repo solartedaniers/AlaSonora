@@ -35,6 +35,13 @@
   }
 }
 
+.landing-hero__phrase {
+  margin-inline: var(--space-gutter);
+  color: var(--color-primary);
+  --sonogram-ink-opacity: 0.55;
+  --sonogram-harmonic-opacity: 0.2;
+}
+
 .landing-hero__plate {
   // En móvil la placa respeta los márgenes; desde lg sangra hasta el borde derecho.
   margin: 0 var(--space-gutter);

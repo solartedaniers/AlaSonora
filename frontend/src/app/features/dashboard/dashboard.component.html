@@ -34,7 +34,9 @@
       </a>
 
       <a routerLink="/record" [queryParams]="uploadTabQuery" class="dashboard-upload lg:col-span-4" data-glow>
-        <span class="material-symbols-outlined text-3xl text-primary" aria-hidden="true">upload_file</span>
+        <span class="dashboard-upload__icon" aria-hidden="true">
+          <span class="material-symbols-outlined text-3xl">upload_file</span>
+        </span>
         <span class="flex flex-col gap-1">
           <span class="font-display text-lg font-extrabold">{{ 'dashboard.uploadCta' | translate }}</span>
           <span class="text-sm text-on-surface-variant font-data">{{ 'dashboard.uploadCtaBody' | translate }}</span>
@@ -49,9 +51,11 @@
           <p class="eyebrow-label">{{ 'dashboard.metricsEyebrow' | translate }}</p>
           <h2 id="dashboard-metrics-title" class="mt-2 text-3xl font-extrabold tracking-display">{{ 'dashboard.personalStatsTitle' | translate }}</h2>
         </div>
-        <dl class="readings">
+        <!-- Cada lectura con su plumaje: el color acompaña al ícono y al filete, nunca es la única señal. -->
+        <dl class="dashboard-metrics">
           @for (reading of readings(); track reading.labelKey) {
-            <div class="readings__item">
+            <div class="dashboard-metric" data-glow>
+              <span class="dashboard-metric__icon material-symbols-outlined" aria-hidden="true">{{ reading.icon }}</span>
               <dt class="text-sm text-on-surface-variant">{{ reading.labelKey | translate }}</dt>
               <dd class="m-0 font-data text-5xl font-semibold leading-none">
                 <app-count-up [value]="reading.value" [suffix]="reading.suffixKey ? (reading.suffixKey | translate) : ''" />
@@ -66,14 +70,24 @@
     <section aria-labelledby="dashboard-latest-title" class="reveal flex flex-col gap-4">
       <h2 id="dashboard-latest-title" class="text-3xl font-extrabold tracking-display">{{ 'dashboard.lastDetection' | translate }}</h2>
       @if (latest(); as d) {
-        <a [routerLink]="['/result', d.id]" class="dashboard-latest">
-          <span class="flex flex-col gap-1 min-w-0">
+        <a [routerLink]="['/result', d.id]" class="dashboard-latest" data-glow>
+          <span class="flex flex-col gap-2 min-w-0">
             <span class="font-display text-2xl font-extrabold truncate">{{ d.species | speciesName }}</span>
             <span class="italic text-on-surface-variant truncate">{{ d.species.scientificName }}</span>
+            <span class="flex flex-wrap items-center gap-3 pt-1">
+              <app-confidence-badge [value]="d.confidence" />
+              <span class="material-symbols-outlined text-primary hidden sm:inline" aria-hidden="true">chevron_right</span>
+            </span>
           </span>
-          <span class="flex flex-wrap items-center gap-3">
-            <app-confidence-badge [value]="d.confidence" />
-            <span class="material-symbols-outlined text-primary hidden sm:inline" aria-hidden="true">chevron_right</span>
+          <!-- El canto real de esa detección: se calcula solo cuando la tarjeta entra en pantalla. -->
+          <span class="dashboard-latest__plate">
+            @defer (on viewport) {
+              <app-recording-spectrogram [audioUrl]="d.audioUrl" [maxKhz]="latestMaxKhz" />
+              <!-- Al entrar en pantalla (y al pasar el cursor) una línea de lectura recorre el canto. -->
+              <span class="dashboard-latest__sweep" aria-hidden="true"></span>
+            } @placeholder {
+              <span class="block w-full h-full"></span>
+            }
           </span>
         </a>
       } @else {
@@ -83,6 +97,17 @@
         </p>
       }
     </section>
+
+    <!-- Actividad: tus grabaciones de las últimas semanas, día por día -->
+    @if (mine(); as all) {
+      <section aria-labelledby="dashboard-activity-title" class="reveal flex flex-col gap-6">
+        <div>
+          <p class="eyebrow-label">{{ 'dashboard.activity.eyebrow' | translate }}</p>
+          <h2 id="dashboard-activity-title" class="mt-2 text-3xl font-extrabold tracking-display">{{ 'dashboard.activity.title' | translate }}</h2>
+        </div>
+        <app-activity-strip [detections]="all" />
+      </section>
+    }
 
     <!-- Especies destacadas: el carrusel 3D sobre la mesa de luz -->
     <section aria-labelledby="dashboard-spotlight-title" class="reveal flex flex-col gap-6">

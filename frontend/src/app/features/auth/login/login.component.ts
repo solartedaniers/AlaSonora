@@ -5,10 +5,10 @@ import { isAuthApiError } from '@supabase/supabase-js';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { NavHeaderComponent } from '../../../shared/components/nav-header/nav-header.component';
 import { SiteFooterComponent } from '../../../shared/components/site-footer/site-footer.component';
-import { FieldBackdropComponent } from '../../../shared/components/field-backdrop/field-backdrop.component';
 import { AuthPanelComponent } from '../auth-panel/auth-panel.component';
 import { UserService } from '../../../core/services/user.service';
 import { ProfileService } from '../../../core/services/profile.service';
+import { environment } from '../../../../environments/environment';
 
 type LoginError = 'invalid-credentials' | 'email-not-confirmed';
 
@@ -21,7 +21,6 @@ type LoginError = 'invalid-credentials' | 'email-not-confirmed';
     TranslatePipe,
     NavHeaderComponent,
     SiteFooterComponent,
-    FieldBackdropComponent,
     AuthPanelComponent,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -33,6 +32,8 @@ export class LoginComponent {
   private readonly profileService = inject(ProfileService);
   private readonly router = inject(Router);
 
+  /** Solo para los placeholders: el formulario y la validación no cambian. */
+  readonly demoAccount = environment.demoAccount;
   readonly showPassword = signal(false);
   readonly submitError = signal<LoginError | null>(null);
   readonly submitting = signal(false);

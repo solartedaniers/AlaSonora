@@ -20,10 +20,12 @@
   padding: calc(var(--space-unit) * 10) var(--space-gutter) calc(var(--space-unit) * 8);
   border: var(--stroke-hairline) solid var(--color-outline-variant);
   border-radius: var(--radius-3xl);
-  // Mesa de luz con focos de plumaje: cian por la izquierda, coral por la derecha.
+  // Mesa de luz con focos de plumaje: cian y coral a los lados, musgo y cielo desde arriba.
   background:
     radial-gradient(ellipse 40% 55% at 8% 40%, color-mix(in srgb, var(--color-cyan) 22%, transparent), transparent 70%),
     radial-gradient(ellipse 40% 55% at 92% 40%, color-mix(in srgb, var(--color-coral) 18%, transparent), transparent 70%),
+    radial-gradient(ellipse 30% 35% at 22% 0%, color-mix(in srgb, var(--color-moss) 16%, transparent), transparent 70%),
+    radial-gradient(ellipse 30% 35% at 78% 0%, color-mix(in srgb, var(--color-sky) 18%, transparent), transparent 70%),
     radial-gradient(
       ellipse 75% 70% at 50% 45%,
       var(--color-surface-container-lowest) 0%,
@@ -89,11 +91,10 @@
   margin: 0;
   // Signo negativo: con el giro del anillo las especies pasan al frente en orden 1 → 2 → 3.
   transform: rotateY(calc(var(--i) * (-360deg / var(--count)))) translateZ(var(--ring-radius));
-  // Las tarjetas de espaldas no se dibujan: nunca se ve el nombre en espejo. El giro no cambia.
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
+  // La tarjeta es su propio contexto 3D (sin overflow, que lo aplanaría): así su etiqueta
+  // puede ocultar su cara trasera y el nombre nunca se lee en espejo. El giro no cambia.
+  transform-style: preserve-3d;
   border-radius: var(--radius-xl);
-  overflow: hidden;
   background: var(--color-surface-container-lowest);
   box-shadow: var(--shadow-xl);
   outline: var(--stroke-thin) solid var(--color-surface-container-lowest);
@@ -113,12 +114,17 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  border-radius: inherit;
 }
 
 .spiral-item__label {
   position: absolute;
   inset-inline: 0;
   bottom: 0;
+  border-end-start-radius: inherit;
+  border-end-end-radius: inherit;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
   padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 2);
   background: var(--color-surface-container-lowest);
   color: var(--color-on-surface);

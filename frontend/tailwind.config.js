@@ -51,6 +51,8 @@ module.exports = {
     ringOpacity: false,
   },
   theme: {
+    // Mismos cortes que lee ViewportService en TypeScript: una sola fuente para CSS y código.
+    screens: require('./src/app/theme/breakpoints.json'),
     colors: {
       transparent: 'transparent',
       current: 'currentColor',

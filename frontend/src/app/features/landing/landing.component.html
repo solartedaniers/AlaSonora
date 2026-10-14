@@ -5,8 +5,7 @@
     <!-- Hero: el sonograma es el protagonista -->
     <section class="landing-hero" aria-labelledby="landing-title">
       <div class="px-gutter lg:pe-0">
-        <p class="eyebrow-label">{{ 'landing.eyebrow' | translate }}</p>
-        <h1 id="landing-title" class="mt-4 sm:mt-6 text-6xl font-extrabold tracking-display leading-none">
+        <h1 id="landing-title" class="text-6xl font-extrabold tracking-display leading-none">
           <span class="block">{{ 'landing.titleLead' | translate }}</span>
           <span class="landing-hero__accent">{{ 'landing.titleAccent' | translate }}</span>
         </h1>
@@ -23,32 +22,36 @@
         </div>
       </div>
 
-      <figure class="landing-hero__plate">
-        <!-- Cascada 3D del canto. El servidor muestra el sonograma estático; el navegador lo cambia por la cascada viva. -->
+      <!-- Cascada 3D del canto, solo desde md: en el celular ni se crea ni corre su animación.
+           El servidor y el primer render muestran el sonograma estático; luego entra la cascada viva. -->
+      <div class="landing-hero__plate hidden md:block">
         <div class="landing-hero__screen">
-          @defer (on immediate) {
-            <app-spectrogram-waterfall
-              class="w-full h-full"
-              [getFrame]="heroFrame"
-              [initialColumns]="heroInitialRows"
-              [rows]="heroRows"
-              [maxKhz]="maxKhz"
-              [stepKhz]="freqStepKhz"
-              [windowSeconds]="windowSeconds"
-              ariaLabelKey="landing.demo.plateLabel"
-            />
-          } @placeholder {
+          @if (viewport.mdUp()) {
+            @defer (on immediate) {
+              <app-spectrogram-waterfall
+                class="w-full h-full"
+                [getFrame]="heroFrame"
+                [initialColumns]="heroInitialRows"
+                [rows]="heroRows"
+                [maxKhz]="maxKhz"
+                [stepKhz]="freqStepKhz"
+                [windowSeconds]="windowSeconds"
+                ariaLabelKey="landing.demo.plateLabel"
+              />
+            } @placeholder {
+              <div class="landing-hero__static" role="img" [attr.aria-label]="'landing.demo.plateLabel' | translate">
+                <app-song-sonogram [band]="false" />
+              </div>
+            }
+          } @else {
             <div class="landing-hero__static" role="img" [attr.aria-label]="'landing.demo.plateLabel' | translate">
               <app-song-sonogram [band]="false" />
             </div>
           }
         </div>
-
-        <figcaption class="mt-3 flex items-start gap-2 text-sm text-on-surface-variant">
-          <span class="mt-1.5 w-4 h-1.5 shrink-0 rounded-full bg-sulfur" aria-hidden="true"></span>
-          {{ 'landing.demo.label' | translate }}
-        </figcaption>
-      </figure>
+      </div>
+      <!-- En el celular, la frase del canto como firma bajo las acciones: estática, sin costo. -->
+      <app-song-sonogram class="landing-hero__phrase md:hidden" [band]="false" />
     </section>
 
     <!-- Lecturas reales de la red. @defer (on viewport): el HTML estático no espera estos datos vivos. -->

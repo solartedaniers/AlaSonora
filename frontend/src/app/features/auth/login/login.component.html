@@ -5,7 +5,6 @@
     <app-auth-panel />
 
     <section class="auth-layout__form">
-      <app-field-backdrop class="lg:hidden" />
 
       <div class="relative z-10 w-full max-w-md flex flex-col gap-6">
         <div>
@@ -29,6 +28,11 @@
         }
 
         <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-5">
+          <!-- Cuenta de ejemplo para la revisión: solo se muestra, nunca se autollena. -->
+          <p id="login-demo-hint" class="login-demo-hint">
+            <span class="material-symbols-outlined shrink-0 text-xl" aria-hidden="true">badge</span>
+            <span><strong>{{ 'auth.login.demoTitle' | translate }}</strong> {{ 'auth.login.demoHint' | translate }}</span>
+          </p>
           <div class="flex flex-col gap-2">
             <label for="email" class="field-label">{{ 'auth.login.email' | translate }}</label>
             <input
@@ -36,8 +40,9 @@
               type="email"
               autocomplete="email"
               formControlName="email"
-              class="field-input"
-              [placeholder]="'auth.login.emailPlaceholder' | translate"
+              class="field-input field-input--demo"
+              [placeholder]="demoAccount.email"
+              aria-describedby="login-demo-hint"
               [attr.aria-invalid]="form.controls.email.invalid && form.controls.email.touched"
             />
           </div>
@@ -53,8 +58,9 @@
                 [type]="showPassword() ? 'text' : 'password'"
                 autocomplete="current-password"
                 formControlName="password"
-                class="field-input pe-14"
-                [placeholder]="'auth.passwordPlaceholder' | translate"
+                class="field-input field-input--demo pe-14"
+                [placeholder]="demoAccount.password"
+                aria-describedby="login-demo-hint"
                 [attr.aria-invalid]="form.controls.password.invalid && form.controls.password.touched"
               />
               <button

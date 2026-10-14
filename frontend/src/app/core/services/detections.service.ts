@@ -63,11 +63,10 @@ export class DetectionsService {
     }
   }
 
-  async getRecent(limit = 5): Promise<Detection[]> {
+  /** Todo mi historial, de la más reciente a la más antigua (una sola petición a /mine). */
+  async getMineNewestFirst(): Promise<Detection[]> {
     const mine = await this.getMine();
-    return [...mine]
-      .sort((a, b) => new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime())
-      .slice(0, limit);
+    return [...mine].sort((a, b) => new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime());
   }
 
   /** Historial de cualquier usuario, solo para el panel de administración (GET /api/admin/users/{id}/detections). */

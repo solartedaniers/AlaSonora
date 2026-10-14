@@ -6,7 +6,6 @@ import { NavHeaderComponent } from '../../../shared/components/nav-header/nav-he
 import { SiteFooterComponent } from '../../../shared/components/site-footer/site-footer.component';
 import { LettersOnlyDirective } from '../../../shared/directives/letters-only.directive';
 import { AuthPanelComponent } from '../auth-panel/auth-panel.component';
-import { FieldBackdropComponent } from '../../../shared/components/field-backdrop/field-backdrop.component';
 import { UserService } from '../../../core/services/user.service';
 import { nameValidator } from '../../../core/validators/name.validator';
 import { ObserverRole } from '../../../core/models';
@@ -24,7 +23,6 @@ type PasswordTier = 'empty' | 'weak' | 'medium' | 'strong' | 'excellent';
     SiteFooterComponent,
     LettersOnlyDirective,
     AuthPanelComponent,
-    FieldBackdropComponent,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './register.component.html',

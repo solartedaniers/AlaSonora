@@ -4,7 +4,6 @@ import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { NavHeaderComponent } from '../../../shared/components/nav-header/nav-header.component';
 import { SiteFooterComponent } from '../../../shared/components/site-footer/site-footer.component';
-import { FieldBackdropComponent } from '../../../shared/components/field-backdrop/field-backdrop.component';
 import { AuthPanelComponent } from '../auth-panel/auth-panel.component';
 import { UserService } from '../../../core/services/user.service';
 
@@ -17,7 +16,6 @@ import { UserService } from '../../../core/services/user.service';
     TranslatePipe,
     NavHeaderComponent,
     SiteFooterComponent,
-    FieldBackdropComponent,
     AuthPanelComponent,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
