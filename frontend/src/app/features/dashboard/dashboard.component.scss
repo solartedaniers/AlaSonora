@@ -12,7 +12,7 @@
     min-height: calc(var(--space-unit) * 36);
     padding: calc(var(--space-unit) * 8);
   }
-  border: 1px solid var(--color-chrome-line);
+  border: var(--stroke-hairline) solid var(--color-chrome-line);
   overflow: hidden;
   box-shadow: var(--shadow-lg);
   transition: box-shadow var(--duration-base) var(--ease-out);
@@ -22,15 +22,43 @@
   }
 }
 
+// En flujo, no encima: entre el texto y la flecha. Cede espacio antes que el texto y en el celular no aparece.
 .dashboard-record__sonogram {
   --sonogram-ink-opacity: 0.3;
   --sonogram-harmonic-opacity: 0.12;
-  position: absolute;
-  inset-inline-end: calc(var(--space-unit) * -8);
-  bottom: calc(var(--space-unit) * -6);
-  width: min(36rem, 70%);
+  display: none;
+  flex: 1 100 calc(var(--space-unit) * 64);
+  min-width: 0;
+  max-width: calc(var(--space-unit) * 80);
+  margin-inline-start: auto;
+  // Sin espacio se reduce a cero y no se dibuja nada fuera de su caja.
+  overflow: hidden;
   color: var(--color-on-chrome);
   pointer-events: none;
+
+  @screen md {
+    display: block;
+  }
+}
+
+// Saludo: texto a la izquierda y, desde lg, la frase del canto en su propia columna.
+.dashboard-greeting {
+  display: grid;
+  gap: calc(var(--space-unit) * 8);
+  align-items: end;
+
+  @screen lg {
+    grid-template-columns: minmax(0, 1fr) minmax(0, calc(var(--space-unit) * 96));
+  }
+}
+
+.dashboard-greeting__sonogram {
+  display: none;
+  color: var(--color-primary);
+
+  @screen lg {
+    display: block;
+  }
 }
 
 .dashboard-upload {
@@ -43,7 +71,7 @@
     padding: calc(var(--space-unit) * 8);
   }
   border-radius: var(--radius-3xl);
-  border: 1px solid var(--color-outline-variant);
+  border: var(--stroke-hairline) solid var(--color-outline-variant);
   background: var(--color-surface-container-lowest);
   transition: border-color var(--duration-base) var(--ease-out);
 
@@ -60,7 +88,7 @@
   justify-content: space-between;
   gap: calc(var(--space-unit) * 4);
   padding-block: calc(var(--space-unit) * 6);
-  border-block: 1px solid var(--color-outline-variant);
+  border-block: var(--stroke-hairline) solid var(--color-outline-variant);
 }
 
 a.dashboard-latest:hover {

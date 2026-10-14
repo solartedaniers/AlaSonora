@@ -55,7 +55,8 @@
               </div>
             </div>
 
-            <div class="flex flex-wrap items-center gap-2">
+            <!-- En el celular las cuatro acciones van en una cuadrícula 2×2, no apiladas. -->
+            <div class="admin-actions">
               <button type="button" class="btn btn--quiet min-h-touch px-4 text-sm" (click)="openHistory(u)">
                 <span class="material-symbols-outlined text-xl" aria-hidden="true">library_music</span>
                 {{ 'admin.actions.viewHistory' | translate }}

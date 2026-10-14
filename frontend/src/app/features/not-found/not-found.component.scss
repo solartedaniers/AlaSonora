@@ -1,0 +1,66 @@
+.not-found {
+  flex: 1;
+  display: grid;
+  gap: calc(var(--space-unit) * 12);
+  align-content: start;
+
+  @screen lg {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    align-items: center;
+    align-content: center;
+  }
+}
+
+.not-found__figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-unit) * 3);
+}
+
+.not-found__plate-wrap {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+// Mismo papel que la placa de Grabar, con la cuadrícula de bandas pero sin energía.
+.not-found__plate {
+  position: relative;
+  height: clamp(calc(var(--space-unit) * 48), 36dvh, calc(var(--space-unit) * 88));
+  border: var(--stroke-hairline) solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(
+      to top,
+      transparent 0 calc(100% / 3 - var(--stroke-hairline)),
+      var(--color-outline-variant) calc(100% / 3 - var(--stroke-hairline)) calc(100% / 3)
+    ),
+    var(--color-spectro-floor);
+}
+
+// La línea de lectura recorre la placa buscando un canto que no aparece.
+// Muevo una capa del ancho de la placa con transform (sin recalcular el layout).
+.not-found__reading-line {
+  position: absolute;
+  inset: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: calc(var(--space-unit) * 0.5);
+    background: var(--color-sulfur);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: not-found-scan calc(var(--duration-pulse) * 3) var(--ease-standard) infinite alternate;
+  }
+}
+
+@keyframes not-found-scan {
+  to {
+    transform: translateX(calc(100% - var(--space-unit) * 0.5));
+  }
+}

@@ -89,11 +89,20 @@ app.get(/.*/, (req, res, next) => {
     .catch(next);
 });
 
+// Solo los archivos con hash en el nombre (main-, chunk-, styles-…) cambian de nombre en cada
+// build y pueden guardarse un año. El resto (sw.js, ngsw.json, manifest, i18n, íconos, fuentes)
+// conserva su nombre: se revalida en cada visita para que un despliegue nuevo llegue de inmediato.
+const HASHED_ASSET = /(^|[\\/])(chunk|main|polyfills|styles|worker)-[\w-]{8,9}\.(js|css)$|[\\/]media[\\/]/;
+const REVALIDATE = 'no-cache';
+
 app.use(
   express.static(browserDistFolder, {
     maxAge: '1y',
     index: false,
     redirect: false,
+    setHeaders: (res, path) => {
+      if (!HASHED_ASSET.test(path)) res.setHeader('Cache-Control', REVALIDATE);
+    },
   }),
 );
 

@@ -35,6 +35,10 @@ interface NavItem {
   },
   templateUrl: './nav-header.component.html',
   styles: `
+    /* Nombre propio en las transiciones de ruta: la cabecera no se funde al cambiar de pantalla. */
+    :host {
+      view-transition-name: app-header;
+    }
     .notifications-panel {
       max-width: calc(100vw - var(--space-gutter) * 2);
     }
@@ -43,8 +47,8 @@ interface NavItem {
       height: calc(var(--space-unit) * 1.5);
       background: repeating-linear-gradient(
         to right,
-        var(--color-on-chrome-variant) 0 1px,
-        transparent 1px calc(var(--space-unit) * 4)
+        var(--color-on-chrome-variant) 0 var(--stroke-hairline),
+        transparent var(--stroke-hairline) calc(var(--space-unit) * 4)
       );
     }
     .header-scale__reading {

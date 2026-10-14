@@ -2,7 +2,7 @@
   display: block;
   // Mecánica original del anillo: perspectiva, vuelta completa y giro continuo.
   --spin-duration: 24s;
-  --perspective: 1200px;
+  --perspective: var(--perspective-stage);
   // Marco y radio fluidos: en 320 px el anillo cabe sin desbordar.
   --item-size: clamp(6rem, 20vw, 12rem);
 }
@@ -18,7 +18,7 @@
   justify-items: center;
   gap: calc(var(--space-unit) * 6);
   padding: calc(var(--space-unit) * 10) var(--space-gutter) calc(var(--space-unit) * 8);
-  border: 1px solid var(--color-outline-variant);
+  border: var(--stroke-hairline) solid var(--color-outline-variant);
   border-radius: var(--radius-3xl);
   // Mesa de luz con focos de plumaje: cian por la izquierda, coral por la derecha.
   background:
@@ -42,7 +42,7 @@
   position: absolute;
   inset-inline: 0;
   top: calc(var(--space-unit) * 10 + var(--item-size) * 0.8);
-  height: 1px;
+  height: var(--stroke-hairline);
   background: var(--color-outline-variant);
   z-index: -1;
 }
@@ -89,16 +89,19 @@
   margin: 0;
   // Signo negativo: con el giro del anillo las especies pasan al frente en orden 1 → 2 → 3.
   transform: rotateY(calc(var(--i) * (-360deg / var(--count)))) translateZ(var(--ring-radius));
+  // Las tarjetas de espaldas no se dibujan: nunca se ve el nombre en espejo. El giro no cambia.
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
   border-radius: var(--radius-xl);
   overflow: hidden;
   background: var(--color-surface-container-lowest);
   box-shadow: var(--shadow-xl);
-  outline: 2px solid var(--color-surface-container-lowest);
+  outline: var(--stroke-thin) solid var(--color-surface-container-lowest);
   transition: outline-color var(--duration-base) var(--ease-out);
 }
 
 .spiral-item.is-front {
-  outline: 3px solid var(--color-sulfur);
+  outline: var(--stroke-thick) solid var(--color-sulfur);
   // La especie al frente recibe la luz de la mesa.
   box-shadow:
     var(--shadow-xl),
@@ -229,7 +232,7 @@
     position: absolute;
     left: 50%;
     bottom: calc(var(--space-unit) * 2);
-    width: 2px;
+    width: var(--stroke-thin);
     height: calc(var(--space-unit) * 3);
     transform: translateX(-50%);
     background: var(--color-outline);

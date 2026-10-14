@@ -1,5 +1,7 @@
 <div class="flex flex-col w-full min-h-dvh bg-surface text-on-surface">
   <app-nav-header />
+  <!-- El mapa no tiene titular visible; este h1 le da nombre a la página para lectores de pantalla. -->
+  <h1 class="sr-only">{{ 'routeTitle.map' | translate }}</h1>
 
   <!-- Barra de herramientas: el buscador ocupa su propia fila hasta que hay espacio -->
   <section class="map-toolbar" [attr.aria-label]="'common.filter' | translate">

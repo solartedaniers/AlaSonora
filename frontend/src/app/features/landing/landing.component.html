@@ -205,7 +205,8 @@
 
     <!-- Cierre -->
     <section class="chrome sing-on-hover relative overflow-hidden" aria-labelledby="closing-title">
-      <app-song-sonogram class="landing-closing__sonogram absolute inset-x-0 bottom-0 opacity-60" aria-hidden="true" />
+      <!-- El sonograma va a la derecha, sin cruzar el titular; sobre la tinta, sin banda de color. -->
+      <app-song-sonogram class="landing-closing__sonogram absolute bottom-0 opacity-60" [band]="false" aria-hidden="true" />
       <div class="reveal relative max-w-7xl mx-auto px-gutter py-section flex flex-col items-start gap-8">
         <h2 id="closing-title" class="max-w-3xl text-4xl sm:text-5xl font-extrabold tracking-display">{{ 'landing.closing.title' | translate }}</h2>
         <a routerLink="/register" class="btn btn--sulfur min-h-14 w-full sm:w-auto px-5 sm:px-8 sm:text-lg text-center leading-tight text-balance sm:whitespace-nowrap">

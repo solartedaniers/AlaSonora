@@ -51,7 +51,7 @@
   // En el celular la altura sigue al ancho: la cascada se ve completa sin ocupar toda la pantalla.
   height: clamp(calc(var(--space-unit) * 56), 72vw, calc(var(--space-unit) * 88));
   background: var(--color-spectro-floor);
-  border: 1px solid var(--color-outline-variant);
+  border: var(--stroke-hairline) solid var(--color-outline-variant);
   border-radius: var(--radius-2xl);
   overflow: hidden;
 
@@ -88,7 +88,7 @@
 .landing-step {
   position: relative;
   padding-inline-start: calc(var(--space-unit) * 5);
-  border-inline-start: 2px solid var(--color-primary);
+  border-inline-start: var(--stroke-thin) solid var(--color-primary);
 
   @screen md {
     // Cada paso sube una banda: el recorrido se lee como un canto ascendente.
@@ -105,7 +105,7 @@
 
 .landing-step__note {
   position: absolute;
-  inset-inline-start: -2px;
+  inset-inline-start: calc(var(--stroke-thin) * -1);
   top: 0;
   width: calc(var(--space-unit) * 10);
   height: calc(var(--space-unit) * 1.5);
@@ -123,7 +123,7 @@
   min-height: var(--touch-target);
   padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 4);
   text-align: start;
-  border-inline-start: 4px solid var(--color-outline-variant);
+  border-inline-start: var(--stroke-accent) solid var(--color-outline-variant);
   color: var(--color-on-surface-variant);
   transition:
     border-color var(--duration-fast) var(--ease-out),
@@ -146,7 +146,7 @@
   place-items: center;
   padding: calc(var(--space-unit) * 8);
   background: var(--color-surface);
-  border: 1px solid var(--color-outline-variant);
+  border: var(--stroke-hairline) solid var(--color-outline-variant);
   border-radius: var(--radius-xl);
   overflow: hidden;
 }
@@ -158,7 +158,14 @@
 
 // --- Cierre.
 .landing-closing__sonogram {
+  display: none;
+  inset-inline-end: 0;
+  width: 50%;
   --sonogram-ink-opacity: 0.35;
+
+  @screen lg {
+    display: block;
+  }
   --sonogram-harmonic-opacity: 0.15;
   color: var(--color-on-chrome);
 }

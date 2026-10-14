@@ -4,7 +4,6 @@ import { NavHeaderComponent } from '../../shared/components/nav-header/nav-heade
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
 import { CountUpComponent } from '../../shared/components/count-up/count-up.component';
 import { InfiniteSpiralComponent, SpiralItem } from '../../shared/components/infinite-spiral/infinite-spiral.component';
-import { FieldBackdropComponent } from '../../shared/components/field-backdrop/field-backdrop.component';
 import { SongSonogramComponent } from '../../shared/components/song-sonogram/song-sonogram.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
@@ -30,7 +29,6 @@ const RECENT_DETECTIONS = 5;
     ConfidenceBadgeComponent,
     CountUpComponent,
     InfiniteSpiralComponent,
-    FieldBackdropComponent,
     SongSonogramComponent,
     TranslatePipe,
     SpeciesNamePipe,

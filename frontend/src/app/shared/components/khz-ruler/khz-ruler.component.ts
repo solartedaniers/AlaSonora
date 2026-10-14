@@ -27,13 +27,14 @@ const LABEL_STEP_KHZ = 2;
   `,
   styles: `
     :host {
+      view-transition-name: khz-ruler;
       position: fixed;
       inset-block: 0;
       inset-inline-start: 0;
       z-index: 45;
       width: var(--ruler-size);
       flex-direction: column;
-      border-inline-end: 1px solid var(--color-chrome-line);
+      border-inline-end: var(--stroke-hairline) solid var(--color-chrome-line);
     }
     .khz-ruler__unit {
       height: var(--header-height);
@@ -43,7 +44,7 @@ const LABEL_STEP_KHZ = 2;
       font-size: var(--text-xs);
       font-weight: var(--weight-semibold);
       color: var(--color-sulfur);
-      border-block-end: 1px solid var(--color-chrome-line);
+      border-block-end: var(--stroke-hairline) solid var(--color-chrome-line);
     }
     .khz-ruler__scale {
       position: relative;
@@ -55,8 +56,8 @@ const LABEL_STEP_KHZ = 2;
       // Marcas menores cada kHz, dibujadas en el borde derecho.
       background: repeating-linear-gradient(
           to bottom,
-          var(--color-on-chrome-variant) 0 1px,
-          transparent 1px calc(100% / var(--khz-steps))
+          var(--color-on-chrome-variant) 0 var(--stroke-hairline),
+          transparent var(--stroke-hairline) calc(100% / var(--khz-steps))
         )
         right / calc(var(--space-unit) * 2) 100% no-repeat;
       background-origin: content-box;
@@ -77,7 +78,7 @@ const LABEL_STEP_KHZ = 2;
       position: absolute;
       inset-inline-end: 0;
       width: calc(var(--space-unit) * 3.5);
-      height: 2px;
+      height: var(--stroke-thin);
       background: var(--color-on-chrome);
     }
     .khz-ruler__reading {

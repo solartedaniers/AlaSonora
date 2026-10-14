@@ -52,7 +52,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
     .connection-strip--pending {
       background: var(--color-surface-container-lowest);
       color: var(--color-on-surface);
-      border-block-end: 1px solid var(--color-outline-variant);
+      border-block-end: var(--stroke-hairline) solid var(--color-outline-variant);
     }
   `,
 })

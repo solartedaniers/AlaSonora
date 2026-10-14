@@ -37,7 +37,7 @@ const DEFAULT_STEP_KHZ = 4;
       inset-inline-start: calc(100% + var(--space-unit));
       top: 50%;
       width: calc(var(--space-unit) * 1);
-      height: 1px;
+      height: var(--stroke-hairline);
       background: var(--color-outline);
     }
     .frequency-axis__label--unit {

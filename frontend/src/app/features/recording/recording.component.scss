@@ -28,7 +28,7 @@
   position: relative;
   height: clamp(calc(var(--space-unit) * 56), 42dvh, calc(var(--space-unit) * 104));
   background: var(--color-spectro-floor);
-  border: 1px solid var(--color-outline-variant);
+  border: var(--stroke-hairline) solid var(--color-outline-variant);
   border-radius: var(--radius-lg);
   overflow: hidden;
 }
@@ -95,8 +95,39 @@
 .record-readouts {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: calc(var(--space-unit) * 4);
+  // Fila de valores y fila de etiquetas comunes a las tres lecturas (subgrid):
+  // una etiqueta en dos líneas ya no sube su valor por encima de los otros.
+  grid-template-rows: auto auto;
+  gap: calc(var(--space-unit) * 1) calc(var(--space-unit) * 3);
   margin: 0;
+
+  @screen sm {
+    column-gap: calc(var(--space-unit) * 4);
+  }
+
+  .readings__item {
+    display: grid;
+    grid-row: span 2;
+    grid-template-rows: subgrid;
+    row-gap: inherit;
+    padding-inline-start: calc(var(--space-unit) * 3);
+
+    @screen sm {
+      padding-inline-start: calc(var(--space-unit) * 4);
+    }
+  }
+
+  dt {
+    grid-row: 2;
+  }
+}
+
+// El número y su unidad nunca se separan; las tres cifras comparten la línea base.
+.record-readouts__value {
+  grid-row: 1;
+  align-self: last baseline;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .record-button-wrap {
@@ -174,7 +205,7 @@
   margin-top: calc(var(--space-unit) * 1);
   border-radius: var(--radius-full);
   background: var(--color-surface-container-highest);
-  border: 1px solid var(--color-outline);
+  border: var(--stroke-hairline) solid var(--color-outline);
   cursor: pointer;
   transition: background-color var(--duration-fast) var(--ease-out);
 
@@ -214,7 +245,7 @@
   min-height: calc(var(--space-unit) * 100);
   padding: calc(var(--space-unit) * 10) var(--space-gutter);
   text-align: center;
-  border: 2px dashed var(--color-outline);
+  border: var(--stroke-thin) dashed var(--color-outline);
   border-radius: var(--radius-3xl);
   background: var(--color-surface-container-lowest);
   overflow: hidden;

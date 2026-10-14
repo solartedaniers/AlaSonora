@@ -83,7 +83,7 @@
   align-items: center;
   gap: calc(var(--space-unit) * 2) calc(var(--space-unit) * 4);
   padding-block: calc(var(--space-unit) * 4);
-  border-block-end: 1px solid var(--color-outline-variant);
+  border-block-end: var(--stroke-hairline) solid var(--color-outline-variant);
   transition: background-color var(--duration-fast) var(--ease-out);
 
   > :nth-child(1) {

@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideZoneChangeDetection, provideAppInitializer } from '@angular/core';
-import { TitleStrategy, provideRouter, withComponentInputBinding } from '@angular/router';
+import { TitleStrategy, provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
 import { provideHttpClient, withXhr, withInterceptors } from '@angular/common/http';
 import { provideServiceWorker } from '@angular/service-worker';
 import {
@@ -19,7 +19,8 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes, withComponentInputBinding()),
+    // Transición nativa entre rutas (View Transitions); el estilo y el movimiento reducido viven en styles.scss.
+    provideRouter(routes, withComponentInputBinding(), withViewTransitions({ skipInitialTransition: true })),
     { provide: TitleStrategy, useClass: I18nTitleStrategy },
     provideHttpClient(withXhr(), withInterceptors([authInterceptor])),
     // sw.js = ngsw-worker.js (caché del app shell) + manejador de Background Sync.

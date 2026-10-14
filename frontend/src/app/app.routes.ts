@@ -64,7 +64,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/photo-id/photo-id.component').then((m) => m.PhotoIdComponent),
     // Oculta a propósito (ver environment.photoIdentificationEnabled). Mientras esté
-    // apagada la ruta no coincide y una visita directa cae en '**' y vuelve al inicio.
+    // apagada la ruta no coincide y una visita directa cae en '**' (página 404).
     canMatch: [() => environment.photoIdentificationEnabled],
     canActivate: [authGuard],
     title: 'routeTitle.photoId',
@@ -95,5 +95,9 @@ export const routes: Routes = [
     canActivate: [adminGuard],
     title: 'routeTitle.admin',
   },
-  { path: '**', redirectTo: '' },
+  {
+    path: '**',
+    loadComponent: () => import('./features/not-found/not-found.component').then((m) => m.NotFoundComponent),
+    title: 'routeTitle.notFound',
+  },
 ];

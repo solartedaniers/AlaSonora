@@ -64,6 +64,16 @@ export const XENO_CANTO_VOCALIZATION_LABELS: Record<string, string> = {
   'dawn song': 'vocalizationTag.dawnSong',
   purring: 'vocalizationTag.purring',
   drumming: 'vocalizationTag.drumming',
+  // Valores vistos en el catálogo real de producción (octubre 2026).
+  'contact call': 'vocalizationTag.contactCall',
+  'various calls': 'vocalizationTag.call',
+  chamado: 'vocalizationTag.call',
+  'call of a fledgeling': 'vocalizationTag.fledglingCall',
+  'call from birds at roost': 'vocalizationTag.roostCall',
+  imitation: 'vocalizationTag.mimicry',
+  'mimicry/imitation': 'vocalizationTag.mimicry',
+  gobble: 'vocalizationTag.gobble',
+  'song of victory': 'vocalizationTag.victorySong',
   // No vocal: sonido mecánico de alas, visto repetido en pruebas reales bajo
   // varias redacciones distintas del mismo fenómeno.
   wingbeats: 'vocalizationTag.wingSound',
@@ -71,6 +81,7 @@ export const XENO_CANTO_VOCALIZATION_LABELS: Record<string, string> = {
   'wing beats': 'vocalizationTag.wingSound',
   'flapping of wings': 'vocalizationTag.wingSound',
   'mechanical sound - wings beating': 'vocalizationTag.wingSound',
+  'wingbeats of flight display': 'vocalizationTag.wingSound',
 };
 
 /** Clave de traducción para un tag de Xeno-canto, o null si no está en el diccionario (el caller decide el fallback). */

@@ -77,6 +77,46 @@
     outline: var(--focus-ring-width) solid var(--color-focus);
     outline-offset: var(--focus-ring-offset);
   }
+  // El anillo de foco llega desde afuera y se ajusta al control: se nota sin distraer.
+  @media (prefers-reduced-motion: no-preference) {
+    :focus-visible {
+      animation: focus-ring-in var(--duration-base) var(--ease-standard);
+    }
+  }
+}
+
+@keyframes focus-ring-in {
+  from {
+    outline-offset: calc(var(--focus-ring-offset) * 4);
+    outline-color: transparent;
+  }
+}
+
+// Transición entre rutas: la página sale fundiéndose y la nueva entra subiendo apenas.
+// La cabecera y la regla tienen nombre propio, así se quedan quietas entre pantallas.
+::view-transition-old(root) {
+  animation: route-out var(--duration-fast) var(--ease-standard) both;
+}
+::view-transition-new(root) {
+  animation: route-in var(--duration-slow) var(--ease-standard) both;
+}
+@keyframes route-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes route-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--space-unit) * 2));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }
 
 // En escritorio la regla de kHz ocupa el borde izquierdo de la ventana.
@@ -251,7 +291,7 @@
     width: calc(var(--space-unit) * 6);
     height: calc(var(--space-unit) * 6);
     background: var(--color-primary);
-    border: 3px solid var(--color-surface-container-lowest);
+    border: var(--stroke-thick) solid var(--color-surface-container-lowest);
     border-radius: 50% 50% 50% 0;
     transform: rotate(-45deg);
     box-shadow: var(--shadow-md);

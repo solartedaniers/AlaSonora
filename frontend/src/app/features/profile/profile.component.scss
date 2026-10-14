@@ -46,7 +46,7 @@
   flex-direction: column;
   gap: calc(var(--space-unit) * 6);
   padding-block: calc(var(--space-unit) * 8);
-  border-block: 1px solid var(--color-outline-variant);
+  border-block: var(--stroke-hairline) solid var(--color-outline-variant);
 }
 
 // Cada ajuste es una fila: título a la izquierda, control a la derecha.
@@ -57,7 +57,7 @@
   justify-content: space-between;
   gap: calc(var(--space-unit) * 4) calc(var(--space-unit) * 8);
   padding-block: calc(var(--space-unit) * 6);
-  border-block-start: 1px solid var(--color-outline-variant);
+  border-block-start: var(--stroke-hairline) solid var(--color-outline-variant);
 }
 
 .profile-logout {

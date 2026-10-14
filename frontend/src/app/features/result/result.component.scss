@@ -80,7 +80,7 @@
   position: relative;
   height: clamp(calc(var(--space-unit) * 52), 36dvh, calc(var(--space-unit) * 88));
   background: var(--color-spectro-floor);
-  border: 1px solid var(--color-outline-variant);
+  border: var(--stroke-hairline) solid var(--color-outline-variant);
   border-radius: var(--radius-lg);
   overflow: hidden;
 }
@@ -101,7 +101,7 @@
   align-items: center;
   gap: calc(var(--space-unit) * 4);
   padding-block: calc(var(--space-unit) * 4);
-  border-block-end: 1px solid var(--color-outline-variant);
+  border-block-end: var(--stroke-hairline) solid var(--color-outline-variant);
 }
 
 .result-candidate__meter {

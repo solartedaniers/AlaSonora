@@ -71,7 +71,13 @@
     "dawnSong": "Dawn song",
     "purring": "Purring",
     "drumming": "Drumming",
-    "wingSound": "Wing sound (non-vocal)"
+    "wingSound": "Wing sound (non-vocal)",
+    "contactCall": "Contact call",
+    "fledglingCall": "Fledgling call",
+    "roostCall": "Roost call",
+    "mimicry": "Mimicry",
+    "gobble": "Gobble",
+    "victorySong": "Victory song"
   },
   "landing": {
     "subtitle": "Record a song with your phone or upload an audio file. AlaSonora turns it into a sonogram and the BirdNET AI tells you which species it is and how confident it is.",
@@ -428,7 +434,8 @@
     "history": "My History",
     "map": "Public Map",
     "profile": "My Profile",
-    "admin": "Administration"
+    "admin": "Administration",
+    "notFound": "Page not found"
   },
   "units": {
     "khz": "kHz",
@@ -438,5 +445,19 @@
     "hertz": "Hz",
     "now": "now",
     "secondsAgo": "−{n} s"
+  },
+  "notFound": {
+    "eyebrow": "Error 404 · Route not found",
+    "title": "No bird sings here.",
+    "body": "The page you are looking for does not exist or has moved. Go back home or explore the sightings on the public map.",
+    "home": "Back to home",
+    "map": "View the public map",
+    "caption": "Empty spectrogram: no energy, at any frequency, on this route."
+  },
+  "update": {
+    "title": "A new version of AlaSonora is ready.",
+    "body": "Update when you finish what you are doing.",
+    "apply": "Update now",
+    "later": "Later"
   }
 }

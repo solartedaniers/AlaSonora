@@ -15,7 +15,7 @@ import { SongSonogramComponent } from '../../../shared/components/song-sonogram/
       <p class="text-5xl font-display font-extrabold tracking-display leading-tight">{{ 'auth.panel.title' | translate }}</p>
       <p class="max-w-sm text-on-surface-variant leading-relaxed">{{ 'auth.panel.body' | translate }}</p>
     </div>
-    <app-song-sonogram class="auth-layout__panel-sonogram" />
+    <app-song-sonogram class="auth-layout__panel-sonogram" [band]="false" />
   `,
 })
 export class AuthPanelComponent {}

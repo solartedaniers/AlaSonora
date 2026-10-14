@@ -20,5 +20,14 @@ export const serverRoutes: ServerRoute[] = [
   { path: 'register', renderMode: RenderMode.Prerender },
   { path: 'forgot-password', renderMode: RenderMode.Prerender },
   { path: 'map', renderMode: RenderMode.Server },
-  { path: '**', renderMode: RenderMode.Client },
+  { path: 'reset-password', renderMode: RenderMode.Client },
+  { path: 'dashboard', renderMode: RenderMode.Client },
+  { path: 'record', renderMode: RenderMode.Client },
+  { path: 'result/:id', renderMode: RenderMode.Client },
+  { path: 'photo-id', renderMode: RenderMode.Client },
+  { path: 'history', renderMode: RenderMode.Client },
+  { path: 'profile', renderMode: RenderMode.Client },
+  { path: 'admin', renderMode: RenderMode.Client },
+  // Cualquier otra ruta es la página 404: la respondo con ese status para buscadores y caches.
+  { path: '**', renderMode: RenderMode.Client, status: 404 },
 ];

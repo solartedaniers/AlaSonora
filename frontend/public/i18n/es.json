@@ -71,7 +71,13 @@
     "dawnSong": "Canto del amanecer",
     "purring": "Arrullo",
     "drumming": "Tamborileo",
-    "wingSound": "Sonido de alas (no vocal)"
+    "wingSound": "Sonido de alas (no vocal)",
+    "contactCall": "Llamada de contacto",
+    "fledglingCall": "Reclamo de volantón",
+    "roostCall": "Reclamo en dormidero",
+    "mimicry": "Imitación",
+    "gobble": "Gorgoteo",
+    "victorySong": "Canto de victoria"
   },
   "landing": {
     "subtitle": "Graba el canto con tu celular o sube un audio. AlaSonora lo convierte en sonograma y la IA BirdNET te dice qué especie es y con cuánta confianza.",
@@ -428,7 +434,8 @@
     "history": "Mi Historial",
     "map": "Mapa Público",
     "profile": "Mi Perfil",
-    "admin": "Administración"
+    "admin": "Administración",
+    "notFound": "Página no encontrada"
   },
   "units": {
     "khz": "kHz",
@@ -438,5 +445,19 @@
     "hertz": "Hz",
     "now": "ahora",
     "secondsAgo": "−{n} s"
+  },
+  "notFound": {
+    "eyebrow": "Error 404 · Ruta no encontrada",
+    "title": "Aquí no canta ningún ave.",
+    "body": "La página que buscas no existe o cambió de lugar. Vuelve al inicio o explora los avistamientos del mapa público.",
+    "home": "Volver al inicio",
+    "map": "Ver el mapa público",
+    "caption": "Espectrograma vacío: ninguna energía, en ninguna frecuencia, en esta ruta."
+  },
+  "update": {
+    "title": "Hay una versión nueva de AlaSonora.",
+    "body": "Actualiza cuando termines lo que estás haciendo.",
+    "apply": "Actualizar ahora",
+    "later": "Más tarde"
   }
 }

@@ -89,13 +89,13 @@
           <dl class="record-readouts" aria-live="off">
             <div class="readings__item">
               <dt class="text-sm text-on-surface-variant">{{ 'recording.samplingTime' | translate }}</dt>
-              <dd class="m-0 font-data text-2xl sm:text-4xl font-semibold leading-none">
+              <dd class="record-readouts__value m-0 font-data text-xl sm:text-4xl font-semibold leading-none">
                 {{ capture.elapsedSeconds() | number: '1.1-1' }}<span class="text-base sm:text-xl"> {{ 'units.seconds' | translate }}</span>
               </dd>
             </div>
             <div class="readings__item">
               <dt class="text-sm text-on-surface-variant">{{ 'recording.peakFrequency' | translate }}</dt>
-              <dd class="m-0 font-data text-2xl sm:text-4xl font-semibold leading-none">
+              <dd class="record-readouts__value m-0 font-data text-xl sm:text-4xl font-semibold leading-none">
                 @if (peakKhz() !== null) {
                   {{ peakKhz() | number: '1.1-1' }}<span class="text-base sm:text-xl"> {{ 'units.khz' | translate }}</span>
                 } @else {
@@ -105,7 +105,7 @@
             </div>
             <div class="readings__item">
               <dt class="text-sm text-on-surface-variant">{{ 'recording.level' | translate }}</dt>
-              <dd class="m-0 font-data text-2xl sm:text-4xl font-semibold leading-none">
+              <dd class="record-readouts__value m-0 font-data text-xl sm:text-4xl font-semibold leading-none">
                 @if (levelDb() !== null) {
                   {{ levelDb() | number: '1.0-0' }}<span class="text-base sm:text-xl"> {{ 'units.decibels' | translate }}</span>
                 } @else {

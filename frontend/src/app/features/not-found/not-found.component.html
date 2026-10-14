@@ -1,0 +1,34 @@
+<div class="flex flex-col w-full min-h-dvh bg-surface text-on-surface">
+  <app-nav-header />
+
+  <main class="not-found w-full max-w-7xl mx-auto px-gutter py-12 sm:py-16">
+    <header class="flex flex-col gap-4">
+      <p class="eyebrow-label">{{ 'notFound.eyebrow' | translate }}</p>
+      <h1 class="text-5xl font-extrabold tracking-display">{{ 'notFound.title' | translate }}</h1>
+      <p class="max-w-xl text-lg text-on-surface-variant">{{ 'notFound.body' | translate }}</p>
+      <div class="flex flex-wrap gap-3 pt-2">
+        <a routerLink="/" class="btn btn--ink">
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+          {{ 'notFound.home' | translate }}
+        </a>
+        <a routerLink="/map" class="btn btn--quiet">
+          <span class="material-symbols-outlined" aria-hidden="true">location_on</span>
+          {{ 'notFound.map' | translate }}
+        </a>
+      </div>
+    </header>
+
+    <!-- Placa en silencio: el mismo papel del espectrograma, sin ninguna nota. -->
+    <figure class="not-found__figure">
+      <div class="not-found__plate-wrap">
+        <app-frequency-axis [maxKhz]="plateMaxKhz" />
+        <div class="not-found__plate" aria-hidden="true">
+          <span class="not-found__reading-line"></span>
+        </div>
+      </div>
+      <figcaption class="font-data text-sm text-on-surface-variant">{{ 'notFound.caption' | translate }}</figcaption>
+    </figure>
+  </main>
+
+  <app-site-footer />
+</div>

@@ -4,6 +4,8 @@ import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 export type ThemeMode = 'light' | 'dark' | 'system';
 
 const STORAGE_KEY = 'alasonora.theme';
+const CHROME_COLOR_TOKEN = '--color-chrome';
+const THEME_COLOR_META = 'meta[name="theme-color"]';
 
 /**
  * Servicio de tema. Patrón: fuente única de verdad reactiva (signal) que
@@ -51,6 +53,14 @@ export class ThemeService {
     root.classList.add(resolved === 'dark' ? 'theme-dark' : 'theme-light');
     this.document.body.classList.remove('theme-light', 'theme-dark');
     this.document.body.classList.add(resolved === 'dark' ? 'theme-dark' : 'theme-light');
+    this.syncBrowserBarColor();
+  }
+
+  /** La barra del navegador continúa la cabecera del tema elegido, no solo el del sistema. */
+  private syncBrowserBarColor(): void {
+    const chrome = getComputedStyle(this.document.documentElement).getPropertyValue(CHROME_COLOR_TOKEN).trim();
+    if (!chrome) return;
+    this.document.querySelectorAll<HTMLMetaElement>(THEME_COLOR_META).forEach((meta) => (meta.content = chrome));
   }
 
   private readStoredMode(): ThemeMode {
