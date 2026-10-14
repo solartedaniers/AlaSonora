@@ -5,5 +5,6 @@ package com.alasonora.backend.exception;
  * mensaje, no cambian al reescribirlo o traducirlo.
  */
 public enum ApiErrorCode {
-    NO_SPECIES_IDENTIFIED
+    NO_SPECIES_IDENTIFIED,
+    AI_ENGINE_UNAVAILABLE
 }
