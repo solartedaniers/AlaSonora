@@ -276,3 +276,41 @@
   color: var(--color-primary);
   pointer-events: none;
 }
+
+// Indicador del motor de IA: una línea de lectura, no una alerta. El color acompaña al ícono y al texto.
+.ai-status {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--space-unit) * 2);
+  margin: 0;
+  padding: calc(var(--space-unit) * 1.5) calc(var(--space-unit) * 3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  background: var(--color-surface-container-high);
+  color: var(--color-on-surface-variant);
+
+  &[data-state='ready'] {
+    background: color-mix(in srgb, var(--color-moss) 16%, transparent);
+    color: var(--color-moss-ink);
+  }
+  &[data-state='unavailable'] {
+    background: var(--color-warning-container);
+    color: var(--color-on-warning-container);
+  }
+}
+
+.ai-status__icon {
+  font-size: var(--text-lg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ai-status[data-state='waking'] .ai-status__icon {
+    animation: ai-status-spin var(--duration-spin) linear infinite;
+  }
+}
+
+@keyframes ai-status-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

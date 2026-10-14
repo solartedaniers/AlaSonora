@@ -13,6 +13,7 @@ import { UserService } from '../../core/services/user.service';
 import { DetectionsService } from '../../core/services/detections.service';
 import { I18nService } from '../../core/services/i18n.service';
 import { Detection, UserStats, speciesDisplayName } from '../../core/models';
+import { AiEngineStatusService } from '../../core/services/ai-engine-status.service';
 
 interface PersonalReading {
   labelKey: string;
@@ -47,6 +48,7 @@ export class DashboardComponent implements OnInit {
   readonly user = inject(UserService);
   private readonly detectionsService = inject(DetectionsService);
   private readonly i18n = inject(I18nService);
+  private readonly aiEngine = inject(AiEngineStatusService);
 
   /** La miniatura del canto usa la misma banda que Grabar y Resultado. */
   readonly latestMaxKhz = LATEST_PLATE_MAX_KHZ;
@@ -83,6 +85,8 @@ export class DashboardComponent implements OnInit {
   });
 
   async ngOnInit(): Promise<void> {
+    // Calentamiento silencioso del motor de IA (una vez; se repite solo si pasó readyFreshMs).
+    this.aiEngine.warmUp();
     // Sin catch, un fallo de las métricas impediría cargar también las
     // detecciones recientes; si fallan, la sección simplemente no se muestra.
     this.user.getStats().then((stats) => this.stats.set(stats)).catch(() => undefined);

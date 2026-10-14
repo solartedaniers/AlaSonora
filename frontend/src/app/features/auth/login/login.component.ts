@@ -9,6 +9,7 @@ import { AuthPanelComponent } from '../auth-panel/auth-panel.component';
 import { UserService } from '../../../core/services/user.service';
 import { ProfileService } from '../../../core/services/profile.service';
 import { environment } from '../../../../environments/environment';
+import { AiEngineStatusService } from '../../../core/services/ai-engine-status.service';
 
 type LoginError = 'invalid-credentials' | 'email-not-confirmed';
 
@@ -31,6 +32,7 @@ export class LoginComponent {
   private readonly userService = inject(UserService);
   private readonly profileService = inject(ProfileService);
   private readonly router = inject(Router);
+  private readonly aiEngine = inject(AiEngineStatusService);
 
   /** Solo para los placeholders: el formulario y la validación no cambian. */
   readonly demoAccount = environment.demoAccount;
@@ -58,6 +60,8 @@ export class LoginComponent {
     try {
       const { email, password } = this.form.getRawValue();
       await this.userService.login(email, password);
+      // Despierto el motor de IA en segundo plano: cuando llegue a Grabar ya estará listo.
+      this.aiEngine.warmUp();
       await this.router.navigateByUrl(await this.resolveLandingRoute());
     } catch (error) {
       const isEmailNotConfirmed = isAuthApiError(error) && error.code === 'email_not_confirmed';

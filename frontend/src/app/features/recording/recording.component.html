@@ -26,7 +26,33 @@
       </div>
     </header>
 
+    <!-- Estado del motor de IA: discreto, solo informa; la grabación nunca se bloquea por él. -->
+    <div aria-live="polite">
+      @if (aiEngine.status() !== 'unknown') {
+        <p class="ai-status" [attr.data-state]="aiEngine.status()">
+          <span class="material-symbols-outlined ai-status__icon" aria-hidden="true">{{ aiStatusIcon[aiEngine.status()] }}</span>
+          {{ ('recording.engine.' + aiEngine.status()) | translate }}
+        </p>
+      }
+    </div>
+
     <!-- Estados -->
+    @if (waitingForEngine()) {
+      <div role="status" class="record-notice bg-surface-container-high text-on-surface">
+        <span class="material-symbols-outlined shrink-0 animate-spin" aria-hidden="true">progress_activity</span>
+        <p class="flex-1">{{ 'recording.engine.queued' | translate }}</p>
+      </div>
+    }
+    @if (pendingRetry()) {
+      <div role="alert" class="record-notice bg-warning-container text-on-warning-container">
+        <span class="material-symbols-outlined shrink-0" aria-hidden="true">cloud_off</span>
+        <p class="flex-1">{{ 'recording.engine.timeout' | translate }}</p>
+        <button type="button" class="btn btn--quiet shrink-0" (click)="retryPending()">
+          <span class="material-symbols-outlined" aria-hidden="true">refresh</span>
+          {{ 'recording.engine.retry' | translate }}
+        </button>
+      </div>
+    }
     @if (!recordingSupported()) {
       <div role="status" class="record-notice bg-warning-container text-on-warning-container">
         <span class="material-symbols-outlined shrink-0" aria-hidden="true">mic_off</span>
@@ -84,8 +110,11 @@
                 <span class="record-plate__rec-dot" aria-hidden="true"></span>
                 {{ 'recording.recLabel' | translate }}
               </span>
-            } @else {
-              <p class="record-plate__idle">{{ (isClassifying() ? 'recording.classifying' : 'recording.idleHint') | translate }}</p>
+            } @else if (isClassifying()) {
+              <p class="record-plate__idle">{{ 'recording.classifying' | translate }}</p>
+            } @else if (!hasSonogram()) {
+              <!-- La invitación solo aparece con la placa vacía: no vuelve sobre un sonograma ya pintado. -->
+              <p class="record-plate__idle">{{ 'recording.idleHint' | translate }}</p>
             }
           </div>
         </figure>

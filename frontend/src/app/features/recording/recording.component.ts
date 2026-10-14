@@ -16,6 +16,7 @@ import { DetectionDraftService, DRAFT_DETECTION_ID } from '../../core/services/d
 import { FALLBACK_LOCATION, PendingRecordingsSyncService } from '../../core/services/pending-recordings-sync.service';
 import { GeoLocation } from '../../core/models';
 import { LoggerService } from '../../core/services/logger.service';
+import { AiEngineStatusService } from '../../core/services/ai-engine-status.service';
 
 type RecordingTab = 'live' | 'upload';
 type SonogramView = 'flat' | 'waterfall';
@@ -24,6 +25,9 @@ type SonogramView = 'flat' | 'waterfall';
 // (ApiErrorCode en el backend) y acepto el texto antiguo mientras haya backends sin el código.
 const NO_SPECIES_IDENTIFIED_CODE = 'NO_SPECIES_IDENTIFIED';
 const NO_SPECIES_IDENTIFIED_LEGACY_DETAIL = 'No bird species were identified in this recording';
+// Motor dormido: código estable del backend o las respuestas del proxy de Render mientras arranca.
+const AI_ENGINE_UNAVAILABLE_CODE = 'AI_ENGINE_UNAVAILABLE';
+const ENGINE_ASLEEP_STATUSES = [502, 503, 504];
 // ?tab=upload abre directo la pestaña de subir archivo (enlace del Dashboard).
 const TAB_QUERY_PARAM = 'tab';
 
@@ -59,10 +63,13 @@ export class RecordingComponent {
   private readonly draftService = inject(DetectionDraftService);
   private readonly pendingSync = inject(PendingRecordingsSyncService);
   private readonly router = inject(Router);
+  readonly aiEngine = inject(AiEngineStatusService);
 
   readonly activeTab = signal<RecordingTab>(
     inject(ActivatedRoute).snapshot.queryParamMap.get(TAB_QUERY_PARAM) === 'upload' ? 'upload' : 'live'
   );
+  /** Ícono del indicador para cada estado del motor (el texto va por i18n). */
+  readonly aiStatusIcon: Record<string, string> = { waking: 'progress_activity', ready: 'check_circle', unavailable: 'cloud_off' };
   readonly tabs: { id: RecordingTab; icon: string; labelKey: string }[] = [
     { id: 'live', icon: 'mic', labelKey: 'recording.tabLive' },
     { id: 'upload', icon: 'upload_file', labelKey: 'recording.tabUpload' },
@@ -99,6 +106,8 @@ export class RecordingComponent {
   constructor() {
     // Detecto el soporte tras el primer render, en el navegador: nunca creo un AudioContext al construir.
     afterNextRender(() => {
+      // Despierto el motor de IA al entrar: el indicador muestra si ya está listo.
+      this.aiEngine.warmUp();
       if (!AudioCaptureService.isSupported()) {
         this.recordingSupported.set(false);
         this.activeTab.set('upload');
@@ -126,8 +135,14 @@ export class RecordingComponent {
 
   readonly isClassifying = signal(false);
   readonly classifyError = signal<string | null>(null);
+  /** La grabación espera a que el motor de IA despierte para analizarse sola. */
+  readonly waitingForEngine = signal(false);
+  /** El motor no despertó a tiempo: la grabación sigue en memoria para reintentar. */
+  readonly pendingRetry = signal<{ audio: Blob; durationSeconds: number; peakFrequencyHz: number } | null>(null);
   readonly savedOffline = signal(false);
   readonly micDenied = signal(false);
+  /** La placa de esta pantalla ya tiene sonograma pintado (se empezó a grabar). */
+  readonly hasSonogram = signal(false);
 
   async toggleRecording(): Promise<void> {
     if (this.capture.isRecording()) {
@@ -139,6 +154,7 @@ export class RecordingComponent {
       try {
         await this.capture.start();
         this.micDenied.set(false);
+        this.hasSonogram.set(true);
       } catch {
         // Permiso de micrófono denegado o no disponible: no interrumpimos
         // el flujo, el usuario puede intentar de nuevo o usar "Subir archivo".
@@ -159,9 +175,16 @@ export class RecordingComponent {
     if (file) await this.classifyAndNavigate(file, await this.audioDurationSeconds(file), 0);
   }
 
+  /** Reintenta con la misma grabación que esperaba al motor de IA. */
+  async retryPending(): Promise<void> {
+    const pending = this.pendingRetry();
+    if (pending) await this.classifyAndNavigate(pending.audio, pending.durationSeconds, pending.peakFrequencyHz);
+  }
+
   private async classifyAndNavigate(audio: Blob, durationSeconds: number, peakFrequencyHz: number): Promise<void> {
     this.classifyError.set(null);
     this.savedOffline.set(false);
+    this.pendingRetry.set(null);
 
     if (!navigator.onLine) {
       await this.saveForLater(audio, durationSeconds, peakFrequencyHz);
@@ -184,8 +207,24 @@ export class RecordingComponent {
       // una ubicación inventada excluye especies legítimas fuera de esa
       // región (ver BirdNetClassifier.classify en el ai-engine).
       const gpsLocation = await this.currentLocation();
+      if (!(await this.waitForEngine())) {
+        this.pendingRetry.set({ audio, durationSeconds, peakFrequencyHz });
+        return;
+      }
       const { storagePath, signedUrl } = await this.classificationService.uploadRecording(userId, audio);
-      const result = await this.classificationService.classify(signedUrl, recordedAt, gpsLocation);
+      let result;
+      try {
+        result = await this.classificationService.classify(signedUrl, recordedAt, gpsLocation);
+      } catch (error) {
+        // Se durmió entre la consulta y la clasificación: espero de nuevo y reintento una vez.
+        if (!RecordingComponent.isEngineAsleep(error)) throw error;
+        this.aiEngine.markAsleep();
+        if (!(await this.waitForEngine())) {
+          this.pendingRetry.set({ audio, durationSeconds, peakFrequencyHz });
+          return;
+        }
+        result = await this.classificationService.classify(signedUrl, recordedAt, gpsLocation);
+      }
       const location = gpsLocation ?? FALLBACK_LOCATION;
 
       this.draftService.set({
@@ -216,6 +255,22 @@ export class RecordingComponent {
     } finally {
       this.isClassifying.set(false);
     }
+  }
+
+  /** Espera a que el motor responda; mientras tanto se ve el aviso de "encendiendo". */
+  private async waitForEngine(): Promise<boolean> {
+    if (this.aiEngine.status() !== 'ready') this.waitingForEngine.set(true);
+    try {
+      return await this.aiEngine.whenReady();
+    } finally {
+      this.waitingForEngine.set(false);
+    }
+  }
+
+  private static isEngineAsleep(error: unknown): boolean {
+    if (!(error instanceof HttpErrorResponse)) return false;
+    const code = (error.error as { errorCode?: string } | null)?.errorCode;
+    return code === AI_ENGINE_UNAVAILABLE_CODE || ENGINE_ASLEEP_STATUSES.includes(error.status);
   }
 
   // Sin señal: la grabación queda en la cola de IndexedDB y
