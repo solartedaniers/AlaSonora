@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    """All configuration comes from environment variables (or .env) — never hardcoded, mirroring the backend's own zero-hardcoded-values rule."""
+    """Toda la configuración sale de variables de entorno (o .env), nunca de valores quemados, igual que en el backend."""
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
