@@ -7,6 +7,13 @@ export const environment = {
   // alcance actual. El backend la conserva (PHOTO_CLASSIFICATION_ENABLED), así que
   // basta poner esto en true para reactivarla.
   photoIdentificationEnabled: false,
+  // Motor de IA dormido (Render gratis): cada cuánto pregunto si despertó, cuánto espero como
+  // máximo y por cuánto tiempo confío en un "listo" antes de volver a calentarlo.
+  aiEngine: {
+    statusPollMs: 3000,
+    wakeTimeoutMs: 90000,
+    readyFreshMs: 600000,
+  },
   // Cuenta de ejemplo que pidió el profesor: solo se muestra como placeholder en el login.
   demoAccount: {
     email: 'omairalimas05@gmail.com',

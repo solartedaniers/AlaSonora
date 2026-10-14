@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { CreateDetectionRequest, Detection } from '../models';
 import { SupabaseClientService } from './supabase-client.service';
+import { storageObjectName } from './storage-object-name';
 
 /** Detección tal como la devuelve el backend, sin el estado de sincronización offline. */
 type DetectionApiResponse = Omit<Detection, 'syncStatus'>;
@@ -85,10 +86,11 @@ export class DetectionsService {
    * oficial de la especie.
    */
   async uploadObserverPhoto(detectionId: string, userId: string, file: File): Promise<Detection> {
-    const path = `${userId}/${detectionId}-${Date.now()}-${file.name}`;
+    // Nombre único sin upsert: con upsert Storage exige también SELECT y la política no lo tenía.
+    const path = `${userId}/${storageObjectName(file, detectionId)}`;
     const { error } = await this.supabase.storage
       .from(OBSERVER_PHOTOS_BUCKET)
-      .upload(path, file, { upsert: true });
+      .upload(path, file, { contentType: file.type });
     if (error) throw error;
 
     const updated = await firstValueFrom(

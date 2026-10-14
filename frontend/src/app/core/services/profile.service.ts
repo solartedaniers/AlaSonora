@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { ObserverRole, Profile } from '../models';
 import { SupabaseClientService } from './supabase-client.service';
 import { UserService } from './user.service';
+import { storageObjectName } from './storage-object-name';
 
 const AVATAR_BUCKET = 'avatars';
 
@@ -77,10 +78,14 @@ export class ProfileService {
     return profile;
   }
 
-  /** Subo directo al bucket público `avatars` y devuelvo la URL pública. */
+  /**
+   * Subo directo al bucket público `avatars` y devuelvo la URL pública. La carpeta es el
+   * auth.uid() de la sesión (lo exige la política RLS) y el nombre es único, así que no uso
+   * upsert: con upsert, Storage exige además permiso de SELECT y la subida fallaba por RLS.
+   */
   async uploadAvatar(userId: string, file: File): Promise<string> {
-    const path = `${userId}/${Date.now()}-${file.name}`;
-    const { error } = await this.supabase.storage.from(AVATAR_BUCKET).upload(path, file, { upsert: true });
+    const path = `${userId}/${storageObjectName(file)}`;
+    const { error } = await this.supabase.storage.from(AVATAR_BUCKET).upload(path, file, { contentType: file.type });
     if (error) throw error;
     return this.supabase.storage.from(AVATAR_BUCKET).getPublicUrl(path).data.publicUrl;
   }
