@@ -218,7 +218,6 @@
   },
   "dashboard": {
     "welcome": "Your field notebook",
-    "subtitle": "Real-time bioacoustics for the preservation of neotropical birdlife.",
     "recordCta": "New field recording",
     "recordCtaBody": "Record a song with your microphone and let the AI identify it.",
     "uploadCta": "Upload Audio File",
@@ -286,7 +285,15 @@
     "viewLabel": "Sonogram view",
     "viewFlat": "Flat",
     "viewWaterfall": "3D",
-    "unsupported": "Your browser can't record audio here; you can upload a file."
+    "unsupported": "Your browser can't record audio here; you can upload a file.",
+    "engine": {
+      "waking": "Starting the AI engine… it can take up to a minute",
+      "ready": "AI engine ready",
+      "unavailable": "The AI engine is not responding right now",
+      "queued": "Starting the AI engine; your recording will be analyzed as soon as it is ready",
+      "timeout": "The AI engine did not wake up in time. Your recording is still here; try again in a moment.",
+      "retry": "Retry"
+    }
   },
   "result": {
     "completedTitle": "Bioacoustic Identification Complete",
@@ -389,7 +396,8 @@
     "logout": "Log Out Securely",
     "logoutConfirm": "Do you want to end the active session? Offline records will remain safe on your device.",
     "loadError": "We could not load your profile. Check your connection before editing your details.",
-    "savedConfirmation": "Your observer details were saved."
+    "savedConfirmation": "Your observer details were saved.",
+    "username": "Username"
   },
   "admin": {
     "title": "Admin Panel",

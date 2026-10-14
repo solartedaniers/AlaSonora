@@ -218,7 +218,6 @@
   },
   "dashboard": {
     "welcome": "Tu cuaderno de campo",
-    "subtitle": "Bioacústica activa para la preservación de avifauna neotropical en tiempo real.",
     "recordCta": "Nueva grabación en campo",
     "recordCtaBody": "Graba un canto con el micrófono y deja que la IA lo identifique.",
     "uploadCta": "Subir Archivo de Audio",
@@ -286,7 +285,15 @@
     "viewLabel": "Vista del sonograma",
     "viewFlat": "Plano",
     "viewWaterfall": "3D",
-    "unsupported": "Tu navegador no permite grabar audio aquí; puedes subir un archivo."
+    "unsupported": "Tu navegador no permite grabar audio aquí; puedes subir un archivo.",
+    "engine": {
+      "waking": "Encendiendo el motor de IA… puede tardar hasta un minuto",
+      "ready": "Motor de IA listo",
+      "unavailable": "El motor de IA no responde por ahora",
+      "queued": "Encendiendo el motor de IA, tu grabación se analizará en cuanto esté listo",
+      "timeout": "El motor de IA no despertó a tiempo. Tu grabación sigue aquí; reinténtalo en un momento.",
+      "retry": "Reintentar"
+    }
   },
   "result": {
     "completedTitle": "Identificación Bioacústica Completada",
@@ -389,7 +396,8 @@
     "logout": "Cerrar Sesión Segura",
     "logoutConfirm": "¿Deseas cerrar la sesión activa? Los registros offline permanecerán seguros en tu dispositivo.",
     "loadError": "No pudimos cargar tu perfil. Revisa tu conexión antes de editar tus datos.",
-    "savedConfirmation": "Tus datos de observador quedaron guardados."
+    "savedConfirmation": "Tus datos de observador quedaron guardados.",
+    "username": "Usuario"
   },
   "admin": {
     "title": "Panel de Administración",
