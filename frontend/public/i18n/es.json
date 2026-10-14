@@ -285,7 +285,8 @@
     "level": "Nivel de la señal",
     "viewLabel": "Vista del sonograma",
     "viewFlat": "Plano",
-    "viewWaterfall": "3D"
+    "viewWaterfall": "3D",
+    "unsupported": "Tu navegador no permite grabar audio aquí; puedes subir un archivo."
   },
   "result": {
     "completedTitle": "Identificación Bioacústica Completada",
@@ -466,5 +467,13 @@
     "body": "Actualiza cuando termines lo que estás haciendo.",
     "apply": "Actualizar ahora",
     "later": "Más tarde"
+  },
+  "seo": {
+    "default": "AlaSonora: identificación de aves por su canto con inteligencia artificial, con mapa público de avistamientos.",
+    "landing": "Graba el canto de un ave con tu celular o sube un audio: AlaSonora lo convierte en sonograma y te dice qué especie es.",
+    "login": "Entra a tu cuaderno de campo de AlaSonora para sincronizar tus grabaciones y ver tus detecciones.",
+    "register": "Crea tu cuenta gratuita en AlaSonora y empieza a identificar aves por su canto, también sin conexión en el campo.",
+    "forgotPassword": "Recupera el acceso a tu cuenta de AlaSonora con un enlace enviado a tu correo.",
+    "map": "Mapa público de avistamientos de aves identificados por su canto en la red de AlaSonora, actualizado en tiempo real."
   }
 }

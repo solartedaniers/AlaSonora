@@ -9,6 +9,7 @@ import {
   PhotoClassificationResult,
   PhotoClassificationService,
 } from '../../core/services/photo-classification.service';
+import { LoggerService } from '../../core/services/logger.service';
 
 @Component({
   selector: 'app-photo-id',
@@ -19,6 +20,7 @@ import {
 })
 export class PhotoIdComponent {
   private readonly classificationService = inject(PhotoClassificationService);
+  private readonly logger = inject(LoggerService);
   private readonly i18n = inject(I18nService);
 
   readonly previewUrl = signal<string | null>(null);
@@ -37,7 +39,7 @@ export class PhotoIdComponent {
     try {
       this.result.set(await this.classificationService.classify(file));
     } catch (error) {
-      console.error('Photo classification failed', error);
+      this.logger.error('PhotoId', 'classification failed', error);
       this.errorMessage.set(this.resolveErrorMessage(error));
     } finally {
       this.classifying.set(false);

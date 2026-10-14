@@ -10,6 +10,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
 import { DetectionsService } from '../../core/services/detections.service';
 import { Detection, SyncStatus } from '../../core/models';
+import { LoggerService } from '../../core/services/logger.service';
 
 type HistoryView = 'gallery' | 'list';
 type StatusFilter = 'all' | SyncStatus;
@@ -33,6 +34,7 @@ type HistoryLoadState = 'loading' | 'ready' | 'error';
 })
 export class HistoryComponent implements OnInit {
   private readonly detectionsService = inject(DetectionsService);
+  private readonly logger = inject(LoggerService);
 
   readonly all = signal<Detection[]>([]);
   readonly view = signal<HistoryView>('gallery');
@@ -81,7 +83,7 @@ export class HistoryComponent implements OnInit {
       this.all.set(await this.detectionsService.getMine());
       this.loadState.set('ready');
     } catch (error) {
-      console.error('History load failed', error);
+      this.logger.error('History', 'load failed', error);
       this.loadState.set('error');
     }
   }

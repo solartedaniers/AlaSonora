@@ -11,3 +11,5 @@ Disallow: /history
 Disallow: /profile
 Disallow: /admin
 Disallow: /reset-password
+
+Sitemap: https://alasonora-frontend.onrender.com/sitemap.xml

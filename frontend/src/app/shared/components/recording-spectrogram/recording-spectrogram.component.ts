@@ -3,6 +3,7 @@ import { MAX_DISPLAY_FREQUENCY_HZ, RecordingSpectrogramService } from '../../../
 import { ThemeService } from '../../../core/services/theme.service';
 import { SpectrogramPainter } from '../spectrogram-view/spectrogram-painter';
 import { TranslatePipe } from '../../pipes/translate.pipe';
+import { LoggerService } from '../../../core/services/logger.service';
 
 type SpectrogramStatus = 'loading' | 'ready' | 'unavailable';
 
@@ -32,6 +33,7 @@ export class RecordingSpectrogramComponent {
   readonly maxKhz = input(MAX_DISPLAY_FREQUENCY_HZ / HZ_PER_KHZ);
 
   private readonly spectrogramService = inject(RecordingSpectrogramService);
+  private readonly logger = inject(LoggerService);
   private readonly theme = inject(ThemeService);
   private readonly canvas = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
   readonly status = signal<SpectrogramStatus>('loading');
@@ -54,7 +56,8 @@ export class RecordingSpectrogramComponent {
   private async load(url: string | undefined): Promise<void> {
     const requestId = ++this.requestId;
     this.columns.set(null);
-    if (!url) {
+    // Sin Web Audio no hay cómo decodificar la grabación: se muestra como no disponible, sin error.
+    if (!url || typeof OfflineAudioContext === 'undefined') {
       this.status.set('unavailable');
       return;
     }
@@ -66,7 +69,7 @@ export class RecordingSpectrogramComponent {
       this.status.set('ready');
     } catch (error) {
       if (requestId !== this.requestId) return;
-      console.error('Recording spectrogram failed', error);
+      this.logger.error('RecordingSpectrogram', 'spectrogram failed', error);
       this.status.set('unavailable');
     }
   }

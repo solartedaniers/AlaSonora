@@ -27,6 +27,12 @@
     </header>
 
     <!-- Estados -->
+    @if (!recordingSupported()) {
+      <div role="status" class="record-notice bg-warning-container text-on-warning-container">
+        <span class="material-symbols-outlined shrink-0" aria-hidden="true">mic_off</span>
+        <p class="flex-1">{{ 'recording.unsupported' | translate }}</p>
+      </div>
+    }
     @if (micDenied()) {
       <div role="alert" class="record-notice bg-error-container text-on-error-container">
         <span class="material-symbols-outlined shrink-0" aria-hidden="true">mic_off</span>
@@ -63,14 +69,14 @@
           </div>
         </div>
         <figure class="record-plate" [class.record-plate--waterfall]="sonogramView() === 'waterfall'">
-          @if (plateMaxKhz && sonogramView() === 'flat') {
-            <app-frequency-axis class="record-plate__axis" [maxKhz]="plateMaxKhz" [stepKhz]="2" />
+          @if (plateMaxKhz() && sonogramView() === 'flat') {
+            <app-frequency-axis class="record-plate__axis" [maxKhz]="plateMaxKhz()!" [stepKhz]="2" />
           }
           <div class="record-plate__screen">
             @if (sonogramView() === 'flat') {
-              <app-spectrogram-view class="block w-full h-full" [getFrame]="getLatestFrame" [columns]="liveColumns" [visibleFraction]="visibleFraction" growFrom="end" />
-            } @else if (plateMaxKhz) {
-              <app-spectrogram-waterfall class="w-full h-full" [getFrame]="getLatestFrame" [visibleFraction]="visibleFraction" [maxKhz]="plateMaxKhz" />
+              <app-spectrogram-view class="block w-full h-full" [getFrame]="getLatestFrame" [columns]="liveColumns" [visibleFraction]="visibleFraction()" growFrom="end" />
+            } @else if (plateMaxKhz()) {
+              <app-spectrogram-waterfall class="w-full h-full" [getFrame]="getLatestFrame" [visibleFraction]="visibleFraction()" [maxKhz]="plateMaxKhz()!" />
             }
             @if (capture.isRecording()) {
               <span class="record-plate__playhead" aria-hidden="true"></span>
@@ -121,7 +127,7 @@
             <button
               type="button"
               class="record-button"
-              [disabled]="isClassifying()"
+              [disabled]="isClassifying() || !recordingSupported()"
               [attr.aria-pressed]="capture.isRecording()"
               (click)="toggleRecording()"
             >

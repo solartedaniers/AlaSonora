@@ -16,7 +16,8 @@ import { NetworkStats } from '../../core/models';
 
 interface NetworkReading {
   labelKey: string;
-  value: number;
+  /** null mientras llegan los datos vivos: el servidor envía las etiquetas sin cifras. */
+  value: number | null;
   suffixKey?: string;
 }
 
@@ -45,12 +46,11 @@ export class LandingComponent implements OnInit, OnDestroy {
   readonly stats = signal<NetworkStats | null>(null);
   readonly readings = computed<NetworkReading[]>(() => {
     const s = this.stats();
-    if (!s) return [];
     return [
-      { labelKey: 'landing.stats.totalDetections', value: s.totalPublicDetections },
-      { labelKey: 'landing.stats.species', value: s.totalSpecies },
-      { labelKey: 'landing.stats.observers', value: s.distinctObservers },
-      { labelKey: 'landing.stats.accuracy', value: s.averageConfidencePct, suffixKey: 'units.percent' },
+      { labelKey: 'landing.stats.totalDetections', value: s?.totalPublicDetections ?? null },
+      { labelKey: 'landing.stats.species', value: s?.totalSpecies ?? null },
+      { labelKey: 'landing.stats.observers', value: s?.distinctObservers ?? null },
+      { labelKey: 'landing.stats.accuracy', value: s?.averageConfidencePct ?? null, suffixKey: 'units.percent' },
     ];
   });
 

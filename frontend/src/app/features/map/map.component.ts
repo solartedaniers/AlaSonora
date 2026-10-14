@@ -25,6 +25,7 @@ import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
 import { DetectionsService } from '../../core/services/detections.service';
 import { LiveSyncService } from '../../core/services/live-sync.service';
 import { Detection } from '../../core/models';
+import { LoggerService } from '../../core/services/logger.service';
 
 // Vista inicial antes de tener detecciones reales que encuadrar: Colombia
 // continental (mismo fallback de campo usado en el flujo de grabación).
@@ -46,6 +47,7 @@ type MapLoadState = 'loading' | 'ready' | 'error';
 })
 export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly detectionsService = inject(DetectionsService);
+  private readonly logger = inject(LoggerService);
   readonly liveSync = inject(LiveSyncService);
 
   @ViewChild('mapContainer', { static: true }) private readonly mapContainerRef!: ElementRef<HTMLDivElement>;
@@ -85,7 +87,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       this.selected.set(this.feed()[0] ?? null);
       this.loadState.set('ready');
     } catch (error) {
-      console.error('Public feed load failed', error);
+      this.logger.error('Map', 'public feed load failed', error);
       // Si el servidor ya entregó avistamientos (SSR), un fallo al refrescar no debe ocultarlos.
       this.loadState.set(this.feed().length > 0 ? 'ready' : 'error');
     }

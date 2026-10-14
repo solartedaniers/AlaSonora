@@ -10,6 +10,7 @@ import { I18nService, AppLang } from '../../core/services/i18n.service';
 import { LettersOnlyDirective } from '../../shared/directives/letters-only.directive';
 import { nameValidator } from '../../core/validators/name.validator';
 import { ObserverRole, Profile } from '../../core/models';
+import { LoggerService } from '../../core/services/logger.service';
 
 // Tiempo que se muestra la confirmación de guardado.
 const SAVED_NOTICE_MS = 3200;
@@ -29,6 +30,7 @@ const SAVED_NOTICE_MS = 3200;
 })
 export class ProfileComponent implements OnInit {
   readonly user = inject(UserService);
+  private readonly logger = inject(LoggerService);
   readonly theme = inject(ThemeService);
   readonly i18n = inject(I18nService);
   private readonly profileService = inject(ProfileService);
@@ -67,7 +69,7 @@ export class ProfileComponent implements OnInit {
     try {
       this.applyProfile(await this.profileService.getMine());
     } catch (error) {
-      console.error('Profile load failed', error);
+      this.logger.error('Profile', 'load failed', error);
       this.loadFailed.set(true);
     }
   }
@@ -97,7 +99,7 @@ export class ProfileComponent implements OnInit {
       }
       this.avatarUrl.set(await this.profileService.uploadAvatar(userId, file));
     } catch (error) {
-      console.error('Avatar upload failed', error);
+      this.logger.error('Profile', 'avatar upload failed', error);
       this.avatarError.set(this.i18n.translate('profile.avatarUploadError'));
     } finally {
       this.uploadingAvatar.set(false);

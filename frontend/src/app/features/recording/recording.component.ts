@@ -1,5 +1,5 @@
-import { Component, computed, inject, signal, ChangeDetectionStrategy, PLATFORM_ID } from '@angular/core';
-import { DecimalPipe, isPlatformBrowser } from '@angular/common';
+import { Component, afterNextRender, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
@@ -15,6 +15,7 @@ import { I18nService } from '../../core/services/i18n.service';
 import { DetectionDraftService, DRAFT_DETECTION_ID } from '../../core/services/detection-draft.service';
 import { FALLBACK_LOCATION, PendingRecordingsSyncService } from '../../core/services/pending-recordings-sync.service';
 import { GeoLocation } from '../../core/models';
+import { LoggerService } from '../../core/services/logger.service';
 
 type RecordingTab = 'live' | 'upload';
 type SonogramView = 'flat' | 'waterfall';
@@ -51,6 +52,7 @@ const PLATE_MAX_KHZ = 12;
 })
 export class RecordingComponent {
   readonly capture = inject(AudioCaptureService);
+  private readonly logger = inject(LoggerService);
   private readonly classificationService = inject(ClassificationService);
   private readonly userService = inject(UserService);
   private readonly i18n = inject(I18nService);
@@ -79,11 +81,32 @@ export class RecordingComponent {
     { id: 'waterfall', labelKey: 'recording.viewWaterfall' },
   ];
 
+  /** Sin Web Audio (o sin micrófono) no se puede grabar aquí; subir un archivo sigue disponible. */
+  readonly recordingSupported = signal(true);
   /** Tope del espectrograma en vivo: la FFT del worker va de 0 Hz a la mitad de la frecuencia de muestreo. */
-  private readonly nyquistKhz = isPlatformBrowser(inject(PLATFORM_ID)) ? RecordingComponent.deviceNyquistKhz() : null;
-  readonly plateMaxKhz = this.nyquistKhz ? Math.min(PLATE_MAX_KHZ, this.nyquistKhz) : null;
+  private readonly nyquistKhz = signal<number | null>(null);
+  readonly plateMaxKhz = computed(() => {
+    const nyquist = this.nyquistKhz();
+    return nyquist ? Math.min(PLATE_MAX_KHZ, nyquist) : null;
+  });
   /** Fracción de bins de la FFT dibujada para que la placa cubra 0…plateMaxKhz. */
-  readonly visibleFraction = this.nyquistKhz && this.plateMaxKhz ? this.plateMaxKhz / this.nyquistKhz : 1;
+  readonly visibleFraction = computed(() => {
+    const nyquist = this.nyquistKhz();
+    const plate = this.plateMaxKhz();
+    return nyquist && plate ? plate / nyquist : 1;
+  });
+
+  constructor() {
+    // Detecto el soporte tras el primer render, en el navegador: nunca creo un AudioContext al construir.
+    afterNextRender(() => {
+      if (!AudioCaptureService.isSupported()) {
+        this.recordingSupported.set(false);
+        this.activeTab.set('upload');
+        return;
+      }
+      this.nyquistKhz.set(RecordingComponent.deviceNyquistKhz());
+    });
+  }
 
   /** Lecturas en vivo tomadas del último frame del worker (null en reposo). */
   readonly peakKhz = computed(() => {
@@ -188,7 +211,7 @@ export class RecordingComponent {
         await this.saveForLater(audio, durationSeconds, peakFrequencyHz);
         return;
       }
-      console.error('Classification failed', error);
+      this.logger.error('Recording', 'classification failed', error);
       this.classifyError.set(this.resolveClassifyErrorMessage(error));
     } finally {
       this.isClassifying.set(false);
@@ -241,6 +264,7 @@ export class RecordingComponent {
 
   /** Solo decodifico archivos subidos: la grabación en vivo ya lleva su propio tiempo. */
   private async audioDurationSeconds(file: File): Promise<number> {
+    if (typeof AudioContext === 'undefined') return RecordingComponent.mediaDurationSeconds(file);
     const audioContext = new AudioContext();
     try {
       const buffer = await audioContext.decodeAudioData(await file.arrayBuffer());
@@ -248,6 +272,22 @@ export class RecordingComponent {
     } finally {
       await audioContext.close();
     }
+  }
+
+  /** Sin Web Audio leo la duración de los metadatos con un <audio>; si tampoco puede, queda en 0. */
+  private static mediaDurationSeconds(file: File): Promise<number> {
+    return new Promise((resolve) => {
+      const url = URL.createObjectURL(file);
+      const audio = new Audio();
+      const done = (seconds: number) => {
+        URL.revokeObjectURL(url);
+        resolve(Number.isFinite(seconds) ? Math.round(seconds) : 0);
+      };
+      audio.onloadedmetadata = () => done(audio.duration);
+      audio.onerror = () => done(0);
+      audio.preload = 'metadata';
+      audio.src = url;
+    });
   }
 
   /** Devuelve `undefined` (nunca la ubicación de respaldo) si no hay GPS real; el porqué está donde se llama. */

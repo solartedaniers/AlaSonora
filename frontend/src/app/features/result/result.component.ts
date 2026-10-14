@@ -14,6 +14,7 @@ import { LiveSyncService } from '../../core/services/live-sync.service';
 import { UserService } from '../../core/services/user.service';
 import { DetectionDraft, DetectionDraftService, DRAFT_DETECTION_ID } from '../../core/services/detection-draft.service';
 import { Detection, Visibility } from '../../core/models';
+import { LoggerService } from '../../core/services/logger.service';
 
 type ResultLoadState = 'loading' | 'ready' | 'missing';
 
@@ -31,6 +32,7 @@ const PLATE_STEP_KHZ = 2;
 })
 export class ResultComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly logger = inject(LoggerService);
   private readonly router = inject(Router);
   private readonly detectionsService = inject(DetectionsService);
   private readonly liveSync = inject(LiveSyncService);
@@ -89,7 +91,7 @@ export class ResultComponent implements OnInit {
       }
       this.loadState.set(detection ? 'ready' : 'missing');
     } catch (error) {
-      console.error('Detection load failed', error);
+      this.logger.error('Result', 'detection load failed', error);
       this.loadState.set('missing');
     }
   }
@@ -173,7 +175,7 @@ export class ResultComponent implements OnInit {
     try {
       this.detection.set(await this.detectionsService.uploadObserverPhoto(detection.id, userId, file));
     } catch (error) {
-      console.error('Observer photo upload failed', error);
+      this.logger.error('Result', 'observer photo upload failed', error);
       this.photoUploadError.set('result.observerPhotoError');
     } finally {
       this.uploadingPhoto.set(false);

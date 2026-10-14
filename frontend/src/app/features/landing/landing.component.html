@@ -54,170 +54,179 @@
       <app-song-sonogram class="landing-hero__phrase md:hidden" [band]="false" />
     </section>
 
-    <!-- Lecturas reales de la red. @defer (on viewport): el HTML estático no espera estos datos vivos. -->
-    @defer (on viewport) {
-      @if (stats()) {
-        <section class="chrome" aria-labelledby="readings-title">
-          <div class="max-w-7xl mx-auto px-gutter py-14 flex flex-col gap-10">
-            <h2 id="readings-title" class="eyebrow-label">{{ 'landing.readingsTitle' | translate }}</h2>
-            <dl class="readings">
-              @for (reading of readings(); track reading.labelKey) {
-                <div class="readings__item">
-                  <dt class="text-sm text-on-surface-variant">{{ reading.labelKey | translate }}</dt>
-                  <dd class="m-0 font-data text-5xl font-semibold leading-none">
+    <!-- Lecturas de la red. Hidratación incremental (hydrate on viewport): el servidor envía la sección
+         con sus etiquetas y el navegador solo la hidrata al entrar en pantalla, ya con las cifras vivas. -->
+    @defer (hydrate on viewport) {
+      <section class="chrome" aria-labelledby="readings-title">
+        <div class="max-w-7xl mx-auto px-gutter py-14 flex flex-col gap-10">
+          <h2 id="readings-title" class="eyebrow-label">{{ 'landing.readingsTitle' | translate }}</h2>
+          <dl class="readings">
+            @for (reading of readings(); track reading.labelKey) {
+              <div class="readings__item">
+                <dt class="text-sm text-on-surface-variant">{{ reading.labelKey | translate }}</dt>
+                <dd class="m-0 font-data text-5xl font-semibold leading-none">
+                  @if (reading.value !== null) {
                     <app-count-up [value]="reading.value" [suffix]="reading.suffixKey ? (reading.suffixKey | translate) : ''" />
-                  </dd>
-                </div>
-              }
-            </dl>
-          </div>
-        </section>
-      }
-    } @placeholder {
-      <section class="chrome min-h-48" aria-hidden="true"></section>
+                  } @else {
+                    {{ 'common.noValue' | translate }}
+                  }
+                </dd>
+              </div>
+            }
+          </dl>
+        </div>
+      </section>
     }
 
-    <!-- Tres pasos que suben de grave a agudo, como un canto -->
-    <section class="px-gutter py-section" aria-labelledby="how-title">
-      <div class="max-w-7xl mx-auto">
-        <p class="eyebrow-label">{{ 'landing.how.eyebrow' | translate }}</p>
-        <h2 id="how-title" class="mt-4 max-w-3xl text-4xl font-extrabold tracking-display">{{ 'landing.how.title' | translate }}</h2>
+    <!-- Tres pasos que suben de grave a agudo, como un canto. Texto estático: hydrate never,
+         nunca descarga ni ejecuta JavaScript (la entrada al hacer scroll es CSS). -->
+    @defer (hydrate never) {
+      <section class="px-gutter py-section" aria-labelledby="how-title">
+        <div class="max-w-7xl mx-auto">
+          <p class="eyebrow-label">{{ 'landing.how.eyebrow' | translate }}</p>
+          <h2 id="how-title" class="mt-4 max-w-3xl text-4xl font-extrabold tracking-display">{{ 'landing.how.title' | translate }}</h2>
 
-        <ol class="landing-steps mt-10 sm:mt-16 list-none p-0">
-          @for (step of howSteps; track step.titleKey; let i = $index) {
-            <li class="landing-step reveal" [style.--step-rise]="howSteps.length - 1 - i">
-              <span class="landing-step__note" aria-hidden="true"></span>
-              <span class="block pt-6 font-data text-sm font-semibold text-primary">{{ stepNumber(i) }}</span>
-              <h3 class="mt-2 text-2xl font-extrabold">{{ step.titleKey | translate }}</h3>
-              <p class="mt-3 text-on-surface-variant leading-relaxed">{{ step.bodyKey | translate }}</p>
-            </li>
-          }
-        </ol>
-      </div>
-    </section>
-
-    <!-- Motor de IA -->
-    <section class="bg-surface-container-lowest border-y px-gutter py-section" aria-labelledby="pipeline-title">
-      <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-        <div class="lg:col-span-5">
-          <p class="eyebrow-label">{{ 'landing.pipeline.eyebrow' | translate }}</p>
-          <h2 id="pipeline-title" class="mt-4 text-4xl font-extrabold tracking-display">{{ 'landing.pipeline.title' | translate }}</h2>
-          <p class="mt-4 text-on-surface-variant leading-relaxed">{{ 'landing.pipeline.subtitle' | translate }}</p>
-
-          <!-- En el celular: los cuatro pasos como lista, sin pestañas que cambian de alto solas ni segunda ilustración. -->
-          <ol class="md:hidden mt-8 list-none p-0 flex flex-col gap-5">
-            @for (step of pipelineSteps; track step) {
-              <li class="flex gap-4">
-                <span class="font-data text-sm font-semibold text-primary pt-1">{{ stepNumber(step) }}</span>
-                <span>
-                  <span class="block font-display text-lg font-bold">{{ ('landing.pipeline.step' + (step + 1) + 'Title') | translate }}</span>
-                  <span class="block mt-1 text-sm text-on-surface-variant leading-relaxed">{{ ('landing.pipeline.step' + (step + 1) + 'Body') | translate }}</span>
-                </span>
+          <ol class="landing-steps mt-10 sm:mt-16 list-none p-0">
+            @for (step of howSteps; track step.titleKey; let i = $index) {
+              <li class="landing-step reveal" [style.--step-rise]="howSteps.length - 1 - i">
+                <span class="landing-step__note" aria-hidden="true"></span>
+                <span class="block pt-6 font-data text-sm font-semibold text-primary">{{ stepNumber(i) }}</span>
+                <h3 class="mt-2 text-2xl font-extrabold">{{ step.titleKey | translate }}</h3>
+                <p class="mt-3 text-on-surface-variant leading-relaxed">{{ step.bodyKey | translate }}</p>
               </li>
             }
           </ol>
-
-          <div class="hidden md:flex mt-10 flex-col" role="tablist" [attr.aria-label]="'landing.pipeline.tablistLabel' | translate">
-            @for (step of pipelineSteps; track step) {
-              <button
-                type="button"
-                role="tab"
-                class="pipeline-tab"
-                [id]="'pipeline-tab-' + step"
-                aria-controls="pipeline-panel"
-                [attr.aria-selected]="pipelineStep() === step"
-                [attr.tabindex]="pipelineStep() === step ? 0 : -1"
-                (click)="pipelineStep.set(step)"
-                (keydown.arrowDown)="moveTab(1, $event)"
-                (keydown.arrowUp)="moveTab(-1, $event)"
-              >
-                <span class="font-data text-sm font-semibold">{{ stepNumber(step) }}</span>
-                <span>
-                  <span class="block font-display text-lg font-bold">{{ ('landing.pipeline.step' + (step + 1) + 'Title') | translate }}</span>
-                  @if (pipelineStep() === step) {
-                    <span class="block mt-1 text-sm text-on-surface-variant leading-relaxed">
-                      {{ ('landing.pipeline.step' + (step + 1) + 'Body') | translate }}
-                    </span>
-                  }
-                </span>
-              </button>
-            }
-          </div>
         </div>
+      </section>
+    }
 
-        <figure
-          id="pipeline-panel"
-          role="tabpanel"
-          class="reveal hidden md:flex lg:col-span-7 m-0 flex-col gap-3"
-          [attr.aria-labelledby]="'pipeline-tab-' + pipelineStep()"
-        >
-          <div class="pipeline-stage">
-            @switch (pipelineStep()) {
-              @case (0) {
-                <div class="flex items-center justify-center gap-1.5 h-40 w-full" aria-hidden="true">
-                  @for (level of waveformLevels; track $index) {
-                    <span class="w-2.5 rounded-full bg-primary animate-pulse" [style.height.%]="level" [style.animation-delay.ms]="$index * 90"></span>
-                  }
-                </div>
+    <!-- Motor de IA: pestañas interactivas. Se hidratan al entrar en pantalla (hydrate on viewport). -->
+    @defer (hydrate on viewport) {
+      <section class="bg-surface-container-lowest border-y px-gutter py-section" aria-labelledby="pipeline-title">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          <div class="lg:col-span-5">
+            <p class="eyebrow-label">{{ 'landing.pipeline.eyebrow' | translate }}</p>
+            <h2 id="pipeline-title" class="mt-4 text-4xl font-extrabold tracking-display">{{ 'landing.pipeline.title' | translate }}</h2>
+            <p class="mt-4 text-on-surface-variant leading-relaxed">{{ 'landing.pipeline.subtitle' | translate }}</p>
+
+            <!-- En el celular: los cuatro pasos como lista, sin pestañas que cambian de alto solas ni segunda ilustración. -->
+            <ol class="md:hidden mt-8 list-none p-0 flex flex-col gap-5">
+              @for (step of pipelineSteps; track step) {
+                <li class="flex gap-4">
+                  <span class="font-data text-sm font-semibold text-primary pt-1">{{ stepNumber(step) }}</span>
+                  <span>
+                    <span class="block font-display text-lg font-bold">{{ ('landing.pipeline.step' + (step + 1) + 'Title') | translate }}</span>
+                    <span class="block mt-1 text-sm text-on-surface-variant leading-relaxed">{{ ('landing.pipeline.step' + (step + 1) + 'Body') | translate }}</span>
+                  </span>
+                </li>
               }
-              @case (1) {
-                <app-spectrogram-view
-                  class="pipeline-stage__spectrogram"
-                  [getFrame]="pipelineFrame"
-                  [columns]="pipelineColumns"
-                  [initialColumns]="pipelineInitialColumns"
-                  growFrom="end"
-                  ariaLabelKey="landing.demo.plateLabel"
-                />
-              }
-              @case (2) {
-                <svg viewBox="0 0 200 100" class="w-full h-56" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-                  @for (layer of networkLayers; track $index; let l = $index) {
-                    @for (node of layer; track $index; let n = $index) {
-                      <circle
-                        [attr.cx]="20 + l * 53"
-                        [attr.cy]="50 - ((layer.length - 1) * 9) / 2 + n * 9"
-                        r="3.5"
-                        class="fill-primary animate-pulse"
-                        [style.animation-delay.ms]="(l * 5 + n) * 120"
-                      />
+            </ol>
+
+            <div class="hidden md:flex mt-10 flex-col" role="tablist" [attr.aria-label]="'landing.pipeline.tablistLabel' | translate">
+              @for (step of pipelineSteps; track step) {
+                <button
+                  type="button"
+                  role="tab"
+                  class="pipeline-tab"
+                  [id]="'pipeline-tab-' + step"
+                  aria-controls="pipeline-panel"
+                  [attr.aria-selected]="pipelineStep() === step"
+                  [attr.tabindex]="pipelineStep() === step ? 0 : -1"
+                  (click)="pipelineStep.set(step)"
+                  (keydown.arrowDown)="moveTab(1, $event)"
+                  (keydown.arrowUp)="moveTab(-1, $event)"
+                >
+                  <span class="font-data text-sm font-semibold">{{ stepNumber(step) }}</span>
+                  <span>
+                    <span class="block font-display text-lg font-bold">{{ ('landing.pipeline.step' + (step + 1) + 'Title') | translate }}</span>
+                    @if (pipelineStep() === step) {
+                      <span class="block mt-1 text-sm text-on-surface-variant leading-relaxed">
+                        {{ ('landing.pipeline.step' + (step + 1) + 'Body') | translate }}
+                      </span>
                     }
-                  }
-                </svg>
+                  </span>
+                </button>
               }
-              @case (3) {
-                <!-- Anatomía de un resultado: sin especie ni porcentaje inventados -->
-                <dl class="w-full max-w-md m-0 flex flex-col gap-5">
-                  @for (field of resultAnatomy; track field.labelKey) {
-                    <div>
-                      <dt class="font-data text-sm text-on-surface-variant">{{ field.labelKey | translate }}</dt>
-                      <dd class="m-0 mt-2 h-4 rounded-full bg-surface-container-highest" [style.width.%]="field.width" aria-hidden="true"></dd>
-                    </div>
-                  }
-                </dl>
-              }
-            }
+            </div>
           </div>
-          <figcaption class="flex items-start gap-2 text-sm text-on-surface-variant">
-            <span class="mt-1.5 w-4 h-1.5 shrink-0 rounded-full bg-sulfur" aria-hidden="true"></span>
-            {{ 'landing.pipeline.illustrationLabel' | translate }}
-          </figcaption>
-        </figure>
-      </div>
-    </section>
 
-    <!-- Cierre -->
-    <section class="chrome sing-on-hover relative overflow-hidden" aria-labelledby="closing-title">
-      <!-- El sonograma va a la derecha, sin cruzar el titular; sobre la tinta, sin banda de color. -->
-      <app-song-sonogram class="landing-closing__sonogram absolute bottom-0 opacity-60" [band]="false" aria-hidden="true" />
-      <div class="reveal relative max-w-7xl mx-auto px-gutter py-section flex flex-col items-start gap-8">
-        <h2 id="closing-title" class="max-w-3xl text-4xl sm:text-5xl font-extrabold tracking-display">{{ 'landing.closing.title' | translate }}</h2>
-        <a routerLink="/register" class="btn btn--sulfur min-h-14 w-full sm:w-auto px-5 sm:px-8 sm:text-lg text-center leading-tight text-balance sm:whitespace-nowrap">
-          <span class="material-symbols-outlined" aria-hidden="true">mic</span>
-          {{ 'landing.ctaPrimary' | translate }}
-        </a>
-      </div>
-    </section>
+          <figure
+            id="pipeline-panel"
+            role="tabpanel"
+            class="reveal hidden md:flex lg:col-span-7 m-0 flex-col gap-3"
+            [attr.aria-labelledby]="'pipeline-tab-' + pipelineStep()"
+          >
+            <div class="pipeline-stage">
+              @switch (pipelineStep()) {
+                @case (0) {
+                  <div class="flex items-center justify-center gap-1.5 h-40 w-full" aria-hidden="true">
+                    @for (level of waveformLevels; track $index) {
+                      <span class="w-2.5 rounded-full bg-primary animate-pulse" [style.height.%]="level" [style.animation-delay.ms]="$index * 90"></span>
+                    }
+                  </div>
+                }
+                @case (1) {
+                  <app-spectrogram-view
+                    class="pipeline-stage__spectrogram"
+                    [getFrame]="pipelineFrame"
+                    [columns]="pipelineColumns"
+                    [initialColumns]="pipelineInitialColumns"
+                    growFrom="end"
+                    ariaLabelKey="landing.demo.plateLabel"
+                  />
+                }
+                @case (2) {
+                  <svg viewBox="0 0 200 100" class="w-full h-56" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                    @for (layer of networkLayers; track $index; let l = $index) {
+                      @for (node of layer; track $index; let n = $index) {
+                        <circle
+                          [attr.cx]="20 + l * 53"
+                          [attr.cy]="50 - ((layer.length - 1) * 9) / 2 + n * 9"
+                          r="3.5"
+                          class="fill-primary animate-pulse"
+                          [style.animation-delay.ms]="(l * 5 + n) * 120"
+                        />
+                      }
+                    }
+                  </svg>
+                }
+                @case (3) {
+                  <!-- Anatomía de un resultado: sin especie ni porcentaje inventados -->
+                  <dl class="w-full max-w-md m-0 flex flex-col gap-5">
+                    @for (field of resultAnatomy; track field.labelKey) {
+                      <div>
+                        <dt class="font-data text-sm text-on-surface-variant">{{ field.labelKey | translate }}</dt>
+                        <dd class="m-0 mt-2 h-4 rounded-full bg-surface-container-highest" [style.width.%]="field.width" aria-hidden="true"></dd>
+                      </div>
+                    }
+                  </dl>
+                }
+              }
+            </div>
+            <figcaption class="flex items-start gap-2 text-sm text-on-surface-variant">
+              <span class="mt-1.5 w-4 h-1.5 shrink-0 rounded-full bg-sulfur" aria-hidden="true"></span>
+              {{ 'landing.pipeline.illustrationLabel' | translate }}
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+    }
+
+    <!-- Cierre: solo un enlace. Se hidrata si alguien interactúa (hydrate on interaction);
+         el clic previo se reproduce gracias a withEventReplay. -->
+    @defer (hydrate on interaction) {
+      <section class="chrome sing-on-hover relative overflow-hidden" aria-labelledby="closing-title">
+        <!-- El sonograma va a la derecha, sin cruzar el titular; sobre la tinta, sin banda de color. -->
+        <app-song-sonogram class="landing-closing__sonogram absolute bottom-0 opacity-60" [band]="false" aria-hidden="true" />
+        <div class="reveal relative max-w-7xl mx-auto px-gutter py-section flex flex-col items-start gap-8">
+          <h2 id="closing-title" class="max-w-3xl text-4xl sm:text-5xl font-extrabold tracking-display">{{ 'landing.closing.title' | translate }}</h2>
+          <a routerLink="/register" class="btn btn--sulfur min-h-14 w-full sm:w-auto px-5 sm:px-8 sm:text-lg text-center leading-tight text-balance sm:whitespace-nowrap">
+            <span class="material-symbols-outlined" aria-hidden="true">mic</span>
+            {{ 'landing.ctaPrimary' | translate }}
+          </a>
+        </div>
+      </section>
+    }
   </main>
 
   <app-site-footer />

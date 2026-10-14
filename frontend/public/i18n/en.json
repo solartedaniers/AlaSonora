@@ -285,7 +285,8 @@
     "level": "Signal level",
     "viewLabel": "Sonogram view",
     "viewFlat": "Flat",
-    "viewWaterfall": "3D"
+    "viewWaterfall": "3D",
+    "unsupported": "Your browser can't record audio here; you can upload a file."
   },
   "result": {
     "completedTitle": "Bioacoustic Identification Complete",
@@ -466,5 +467,13 @@
     "body": "Update when you finish what you are doing.",
     "apply": "Update now",
     "later": "Later"
+  },
+  "seo": {
+    "default": "AlaSonora: bird identification by song with artificial intelligence, with a public sightings map.",
+    "landing": "Record a bird's song with your phone or upload an audio file: AlaSonora turns it into a sonogram and tells you which species it is.",
+    "login": "Sign in to your AlaSonora field notebook to sync your recordings and see your detections.",
+    "register": "Create your free AlaSonora account and start identifying birds by their song, even offline in the field.",
+    "forgotPassword": "Recover access to your AlaSonora account with a link sent to your email.",
+    "map": "Public map of bird sightings identified by song across the AlaSonora network, updated in real time."
   }
 }
