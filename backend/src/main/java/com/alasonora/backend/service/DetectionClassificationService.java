@@ -8,11 +8,14 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.alasonora.backend.ai.AiEngineUnavailableException;
 import com.alasonora.backend.ai.AudioClassificationException;
 import com.alasonora.backend.ai.AudioQualityException;
 import com.alasonora.backend.ai.BirdSoundClassifier;
@@ -32,6 +35,8 @@ import com.alasonora.backend.dto.SpeciesDto;
  */
 @Service
 public class DetectionClassificationService {
+
+    private static final Logger log = LoggerFactory.getLogger(DetectionClassificationService.class);
 
     private final BirdSoundClassifier classifier;
     private final SpeciesService speciesService;
@@ -66,7 +71,12 @@ public class DetectionClassificationService {
             ));
         } catch (AudioQualityException ex) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage(), ex);
+        } catch (AiEngineUnavailableException ex) {
+            // Código estable: el frontend espera a que el motor despierte y reintenta solo.
+            log.warn("AI engine unavailable: {}", ex.getMessage());
+            throw new CodedResponseStatusException(HttpStatus.BAD_GATEWAY, ApiErrorMessages.BIOACOUSTIC_ENGINE_UNAVAILABLE, ApiErrorCode.AI_ENGINE_UNAVAILABLE);
         } catch (AudioClassificationException ex) {
+            log.warn("Classification failed", ex);
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, ApiErrorMessages.BIOACOUSTIC_ENGINE_UNAVAILABLE, ex);
         }
 
