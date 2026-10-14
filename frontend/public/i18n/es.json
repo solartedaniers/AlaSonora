@@ -287,11 +287,11 @@
     "viewWaterfall": "3D",
     "unsupported": "Tu navegador no permite grabar audio aquí; puedes subir un archivo.",
     "engine": {
-      "waking": "Encendiendo el motor de IA… puede tardar hasta un minuto",
-      "ready": "Motor de IA listo",
-      "unavailable": "El motor de IA no responde por ahora",
+      "waking": "Motor de IA apagado · encendiendo…",
+      "ready": "Motor de IA encendido",
+      "unavailable": "Motor de IA apagado",
       "queued": "Encendiendo el motor de IA, tu grabación se analizará en cuanto esté listo",
-      "timeout": "El motor de IA no despertó a tiempo. Tu grabación sigue aquí; reinténtalo en un momento.",
+      "timeout": "Motor de IA apagado. Inténtalo de nuevo en un momento.",
       "retry": "Reintentar"
     }
   },
@@ -483,5 +483,9 @@
     "register": "Crea tu cuenta gratuita en AlaSonora y empieza a identificar aves por su canto, también sin conexión en el campo.",
     "forgotPassword": "Recupera el acceso a tu cuenta de AlaSonora con un enlace enviado a tu correo.",
     "map": "Mapa público de avistamientos de aves identificados por su canto en la red de AlaSonora, actualizado en tiempo real."
+  },
+  "species": {
+    "imageMissing": "Imagen de la especie no encontrada. Por favor, proporciona tú la imagen.",
+    "imageMissingShort": "Imagen no encontrada"
   }
 }

@@ -18,14 +18,12 @@ export interface Species {
 }
 
 /**
- * Nombre común a mostrar según el idioma activo, con fallback en cadena
- * (idioma activo → el otro idioma → nombre científico) para que nunca se
- * muestre un campo vacío si el catálogo tiene datos incompletos.
+ * Nombre común en el idioma activo; si falta, el nombre científico. Nunca el del otro idioma:
+ * así la interfaz en español no muestra nombres en inglés.
  */
 export function speciesDisplayName(species: Species, lang: 'es' | 'en'): string {
   const localized = lang === 'en' ? species.commonNameEn : species.commonName;
-  const other = lang === 'en' ? species.commonName : species.commonNameEn;
-  return localized || other || species.scientificName;
+  return localized?.trim() || species.scientificName;
 }
 
 export type IucnStatus = 'LC' | 'NT' | 'VU' | 'EN' | 'CR' | 'DD' | 'NE' | 'EW' | 'EX';

@@ -287,11 +287,11 @@
     "viewWaterfall": "3D",
     "unsupported": "Your browser can't record audio here; you can upload a file.",
     "engine": {
-      "waking": "Starting the AI engine… it can take up to a minute",
-      "ready": "AI engine ready",
-      "unavailable": "The AI engine is not responding right now",
+      "waking": "AI engine off · starting…",
+      "ready": "AI engine on",
+      "unavailable": "AI engine off",
       "queued": "Starting the AI engine; your recording will be analyzed as soon as it is ready",
-      "timeout": "The AI engine did not wake up in time. Your recording is still here; try again in a moment.",
+      "timeout": "The AI engine is off. Try again in a moment.",
       "retry": "Retry"
     }
   },
@@ -483,5 +483,9 @@
     "register": "Create your free AlaSonora account and start identifying birds by their song, even offline in the field.",
     "forgotPassword": "Recover access to your AlaSonora account with a link sent to your email.",
     "map": "Public map of bird sightings identified by song across the AlaSonora network, updated in real time."
+  },
+  "species": {
+    "imageMissing": "Species image not found. Please provide the image.",
+    "imageMissingShort": "Image not found"
   }
 }

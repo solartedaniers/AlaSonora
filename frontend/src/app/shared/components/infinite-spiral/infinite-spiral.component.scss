@@ -109,6 +109,11 @@
     0 0 calc(var(--space-unit) * 10) color-mix(in srgb, var(--color-sulfur) 45%, transparent);
 }
 
+// La foto sigue el contexto 3D de la tarjeta: así su aviso puede ocultar la cara trasera.
+.spiral-item__photo {
+  transform-style: preserve-3d;
+}
+
 .spiral-item img {
   width: 100%;
   height: 100%;

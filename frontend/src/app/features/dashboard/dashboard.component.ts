@@ -76,9 +76,8 @@ export class DashboardComponent implements OnInit {
   readonly spiralItems = computed<SpiralItem[]>(() => {
     const lang = this.i18n.lang();
     return this.recent()
-      .filter((d) => d.species.imageUrl)
       .map((d) => ({
-        imageUrl: d.species.imageUrl!,
+        imageUrl: d.species.imageUrl ?? null,
         commonName: speciesDisplayName(d.species, lang),
         scientificName: d.species.scientificName,
       }));

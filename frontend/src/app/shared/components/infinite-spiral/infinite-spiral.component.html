@@ -21,9 +21,9 @@
           </div>
         }
       } @else {
-        @for (item of items(); track item.imageUrl + $index; let i = $index) {
+        @for (item of items(); track item.scientificName + $index; let i = $index) {
           <figure class="spiral-item" [style.--i]="i" [class.is-front]="i === frontIndex()">
-            <img [src]="item.imageUrl" [alt]="item.commonName" loading="lazy" />
+            <app-species-image class="spiral-item__photo" [src]="item.imageUrl" [alt]="item.commonName" notice="compact" />
             <figcaption class="spiral-item__label">{{ item.commonName }}</figcaption>
           </figure>
         }
@@ -53,7 +53,7 @@
 
       <!-- Indicadores como marcas de una regla: la del frente es más alta y azufre -->
       <div class="spiral-stage__ticks">
-        @for (item of items(); track item.imageUrl + $index; let i = $index) {
+        @for (item of items(); track item.scientificName + $index; let i = $index) {
           <button
             type="button"
             class="spiral-stage__tick"

@@ -11,6 +11,7 @@ import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
 import { DetectionsService } from '../../core/services/detections.service';
 import { Detection, SyncStatus } from '../../core/models';
 import { LoggerService } from '../../core/services/logger.service';
+import { SpeciesImageComponent } from '../../shared/components/species-image/species-image.component';
 
 type HistoryView = 'gallery' | 'list';
 type StatusFilter = 'all' | SyncStatus;
@@ -19,7 +20,7 @@ type HistoryLoadState = 'loading' | 'ready' | 'error';
 @Component({
   selector: 'app-history',
   standalone: true,
-  imports: [CountUpComponent, LoadingStateComponent, 
+  imports: [SpeciesImageComponent, CountUpComponent, LoadingStateComponent, 
     RouterLink,
     DatePipe,
     NavHeaderComponent,

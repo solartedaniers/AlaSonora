@@ -110,9 +110,7 @@
                 <span class="record-plate__rec-dot" aria-hidden="true"></span>
                 {{ 'recording.recLabel' | translate }}
               </span>
-            } @else if (isClassifying()) {
-              <p class="record-plate__idle">{{ 'recording.classifying' | translate }}</p>
-            } @else if (!hasSonogram()) {
+            } @else if (!hasSonogram() && !isClassifying()) {
               <!-- La invitación solo aparece con la placa vacía: no vuelve sobre un sonograma ya pintado. -->
               <p class="record-plate__idle">{{ 'recording.idleHint' | translate }}</p>
             }

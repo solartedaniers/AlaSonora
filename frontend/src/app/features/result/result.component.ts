@@ -15,6 +15,7 @@ import { UserService } from '../../core/services/user.service';
 import { DetectionDraft, DetectionDraftService, DRAFT_DETECTION_ID } from '../../core/services/detection-draft.service';
 import { Detection, Visibility } from '../../core/models';
 import { LoggerService } from '../../core/services/logger.service';
+import { SpeciesImageComponent } from '../../shared/components/species-image/species-image.component';
 
 type ResultLoadState = 'loading' | 'ready' | 'missing';
 
@@ -25,7 +26,7 @@ const PLATE_STEP_KHZ = 2;
 @Component({
   selector: 'app-result',
   standalone: true,
-  imports: [LoadingStateComponent, RouterLink, DatePipe, DecimalPipe, NavHeaderComponent, ConfidenceBadgeComponent, TranslatePipe, SpeciesNamePipe, VocalizationTagPipe, RecordingSpectrogramComponent, FrequencyAxisComponent],
+  imports: [SpeciesImageComponent, LoadingStateComponent, RouterLink, DatePipe, DecimalPipe, NavHeaderComponent, ConfidenceBadgeComponent, TranslatePipe, SpeciesNamePipe, VocalizationTagPipe, RecordingSpectrogramComponent, FrequencyAxisComponent],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './result.component.html',
   styleUrl: './result.component.scss',

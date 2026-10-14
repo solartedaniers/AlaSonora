@@ -103,11 +103,7 @@
               <li class="reveal">
                 <a [routerLink]="['/result', d.id]" class="history-sheet" data-glow>
                   <span class="history-sheet__print">
-                    @if (d.species.imageUrl) {
-                      <img [src]="d.species.imageUrl" alt="" loading="lazy" />
-                    } @else {
-                      <app-sonogram-glyph class="w-16 h-14 text-primary" />
-                    }
+                    <app-species-image [src]="d.species.imageUrl" notice="compact" />
                   </span>
                   <span class="font-display text-xl font-extrabold">{{ d.species | speciesName }}</span>
                   <span class="italic text-on-surface-variant">{{ d.species.scientificName }}</span>

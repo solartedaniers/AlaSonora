@@ -42,11 +42,7 @@
 
         <div class="result-plates">
           <figure class="result-print">
-            @if (d.species.imageUrl) {
-              <img [src]="d.species.imageUrl" [alt]="d.species | speciesName" />
-            } @else {
-              <span class="material-symbols-outlined text-6xl text-primary" aria-hidden="true">flutter_dash</span>
-            }
+            <app-species-image #referencePhoto [src]="d.species.imageUrl" [alt]="d.species | speciesName" loading="eager" />
             <figcaption>{{ 'result.referencePhotoLabel' | translate }}</figcaption>
           </figure>
           <!-- La foto del observador nunca comparte recuadro con la foto de referencia de la especie -->
@@ -55,6 +51,13 @@
               <img [src]="d.observerPhotoUrl" alt="" />
               <figcaption>{{ 'result.observerPhotoLabel' | translate }}</figcaption>
             </figure>
+          }
+          <!-- Sin foto de la especie: el aviso va junto a "Subir mi foto", no encima de la ilustración. -->
+          @if (referencePhoto.missing()) {
+            <p class="result-photo-missing" role="note">
+              <span class="material-symbols-outlined shrink-0" aria-hidden="true">add_a_photo</span>
+              {{ 'species.imageMissing' | translate }}
+            </p>
           }
           @if (!isDraft()) {
             <label class="btn btn--quiet w-full cursor-pointer">

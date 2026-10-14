@@ -63,11 +63,12 @@ export class AiEngineStatusService {
 
   private async isReady(): Promise<boolean> {
     try {
-      return (await firstValueFrom(this.http.get<AiStatusResponse>(`${environment.apiBaseUrl}/ai/status`))).ready;
+      return (await firstValueFrom(this.http.get<AiStatusResponse>(`${environment.apiBaseUrl}/ai/status`)))?.ready === true;
     } catch (error) {
-      // Solo sin conexión o con un 5xx sigo esperando. Un 404 (backend aún sin este endpoint) o un 401
-      // no deben frenar la clasificación: que sea ella la que responda.
-      return error instanceof HttpErrorResponse && error.status !== 0 && error.status < 500;
+      // Sigo esperando sin conexión, con un 5xx o si llega algo que no es JSON (la página de "despertando"
+      // de Render responde 200 en HTML). Un 404 (backend aún sin este endpoint) o un 401 no deben frenar
+      // la clasificación: que sea ella la que responda.
+      return error instanceof HttpErrorResponse && error.status >= 400 && error.status < 500;
     }
   }
 

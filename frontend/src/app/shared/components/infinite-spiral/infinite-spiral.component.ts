@@ -17,9 +17,11 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 import { SonogramGlyphComponent } from '../sonogram-glyph/sonogram-glyph.component';
 import { I18nService } from '../../../core/services/i18n.service';
 import { MotionPreferenceService } from '../../../core/services/motion-preference.service';
+import { SpeciesImageComponent } from '../species-image/species-image.component';
 
 export interface SpiralItem {
-  imageUrl: string;
+  /** Sin foto (o si no carga) se ve la ilustración con su aviso. */
+  imageUrl: string | null;
   commonName: string;
   scientificName: string;
 }
@@ -39,7 +41,7 @@ const EMPTY_FRAME_COUNT = 5;
 @Component({
   selector: 'app-infinite-spiral',
   standalone: true,
-  imports: [TranslatePipe, SonogramGlyphComponent],
+  imports: [SpeciesImageComponent, TranslatePipe, SonogramGlyphComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './infinite-spiral.component.html',
   styleUrl: './infinite-spiral.component.scss',

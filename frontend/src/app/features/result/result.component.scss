@@ -123,3 +123,23 @@
   gap: calc(var(--space-unit) * 10);
   max-width: 48rem;
 }
+
+// Aviso de foto de especie faltante: una nota sobria pegada al botón de subir la propia.
+.result-photo-missing {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(var(--space-unit) * 2);
+  margin: 0;
+  padding: calc(var(--space-unit) * 3) calc(var(--space-unit) * 4);
+  border-radius: var(--radius-lg);
+  border-inline-start: var(--stroke-accent) solid var(--color-sky);
+  background: color-mix(in srgb, var(--color-sky) 10%, var(--color-surface-container-lowest));
+  color: var(--color-on-surface);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+
+  .material-symbols-outlined {
+    font-size: var(--text-lg);
+    color: var(--color-sky-ink);
+  }
+}
