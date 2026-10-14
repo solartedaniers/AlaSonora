@@ -67,3 +67,6 @@ graph.json
 .vscode/
 .idea/
 repositorys/
+
+# ---- Motor de IA: caché de Matplotlib generada en el build ----
+ai-engine/.cache/
