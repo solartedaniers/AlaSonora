@@ -1,5 +1,9 @@
 import { Injectable, NgZone, signal } from '@angular/core';
 import { AudioProcessingResponse, AudioWorkerOutboundMessage } from '../../workers/messages';
+import { FrameHistory } from './frame-history';
+
+// Espectros que guardo de la grabación: alcanza para la vista más ancha (plana, 120 columnas).
+const HISTORY_FRAMES = 240;
 
 export interface SpectrogramFrame {
   magnitudes: Float32Array;
@@ -54,6 +58,8 @@ export class AudioCaptureService {
   // micrófono intacto; el usuario sube ganancia solo cuando la necesita.
   readonly gainDb = signal(0);
   readonly highPassEnabled = signal(true);
+  /** Espectros de la grabación actual; lo comparten la vista plana y la 3D. */
+  readonly history = new FrameHistory(HISTORY_FRAMES);
 
   private worker?: Worker;
   private audioContext?: AudioContext;
@@ -136,6 +142,7 @@ export class AudioCaptureService {
       this.processorNode.connect(this.audioContext!.destination);
     });
 
+    this.history.clear();
     this.isRecording.set(true);
     this.startedAt = performance.now();
     this.elapsedIntervalId = setInterval(() => {
@@ -211,6 +218,8 @@ export class AudioCaptureService {
       peakFrequencyHz: data.peakFrequencyHz,
       rmsDb: data.rmsDb,
     };
+    // Guardar en el historial es parte de recibir el dato (esta task); pintarlo queda para el rAF de cada vista.
+    this.history.push(frame.magnitudes);
     // Reentramos a la zona de Angular solo para la actualización del signal
     // que la UI observa; el resto del pipeline permanece fuera de la zona.
     this.zone.run(() => this.latestFrame.set(frame));
