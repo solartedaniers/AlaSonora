@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.alasonora.backend.config.AiProperties;
+import com.alasonora.backend.config.AudioUploadProperties;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
@@ -33,7 +34,7 @@ class BirdNetHttpClassifierRetryTest {
     @BeforeEach
     void startStubEngine() throws IOException {
         server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
-        server.createContext("/audio.wav", exchange -> respond(exchange, 200, "RIFF"));
+        server.createContext("/audio.wav", exchange -> respond(exchange, 200, "RIFF\0\0\0\0WAVEfmt "));
         server.createContext("/analyze", exchange -> {
             boolean fail = analyzeCalls.incrementAndGet() <= failuresBeforeSuccess;
             respond(exchange, fail ? 502 : 200, fail ? "Bad Gateway" : ANALYZE_OK);
@@ -64,7 +65,8 @@ class BirdNetHttpClassifierRetryTest {
     private BirdNetHttpClassifier classifier() {
         String base = "http://127.0.0.1:" + server.getAddress().getPort();
         AiProperties.Engine engine = new AiProperties.Engine(base, "test-key", 2000, 0.1, 3, 1000, 1000, 1, 10, 1000);
-        return new BirdNetHttpClassifier(new AiProperties(engine, null, null, null), JsonMapper.builder().build(), ASYNC_TIMEOUT);
+        AudioFileValidator validator = new AudioFileValidator(new AudioUploadProperties(1_048_576));
+        return new BirdNetHttpClassifier(new AiProperties(engine, null, null, null), JsonMapper.builder().build(), validator, ASYNC_TIMEOUT);
     }
 
     private ClassificationRequest request() {
