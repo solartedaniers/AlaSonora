@@ -23,33 +23,46 @@
         <button
           type="button"
           class="relative w-touch h-touch grid place-items-center rounded-full text-on-surface-variant hover:text-on-surface transition-colors"
-          [attr.aria-label]="'notifications.title' | translate"
+          [attr.aria-label]="bellLabel()"
           [attr.aria-expanded]="notificationsOpen()"
           aria-controls="app-notifications"
           (click)="toggleNotifications()"
         >
           <span class="material-symbols-outlined text-2xl" aria-hidden="true">notifications</span>
-          @if (notifications.unseenCount() > 0) {
-            <span class="absolute top-1.5 end-1.5 min-w-5 h-5 px-1 grid place-items-center rounded-full bg-sulfur text-on-sulfur font-data text-xs font-semibold">
-              {{ notifications.unseenCount() }}
-            </span>
+          @if (notifications.unreadCount() > 0) {
+            <span class="bell-badge" aria-hidden="true">{{ badgeText() }}</span>
           }
         </button>
 
         @if (notificationsOpen()) {
-          <div
-            id="app-notifications"
-            class="absolute end-0 mt-2 w-72 notifications-panel max-h-96 overflow-y-auto rounded-xl bg-surface-container shadow-xl ring-1 ring-outline-variant z-50"
-          >
+          <div id="app-notifications" class="notifications-panel" role="region" [attr.aria-label]="'notifications.title' | translate">
             <p class="px-4 py-3 font-display font-semibold text-sm border-b">{{ 'notifications.title' | translate }}</p>
-            @for (item of notifications.notifications(); track item.id) {
-              <div class="px-4 py-3 border-b last:border-0">
-                <p class="text-sm font-semibold">{{ item.species | speciesName }}</p>
-                <p class="text-xs text-on-surface-variant">{{ item.observerName }} · {{ item.location.placeName }}</p>
-              </div>
-            } @empty {
-              <p class="px-4 py-6 text-sm text-on-surface-variant text-center">{{ 'notifications.empty' | translate }}</p>
-            }
+            <ul class="list-none m-0 p-0">
+              @for (item of notifications.items(); track item.detectionId) {
+                <li class="notification" [class.notification--unread]="item.unread">
+                  <a [routerLink]="['/result', item.detectionId]" class="notification__body" (click)="closeMenus()">
+                    @if (item.unread) {
+                      <span class="sr-only">{{ 'notifications.new' | translate }}</span>
+                    }
+                    <span class="block text-sm">{{ describe(item) }}</span>
+                    <time class="block mt-1 font-data text-xs text-on-surface-variant" [attr.datetime]="item.createdAt">
+                      {{ item.createdAt | date: 'medium' }}
+                    </time>
+                  </a>
+                  <a
+                    [routerLink]="['/map']"
+                    [queryParams]="{ focus: item.detectionId }"
+                    class="notification__map"
+                    [attr.aria-label]="'notifications.showOnMap' | translate"
+                    (click)="closeMenus()"
+                  >
+                    <span class="material-symbols-outlined text-xl" aria-hidden="true">location_on</span>
+                  </a>
+                </li>
+              } @empty {
+                <li class="px-4 py-6 text-sm text-on-surface-variant text-center">{{ 'notifications.empty' | translate }}</li>
+              }
+            </ul>
           </div>
         }
       </div>
