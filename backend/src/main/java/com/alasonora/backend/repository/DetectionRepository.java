@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,6 +21,12 @@ public interface DetectionRepository extends JpaRepository<Detection, Long> {
     // Mapa con sesión: todas las públicas más las privadas del propio usuario, nunca las privadas de otros.
     @Query("select d from Detection d where d.visibility = :visibility or d.ownerId = :ownerId order by d.recordedAt desc")
     List<Detection> findVisibleTo(@Param("visibility") Visibility visibility, @Param("ownerId") UUID ownerId);
+
+    // Avisos de la campana: lo que otros publicaron, lo más reciente primero (nunca lo propio).
+    @Query("select d from Detection d where d.visibility = :visibility and d.ownerId <> :requesterId order by d.createdAt desc")
+    List<Detection> findLatestFromOthers(@Param("visibility") Visibility visibility, @Param("requesterId") UUID requesterId, Pageable page);
+
+    long countByVisibilityAndOwnerIdNotAndCreatedAtAfter(Visibility visibility, UUID ownerId, Instant createdAfter);
 
     long countByVisibility(Visibility visibility);
 

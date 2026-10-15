@@ -1,5 +1,6 @@
 package com.alasonora.backend.entity;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -57,4 +58,7 @@ public class Profile {
     @Column(nullable = false)
     @ColumnDefault("false")
     private boolean suspended;
+
+    // Hasta cuándo vio la campana: las detecciones públicas de otros más nuevas son avisos sin leer.
+    private Instant notificationsSeenAt;
 }
