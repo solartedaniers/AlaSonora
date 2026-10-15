@@ -16,10 +16,10 @@ import { I18nService } from '../../core/services/i18n.service';
 export class TranslatePipe implements PipeTransform {
   private readonly i18n = inject(I18nService);
 
-  transform(key: string | undefined | null): string {
+  transform(key: string | undefined | null, params?: Record<string, string | number>): string {
     if (!key) return '';
     // Leer el signal aquí asegura que Angular detecte la dependencia.
     this.i18n.lang();
-    return this.i18n.translate(key);
+    return this.i18n.translate(key, params);
   }
 }
