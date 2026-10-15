@@ -10,7 +10,7 @@ import com.alasonora.backend.entity.SystemRole;
 public record CreateUserRequest(
     @NotBlank @Email String email,
     @NotBlank @Size(min = 8) String password,
-    @NotBlank String displayName,
+    @NotBlank String username,
     @NotNull SystemRole systemRole
 ) {
 }

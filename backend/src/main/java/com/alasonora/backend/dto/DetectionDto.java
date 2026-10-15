@@ -26,7 +26,7 @@ public record DetectionDto(
 
     // El caller resuelve las URLs firmadas (ver PrivateObjectSignedUrlResolver):
     // este DTO solo mapea, nunca llama a Supabase Storage.
-    public static DetectionDto fromEntity(Detection detection, String signedAudioUrl, String signedObserverPhotoUrl) {
+    public static DetectionDto fromEntity(Detection detection, String signedAudioUrl, String signedObserverPhotoUrl, String observerName) {
         return new DetectionDto(
             detection.getId().toString(),
             detection.getRecordedAt(),
@@ -37,7 +37,7 @@ public record DetectionDto(
             detection.getPeakFrequencyHz(),
             detection.getAlternatives().stream().map(DetectionCandidateDto::fromEntity).toList(),
             GeoLocationDto.fromEntity(detection.getLocation()),
-            detection.getObserverName(),
+            observerName,
             detection.getFieldNotes(),
             detection.getVisibility(),
             signedObserverPhotoUrl

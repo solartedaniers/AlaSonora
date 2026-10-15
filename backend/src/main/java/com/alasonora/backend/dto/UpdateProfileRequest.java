@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record UpdateProfileRequest(
-    @NotBlank String displayName,
+    @NotBlank String username,
     String avatarUrl,
     @NotNull ObserverRole role,
     String institution,

@@ -7,6 +7,7 @@ import com.alasonora.backend.entity.SystemRole;
 public record ProfileDto(
     String id,
     String displayName,
+    String username,
     String avatarUrl,
     ObserverRole role,
     String institution,
@@ -20,6 +21,7 @@ public record ProfileDto(
         return new ProfileDto(
             profile.getId().toString(),
             profile.getDisplayName(),
+            profile.getUsername(),
             profile.getAvatarUrl(),
             profile.getRole(),
             profile.getInstitution(),
