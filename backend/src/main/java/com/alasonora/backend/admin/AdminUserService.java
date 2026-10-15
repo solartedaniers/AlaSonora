@@ -15,6 +15,7 @@ import com.alasonora.backend.entity.ObserverRole;
 import com.alasonora.backend.entity.Profile;
 import com.alasonora.backend.entity.SystemRole;
 import com.alasonora.backend.repository.ProfileRepository;
+import com.alasonora.backend.service.UsernameService;
 
 @Service
 public class AdminUserService {
@@ -23,10 +24,12 @@ public class AdminUserService {
 
     private final SupabaseAdminClient supabaseAdminClient;
     private final ProfileRepository profileRepository;
+    private final UsernameService usernameService;
 
-    public AdminUserService(SupabaseAdminClient supabaseAdminClient, ProfileRepository profileRepository) {
+    public AdminUserService(SupabaseAdminClient supabaseAdminClient, ProfileRepository profileRepository, UsernameService usernameService) {
         this.supabaseAdminClient = supabaseAdminClient;
         this.profileRepository = profileRepository;
+        this.usernameService = usernameService;
     }
 
     public List<ProfileDto> listUsers() {
@@ -37,11 +40,14 @@ public class AdminUserService {
     // login) y luego se refleja de inmediato en profiles, sin esperar al alta
     // perezosa que hace ProfileController en el primer login.
     public ProfileDto createUser(CreateUserRequest request) {
+        // Valido el usuario antes de crear la cuenta en Supabase: así un nombre repetido no deja una cuenta a medias.
+        String username = usernameService.requireUsable(request.username(), null);
         UUID userId = supabaseAdminClient.createUser(request.email(), request.password());
 
         Profile profile = new Profile();
         profile.setId(userId);
-        profile.setDisplayName(request.displayName());
+        profile.setDisplayName(username);
+        profile.setUsername(username);
         profile.setRole(DEFAULT_ROLE);
         profile.setSystemRole(request.systemRole());
         return ProfileDto.fromEntity(profileRepository.save(profile));
