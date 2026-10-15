@@ -54,10 +54,13 @@
         }
       </div>
 
+      @if (currentUser.username) {
+        <span class="hidden lg:block max-w-40 truncate font-data text-sm text-on-chrome-variant">{{ currentUser.username }}</span>
+      }
       <a
         routerLink="/profile"
         class="hidden sm:grid w-touch h-touch place-items-center rounded-full"
-        [attr.aria-label]="'nav.profile' | translate"
+        [attr.aria-label]="('nav.profile' | translate) + (currentUser.username ? ': ' + currentUser.username : '')"
       >
         @if (currentUser.avatarUrl && !avatarFailed()) {
           <img
