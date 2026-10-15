@@ -43,7 +43,7 @@
               </span>
               <div class="min-w-0">
                 <div class="flex flex-wrap items-center gap-2">
-                  <h2 class="font-display text-lg font-bold truncate">{{ u.displayName }}</h2>
+                  <h2 class="font-display text-lg font-bold truncate">{{ u.username }}</h2>
                   <span class="admin-tag" [class.admin-tag--admin]="u.systemRole === 'admin'">
                     {{ (u.systemRole === 'admin' ? 'admin.roleAdmin' : 'admin.roleUser') | translate }}
                   </span>
@@ -97,8 +97,22 @@
 
         <form [formGroup]="createForm" (ngSubmit)="submitCreate()" class="flex flex-col gap-5">
           <div class="flex flex-col gap-2">
-            <label for="createDisplayName" class="field-label">{{ 'auth.register.fullName' | translate }}</label>
-            <input id="createDisplayName" type="text" formControlName="displayName" appLettersOnly class="field-input" />
+            <label for="createUsername" class="field-label">{{ 'auth.register.username' | translate }}</label>
+            <input
+              id="createUsername"
+              type="text"
+              autocapitalize="off"
+              spellcheck="false"
+              formControlName="username"
+              [attr.maxlength]="usernameLimits.maxLength"
+              class="field-input"
+              [attr.aria-invalid]="createForm.controls.username.invalid && createForm.controls.username.touched"
+            />
+            @if (createForm.controls.username.errors?.['usernameTaken']) {
+              <span class="field-error">{{ 'auth.register.usernameTaken' | translate }}</span>
+            } @else if (createForm.controls.username.invalid && createForm.controls.username.touched) {
+              <span class="field-error">{{ 'auth.register.usernameError' | translate: { min: usernameLimits.minLength, max: usernameLimits.maxLength } }}</span>
+            }
           </div>
           <div class="flex flex-col gap-2">
             <label for="createEmail" class="field-label">{{ 'auth.register.email' | translate }}</label>
@@ -149,12 +163,26 @@
           <span class="material-symbols-outlined" aria-hidden="true">close</span>
         </button>
         <h2 id="admin-edit-title" class="text-2xl font-extrabold">{{ 'admin.editModal.title' | translate }}</h2>
-        <p class="mt-1 mb-6 text-on-surface-variant">{{ editedUser.displayName }}</p>
+        <p class="mt-1 mb-6 text-on-surface-variant">{{ editedUser.username }}</p>
 
         <form [formGroup]="editForm" (ngSubmit)="submitEdit()" class="flex flex-col gap-5">
           <div class="flex flex-col gap-2">
-            <label for="editDisplayName" class="field-label">{{ 'auth.register.fullName' | translate }}</label>
-            <input id="editDisplayName" type="text" formControlName="displayName" appLettersOnly class="field-input" />
+            <label for="editUsername" class="field-label">{{ 'auth.register.username' | translate }}</label>
+            <input
+              id="editUsername"
+              type="text"
+              autocapitalize="off"
+              spellcheck="false"
+              formControlName="username"
+              [attr.maxlength]="usernameLimits.maxLength"
+              class="field-input"
+              [attr.aria-invalid]="editForm.controls.username.invalid && editForm.controls.username.touched"
+            />
+            @if (editForm.controls.username.errors?.['usernameTaken']) {
+              <span class="field-error">{{ 'auth.register.usernameTaken' | translate }}</span>
+            } @else if (editForm.controls.username.invalid && editForm.controls.username.touched) {
+              <span class="field-error">{{ 'auth.register.usernameError' | translate: { min: usernameLimits.minLength, max: usernameLimits.maxLength } }}</span>
+            }
           </div>
           <div class="flex flex-col gap-2">
             <label for="editRole" class="field-label">{{ 'auth.register.role' | translate }}</label>
@@ -196,7 +224,7 @@
           <span class="material-symbols-outlined" aria-hidden="true">close</span>
         </button>
         <h2 id="admin-history-title" class="text-2xl font-extrabold">{{ 'admin.historyModal.title' | translate }}</h2>
-        <p class="mt-1 mb-6 text-on-surface-variant">{{ viewedUser.displayName }}</p>
+        <p class="mt-1 mb-6 text-on-surface-variant">{{ viewedUser.username }}</p>
 
         @if (historyLoading()) {
           <app-loading-state />

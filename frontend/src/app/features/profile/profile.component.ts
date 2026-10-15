@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
@@ -7,8 +8,8 @@ import { UserService } from '../../core/services/user.service';
 import { ProfileService } from '../../core/services/profile.service';
 import { ThemeService, ThemeMode } from '../../core/services/theme.service';
 import { I18nService, AppLang } from '../../core/services/i18n.service';
-import { LettersOnlyDirective } from '../../shared/directives/letters-only.directive';
-import { nameValidator } from '../../core/validators/name.validator';
+import { usernameAvailableValidator, usernameValidators } from '../../core/validators/username.validator';
+import { environment } from '../../../environments/environment';
 import { ObserverRole, Profile } from '../../core/models';
 import { LoggerService } from '../../core/services/logger.service';
 
@@ -22,7 +23,6 @@ const SAVED_NOTICE_MS = 3200;
     NavHeaderComponent,
     TranslatePipe,
     ReactiveFormsModule,
-    LettersOnlyDirective,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './profile.component.html',
@@ -47,10 +47,20 @@ export class ProfileComponent implements OnInit {
   /** Solo estado de vista: confirma un guardado exitoso. */
   readonly justSaved = signal(false);
 
+  readonly usernameLimits = environment.username;
+  /** Usuario guardado: no lo marco como ocupado si el observador lo deja igual. */
+  private savedUsername = '';
+
   readonly roles: ObserverRole[] = ['ornithologist', 'ranger', 'biologist', 'hobbyist', 'student'];
 
   readonly form = this.fb.nonNullable.group({
-    displayName: ['', [Validators.required, nameValidator]],
+    username: ['', {
+      validators: usernameValidators,
+      asyncValidators: usernameAvailableValidator(
+        (name) => this.user.checkUsername(name),
+        () => this.savedUsername
+      ),
+    }],
     role: ['hobbyist' as ObserverRole, Validators.required],
     institution: [''],
     orcidId: [''],
@@ -107,15 +117,15 @@ export class ProfileComponent implements OnInit {
   }
 
   async save(): Promise<void> {
-    if (this.form.invalid) {
+    if (this.form.invalid || this.form.pending) {
       this.form.markAllAsTouched();
       return;
     }
     this.saving.set(true);
     try {
-      const { displayName, role, institution, orcidId, stationName } = this.form.getRawValue();
+      const { username, role, institution, orcidId, stationName } = this.form.getRawValue();
       const updated = await this.profileService.update({
-        displayName,
+        username: username.trim(),
         role,
         avatarUrl: this.avatarUrl(),
         institution: institution || undefined,
@@ -123,15 +133,22 @@ export class ProfileComponent implements OnInit {
         stationName: stationName || undefined,
       });
       await this.user.syncMetadata({
-        full_name: updated.displayName,
+        username: updated.username,
         avatar_url: updated.avatarUrl,
         institution: updated.institution,
         orcid_id: updated.orcidId,
         station_name: updated.stationName,
       });
+      this.savedUsername = updated.username;
       this.editing.set(false);
       this.justSaved.set(true);
       setTimeout(() => this.justSaved.set(false), SAVED_NOTICE_MS);
+    } catch (error) {
+      // El backend vuelve a validar: si alguien lo tomó entre la comprobación y el guardado, responde 409.
+      const code = error instanceof HttpErrorResponse ? (error.error as { errorCode?: string } | null)?.errorCode : undefined;
+      if (code !== 'USERNAME_TAKEN' && code !== 'USERNAME_INVALID') throw error;
+      this.form.controls.username.setErrors(code === 'USERNAME_TAKEN' ? { usernameTaken: true } : { pattern: true });
+      this.form.controls.username.markAsTouched();
     } finally {
       this.saving.set(false);
     }
@@ -144,8 +161,9 @@ export class ProfileComponent implements OnInit {
 
   private applyProfile(profile: Profile): void {
     this.avatarUrl.set(profile.avatarUrl);
+    this.savedUsername = profile.username;
     this.form.setValue({
-      displayName: profile.displayName,
+      username: profile.username,
       role: profile.role,
       institution: profile.institution ?? '',
       orcidId: profile.orcidId ?? '',

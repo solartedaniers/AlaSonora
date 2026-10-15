@@ -23,21 +23,29 @@
         <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div class="flex flex-col gap-2">
-              <label for="fullName" class="field-label">{{ 'auth.register.fullName' | translate }}</label>
+              <label for="username" class="field-label">{{ 'auth.register.username' | translate }}</label>
               <input
-                id="fullName"
+                id="username"
                 type="text"
-                autocomplete="name"
-                formControlName="fullName"
-                appLettersOnly
+                autocomplete="username"
+                autocapitalize="off"
+                spellcheck="false"
+                formControlName="username"
+                [attr.maxlength]="usernameLimits.maxLength"
                 class="field-input"
-                [placeholder]="'auth.register.fullNamePlaceholder' | translate"
-                [attr.aria-invalid]="form.controls.fullName.invalid && form.controls.fullName.touched"
-                aria-describedby="fullName-error"
+                [placeholder]="'auth.register.usernamePlaceholder' | translate"
+                [attr.aria-invalid]="form.controls.username.invalid && form.controls.username.touched"
+                aria-describedby="username-error"
               />
-              @if (form.controls.fullName.errors?.['pattern'] && form.controls.fullName.touched) {
-                <span id="fullName-error" class="field-error">{{ 'auth.register.fullNameError' | translate }}</span>
-              }
+              <span id="username-error" class="field-error" aria-live="polite">
+                @if (form.controls.username.touched || form.controls.username.dirty) {
+                  @if (form.controls.username.errors?.['usernameTaken']) {
+                    {{ 'auth.register.usernameTaken' | translate }}
+                  } @else if (form.controls.username.invalid && form.controls.username.touched) {
+                    {{ 'auth.register.usernameError' | translate: { min: usernameLimits.minLength, max: usernameLimits.maxLength } }}
+                  }
+                }
+              </span>
             </div>
             <div class="flex flex-col gap-2">
               <label for="role" class="field-label">{{ 'auth.register.role' | translate }}</label>
@@ -125,18 +133,31 @@
 
           <div class="flex flex-col gap-3">
             <label class="flex items-start gap-3 min-h-touch cursor-pointer">
-              <input type="checkbox" formControlName="consentScience" class="w-5 h-5 mt-0.5 shrink-0 accent-primary" />
+              <input
+                type="checkbox"
+                formControlName="consentScience"
+                class="w-5 h-5 mt-0.5 shrink-0 accent-primary"
+                [attr.aria-invalid]="form.controls.consentScience.invalid && form.controls.consentScience.touched"
+                aria-describedby="consentScience-error"
+              />
               <span class="text-on-surface leading-snug">{{ 'auth.register.consentScience' | translate }}</span>
             </label>
+            @if (form.controls.consentScience.invalid && form.controls.consentScience.touched) {
+              <span id="consentScience-error" class="field-error ps-8">{{ 'auth.register.consentRequired' | translate }}</span>
+            }
             <label class="flex items-start gap-3 min-h-touch cursor-pointer">
               <input
                 type="checkbox"
                 formControlName="consentTerms"
                 class="w-5 h-5 mt-0.5 shrink-0 accent-primary"
                 [attr.aria-invalid]="form.controls.consentTerms.invalid && form.controls.consentTerms.touched"
+                aria-describedby="consentTerms-error"
               />
               <span class="text-on-surface leading-snug">{{ 'auth.register.consentTerms' | translate }}</span>
             </label>
+            @if (form.controls.consentTerms.invalid && form.controls.consentTerms.touched) {
+              <span id="consentTerms-error" class="field-error ps-8">{{ 'auth.register.consentRequired' | translate }}</span>
+            }
           </div>
 
           <button type="submit" [disabled]="submitting()" class="btn btn--ink w-full min-h-12">

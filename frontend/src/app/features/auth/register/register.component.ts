@@ -4,10 +4,11 @@ import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { NavHeaderComponent } from '../../../shared/components/nav-header/nav-header.component';
 import { SiteFooterComponent } from '../../../shared/components/site-footer/site-footer.component';
-import { LettersOnlyDirective } from '../../../shared/directives/letters-only.directive';
 import { AuthPanelComponent } from '../auth-panel/auth-panel.component';
 import { UserService } from '../../../core/services/user.service';
-import { nameValidator } from '../../../core/validators/name.validator';
+import { ToastService } from '../../../core/services/toast.service';
+import { usernameAvailableValidator, usernameValidators } from '../../../core/validators/username.validator';
+import { environment } from '../../../../environments/environment';
 import { ObserverRole } from '../../../core/models';
 
 type PasswordTier = 'empty' | 'weak' | 'medium' | 'strong' | 'excellent';
@@ -21,7 +22,6 @@ type PasswordTier = 'empty' | 'weak' | 'medium' | 'strong' | 'excellent';
     TranslatePipe,
     NavHeaderComponent,
     SiteFooterComponent,
-    LettersOnlyDirective,
     AuthPanelComponent,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -31,6 +31,9 @@ export class RegisterComponent {
   private readonly fb = inject(FormBuilder);
   private readonly userService = inject(UserService);
   private readonly router = inject(Router);
+  private readonly toast = inject(ToastService);
+
+  readonly usernameLimits = environment.username;
 
   readonly showPassword = signal(false);
   readonly submitting = signal(false);
@@ -42,12 +45,15 @@ export class RegisterComponent {
   readonly roles: ObserverRole[] = ['ornithologist', 'ranger', 'biologist', 'hobbyist', 'student'];
 
   readonly form = this.fb.nonNullable.group({
-    fullName: ['', [Validators.required, nameValidator]],
+    username: ['', {
+      validators: usernameValidators,
+      asyncValidators: usernameAvailableValidator((name) => this.userService.checkUsername(name)),
+    }],
     role: ['hobbyist' as ObserverRole, Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
     confirmPassword: ['', Validators.required],
-    consentScience: [true],
+    consentScience: [false, Validators.requiredTrue],
     consentTerms: [false, Validators.requiredTrue],
   });
 
@@ -80,16 +86,24 @@ export class RegisterComponent {
   }
 
   async submit(): Promise<void> {
-    if (this.form.invalid) {
+    if (this.form.invalid || this.form.pending) {
       this.form.markAllAsTouched();
       return;
     }
     this.submitting.set(true);
     this.submitError.set(false);
     try {
-      const { fullName, email, password, role } = this.form.getRawValue();
-      await this.userService.register(fullName, email, password, role);
-      await this.router.navigateByUrl('/dashboard');
+      const { username, email, password, role } = this.form.getRawValue();
+      // Vuelvo a preguntar justo antes de crear la cuenta: alguien pudo tomarlo mientras escribía.
+      const { available } = await this.userService.checkUsername(username.trim());
+      if (!available) {
+        this.form.controls.username.setErrors({ usernameTaken: true });
+        this.form.controls.username.markAsTouched();
+        return;
+      }
+      const hasSession = await this.userService.register(username.trim(), email, password, role);
+      this.toast.show('auth.register.confirmEmailToast');
+      await this.router.navigateByUrl(hasSession ? '/dashboard' : '/login');
     } catch {
       this.submitError.set(true);
     } finally {

@@ -1,15 +1,16 @@
 import { Component, OnInit, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NavHeaderComponent } from '../../shared/components/nav-header/nav-header.component';
 import { LoadingStateComponent } from '../../shared/components/loading-state/loading-state.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
-import { LettersOnlyDirective } from '../../shared/directives/letters-only.directive';
 import { AdminUsersService } from '../../core/services/admin-users.service';
 import { DetectionsService } from '../../core/services/detections.service';
-import { nameValidator } from '../../core/validators/name.validator';
+import { HttpErrorResponse } from '@angular/common/http';
+import { usernameValidators } from '../../core/validators/username.validator';
+import { environment } from '../../../environments/environment';
 import { passwordStrengthValidator } from '../../core/validators/password-strength.validator';
 import { Detection, ObserverRole, Profile, SystemRole } from '../../core/models';
 
@@ -24,7 +25,6 @@ import { Detection, ObserverRole, Profile, SystemRole } from '../../core/models'
     SpeciesNamePipe,
     ConfidenceBadgeComponent,
     ReactiveFormsModule,
-    LettersOnlyDirective,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './admin.component.html',
@@ -39,6 +39,7 @@ export class AdminComponent implements OnInit {
   readonly roles: ObserverRole[] = ['ornithologist', 'ranger', 'biologist', 'hobbyist', 'student'];
   readonly systemRoles: SystemRole[] = ['user', 'admin'];
 
+  readonly usernameLimits = environment.username;
   readonly loading = signal(true);
   readonly users = signal<Profile[]>([]);
   readonly searchTerm = signal('');
@@ -46,13 +47,13 @@ export class AdminComponent implements OnInit {
   readonly filteredUsers = computed(() => {
     const term = this.searchTerm().trim().toLowerCase();
     if (!term) return this.users();
-    return this.users().filter((u) => u.displayName.toLowerCase().includes(term));
+    return this.users().filter((u) => u.username.toLowerCase().includes(term));
   });
 
   readonly createModalOpen = signal(false);
   readonly creating = signal(false);
   readonly createForm = this.fb.nonNullable.group({
-    displayName: ['', [Validators.required, nameValidator]],
+    username: ['', usernameValidators],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, passwordStrengthValidator]],
     systemRole: ['user' as SystemRole, Validators.required],
@@ -61,7 +62,7 @@ export class AdminComponent implements OnInit {
   readonly editingUser = signal<Profile | null>(null);
   readonly saving = signal(false);
   readonly editForm = this.fb.nonNullable.group({
-    displayName: ['', [Validators.required, nameValidator]],
+    username: ['', usernameValidators],
     role: ['hobbyist' as ObserverRole, Validators.required],
     institution: [''],
     orcidId: [''],
@@ -77,7 +78,7 @@ export class AdminComponent implements OnInit {
   }
 
   openCreateModal(): void {
-    this.createForm.reset({ displayName: '', email: '', password: '', systemRole: 'user' });
+    this.createForm.reset({ username: '', email: '', password: '', systemRole: 'user' });
     this.createModalOpen.set(true);
   }
 
@@ -92,10 +93,12 @@ export class AdminComponent implements OnInit {
     }
     this.creating.set(true);
     try {
-      const { displayName, email, password, systemRole } = this.createForm.getRawValue();
-      await this.adminUsers.create({ displayName, email, password, systemRole });
+      const { username, email, password, systemRole } = this.createForm.getRawValue();
+      await this.adminUsers.create({ username: username.trim(), email, password, systemRole });
       this.createModalOpen.set(false);
       await this.reload();
+    } catch (error) {
+      if (!this.showUsernameError(this.createForm.controls.username, error)) throw error;
     } finally {
       this.creating.set(false);
     }
@@ -104,7 +107,7 @@ export class AdminComponent implements OnInit {
   openEditModal(user: Profile): void {
     this.editingUser.set(user);
     this.editForm.setValue({
-      displayName: user.displayName,
+      username: user.username,
       role: user.role,
       institution: user.institution ?? '',
       orcidId: user.orcidId ?? '',
@@ -124,9 +127,9 @@ export class AdminComponent implements OnInit {
     }
     this.saving.set(true);
     try {
-      const { displayName, role, institution, orcidId, stationName } = this.editForm.getRawValue();
+      const { username, role, institution, orcidId, stationName } = this.editForm.getRawValue();
       await this.adminUsers.update(user.id, {
-        displayName,
+        username: username.trim(),
         role,
         institution: institution || undefined,
         orcidId: orcidId || undefined,
@@ -134,6 +137,8 @@ export class AdminComponent implements OnInit {
       });
       this.editingUser.set(null);
       await this.reload();
+    } catch (error) {
+      if (!this.showUsernameError(this.editForm.controls.username, error)) throw error;
     } finally {
       this.saving.set(false);
     }
@@ -178,6 +183,15 @@ export class AdminComponent implements OnInit {
   async deleteDetection(detection: Detection): Promise<void> {
     await this.detectionsService.deleteAsAdmin(detection.id);
     this.userDetections.update((list) => list.filter((d) => d.id !== detection.id));
+  }
+
+  /** El backend valida formato y unicidad del usuario; muestro su respuesta junto al campo. */
+  private showUsernameError(control: AbstractControl, error: unknown): boolean {
+    const code = error instanceof HttpErrorResponse ? (error.error as { errorCode?: string } | null)?.errorCode : undefined;
+    if (code !== 'USERNAME_TAKEN' && code !== 'USERNAME_INVALID') return false;
+    control.setErrors(code === 'USERNAME_TAKEN' ? { usernameTaken: true } : { pattern: true });
+    control.markAsTouched();
+    return true;
   }
 
   private async reload(): Promise<void> {

@@ -8,6 +8,7 @@ import {
   effect,
   inject,
   signal,
+  untracked,
   ChangeDetectionStrategy,
   PLATFORM_ID,
 } from '@angular/core';
@@ -22,6 +23,8 @@ import { NavHeaderComponent } from '../../shared/components/nav-header/nav-heade
 import { ConfidenceBadgeComponent } from '../../shared/components/confidence-badge/confidence-badge.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { SpeciesNamePipe } from '../../shared/pipes/species-name.pipe';
+import { SpeciesImageComponent } from '../../shared/components/species-image/species-image.component';
+import { UserService } from '../../core/services/user.service';
 import { DetectionsService } from '../../core/services/detections.service';
 import { LiveSyncService } from '../../core/services/live-sync.service';
 import { Detection } from '../../core/models';
@@ -34,13 +37,25 @@ const DEFAULT_ZOOM = 5;
 // Pin propio: el dibujo vive en CSS (.map-pin, desde tokens); aquí solo su caja y su punta.
 const PIN_SIZE: Leaflet.PointExpression = [28, 36];
 const PIN_ANCHOR: Leaflet.PointExpression = [14, 34];
+// Acercamiento al enfocar un avistamiento desde el feed (doble clic o Enter).
+const FOCUS_ZOOM = 15;
 
 type MapLoadState = 'loading' | 'ready' | 'error';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [LoadingStateComponent, DatePipe, DecimalPipe, RouterLink, NavHeaderComponent, ConfidenceBadgeComponent, TranslatePipe, SpeciesNamePipe],
+  imports: [
+    LoadingStateComponent,
+    DatePipe,
+    DecimalPipe,
+    RouterLink,
+    NavHeaderComponent,
+    ConfidenceBadgeComponent,
+    TranslatePipe,
+    SpeciesNamePipe,
+    SpeciesImageComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
@@ -48,6 +63,7 @@ type MapLoadState = 'loading' | 'ready' | 'error';
 export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly detectionsService = inject(DetectionsService);
   private readonly logger = inject(LoggerService);
+  private readonly userService = inject(UserService);
   readonly liveSync = inject(LiveSyncService);
 
   @ViewChild('mapContainer', { static: true }) private readonly mapContainerRef!: ElementRef<HTMLDivElement>;
@@ -56,13 +72,12 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly selected = signal<Detection | null>(null);
   /** Solo estado de vista: un fallo de red no debe leerse como "no hay avistamientos". */
   readonly loadState = signal<MapLoadState>('loading');
-  /** Solo estado de vista: filtros plegados en el celular. */
-  readonly filtersOpen = signal(false);
 
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private leaflet?: typeof Leaflet;
   private map?: Leaflet.Map;
   private markersLayer?: Leaflet.LayerGroup;
+  private readonly markers = new Map<string, Leaflet.Marker>();
   private destroyed = false;
 
   constructor() {
@@ -71,7 +86,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     // según la latencia de red, así que no se puede asumir un orden fijo).
     effect(() => {
       const detections = this.feed();
-      if (this.map) this.renderMarkers(detections);
+      // untracked: dibujar lee la selección, pero este efecto solo debe volver a correr si cambia el
+      // feed; si no, cada selección redibuja y su fitBounds cancela el vuelo del doble clic.
+      if (this.map) untracked(() => this.renderMarkers(detections));
     });
     // Otra pestaña de este navegador acaba de guardar una detección PUBLIC
     // (llega por el Shared Worker): se recarga el feed público desde el
@@ -79,6 +96,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     effect(() => {
       if (this.liveSync.lastBroadcast()) void this.loadFeed(true);
     });
+    // Resalto el pin del avistamiento seleccionado, venga del feed o de otro pin.
+    effect(() => this.highlightMarker(this.selected()?.id));
   }
 
   async ngOnInit(): Promise<void> {
@@ -93,7 +112,20 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  /**
+   * El servidor (SSR) solo conoce el feed público. En el navegador, con sesión, pido además mis
+   * privadas; el Shared Worker sigue avisando solo de públicas y cada pestaña recarga lo suyo.
+   */
   private async loadFeed(fresh = false): Promise<void> {
+    if (this.isBrowser && (await this.userService.isAuthenticated())) {
+      try {
+        this.feed.set(await this.detectionsService.getFeed());
+        return;
+      } catch (error) {
+        // Sesión vencida o rechazada: el mapa público sigue funcionando sin ella.
+        this.logger.warn('Map', 'personal feed failed, showing the public one', error);
+      }
+    }
     this.feed.set(await this.detectionsService.getAll(fresh));
   }
 
@@ -135,6 +167,15 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selected.set(d);
   }
 
+  /** Doble clic o Enter en el feed: vuelo al lugar del avistamiento y lo dejo seleccionado. */
+  focusOnMap(d: Detection): void {
+    this.select(d);
+    if (!this.map) return;
+    // En pantallas angostas el feed queda debajo del mapa: lo traigo a la vista.
+    this.mapContainerRef.nativeElement.scrollIntoView({ block: 'nearest' });
+    this.map.flyTo([d.location.latitude, d.location.longitude], FOCUS_ZOOM);
+  }
+
   /**
    * Pines en Detection.location: dónde el observador grabó/subió el audio,
    * nunca una ubicación inferida de la especie.
@@ -144,18 +185,42 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     const layer = this.markersLayer;
     if (!L || !layer) return;
     layer.clearLayers();
+    this.markers.clear();
     const points: Leaflet.LatLngTuple[] = detections.map((d) => [d.location.latitude, d.location.longitude]);
 
-    const icon = L.divIcon({ className: 'map-pin', iconSize: PIN_SIZE, iconAnchor: PIN_ANCHOR });
     points.forEach((point, index) => {
       const detection = detections[index];
-      L.marker(point, { icon, title: detection.species.commonName, alt: detection.species.commonName })
+      const marker = L.marker(point, {
+        icon: this.pinIcon(detection, false),
+        title: detection.species.commonName,
+        alt: detection.species.commonName,
+      })
         .addTo(layer)
         .on('click', () => this.select(detection));
+      this.markers.set(detection.id, marker);
     });
+    this.highlightMarker(this.selected()?.id);
 
     if (points.length > 0) {
       this.map!.fitBounds(L.latLngBounds(points), { maxZoom: 12, padding: [40, 40] });
     }
+  }
+
+  private highlightMarker(selectedId: string | undefined): void {
+    for (const detection of this.feed()) {
+      const marker = this.markers.get(detection.id);
+      if (!marker) continue;
+      const active = detection.id === selectedId;
+      marker.setIcon(this.pinIcon(detection, active));
+      // El pin activo queda encima de los vecinos.
+      marker.setZIndexOffset(active ? 1000 : 0);
+    }
+  }
+
+  private pinIcon(detection: Detection, active: boolean): Leaflet.DivIcon {
+    const classes = ['map-pin'];
+    if (detection.visibility === 'PRIVATE') classes.push('map-pin--private');
+    if (active) classes.push('map-pin--active');
+    return this.leaflet!.divIcon({ className: classes.join(' '), iconSize: PIN_SIZE, iconAnchor: PIN_ANCHOR });
   }
 }

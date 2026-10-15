@@ -27,7 +27,7 @@
       </div>
       <div class="flex flex-col gap-2 min-w-0">
         <p class="eyebrow-label">{{ 'profile.observerTitle' | translate }}</p>
-        <h1 id="profile-name" class="text-5xl font-extrabold tracking-display break-words">{{ user.currentUser()?.fullName }}</h1>
+        <h1 id="profile-name" class="text-5xl font-extrabold tracking-display break-words">{{ user.currentUser()?.username }}</h1>
         <dl class="profile-facts">
           @if (user.currentUser()?.institution; as institution) {
             <div>
@@ -57,14 +57,6 @@
             <span class="material-symbols-outlined" aria-hidden="true">{{ editing() ? 'close' : 'edit' }}</span>
             {{ (editing() ? 'common.cancel' : 'profile.editProfile') | translate }}
           </button>
-          <!-- La credencial aún no existe: deshabilitada y con su etiqueta. -->
-          <div class="inline-flex flex-wrap items-center gap-3">
-            <button type="button" class="btn btn--quiet" disabled aria-disabled="true" aria-describedby="profile-credential-soon">
-              <span class="material-symbols-outlined" aria-hidden="true">badge</span>
-              {{ 'profile.credential' | translate }}
-            </button>
-            <span id="profile-credential-soon" class="soon-tag">{{ 'common.comingSoon' | translate }}</span>
-          </div>
         </div>
       </div>
     </section>
@@ -84,19 +76,28 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div class="flex flex-col gap-2">
-            <label for="displayName" class="field-label">{{ 'profile.username' | translate }}</label>
+            <label for="username" class="field-label">{{ 'profile.username' | translate }}</label>
             <input
-              id="displayName"
+              id="username"
               type="text"
-              autocomplete="name"
-              formControlName="displayName"
-              appLettersOnly
+              autocomplete="username"
+              autocapitalize="off"
+              spellcheck="false"
+              formControlName="username"
+              [attr.maxlength]="usernameLimits.maxLength"
               class="field-input"
-              [attr.aria-invalid]="form.controls.displayName.invalid && form.controls.displayName.touched"
+              [attr.aria-invalid]="form.controls.username.invalid && form.controls.username.touched"
+              aria-describedby="username-error"
             />
-            @if (form.controls.displayName.errors?.['pattern'] && form.controls.displayName.touched) {
-              <span class="field-error">{{ 'auth.register.fullNameError' | translate }}</span>
-            }
+            <span id="username-error" class="field-error" aria-live="polite">
+              @if (form.controls.username.touched || form.controls.username.dirty) {
+                @if (form.controls.username.errors?.['usernameTaken']) {
+                  {{ 'auth.register.usernameTaken' | translate }}
+                } @else if (form.controls.username.invalid && form.controls.username.touched) {
+                  {{ 'auth.register.usernameError' | translate: { min: usernameLimits.minLength, max: usernameLimits.maxLength } }}
+                }
+              }
+            </span>
           </div>
           <div class="flex flex-col gap-2">
             <label for="role" class="field-label">{{ 'auth.register.role' | translate }}</label>
