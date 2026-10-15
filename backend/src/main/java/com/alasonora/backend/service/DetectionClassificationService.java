@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.alasonora.backend.ai.AiEngineUnavailableException;
+import com.alasonora.backend.ai.AudioFileRejectedException;
 import com.alasonora.backend.ai.AudioClassificationException;
 import com.alasonora.backend.ai.AudioQualityException;
 import com.alasonora.backend.ai.BirdSoundClassifier;
@@ -71,6 +72,10 @@ public class DetectionClassificationService {
             ));
         } catch (AudioQualityException ex) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage(), ex);
+        } catch (AudioFileRejectedException ex) {
+            throw ex.reason() == AudioFileRejectedException.Reason.TOO_LARGE
+                ? new CodedResponseStatusException(HttpStatus.CONTENT_TOO_LARGE, ApiErrorMessages.AUDIO_TOO_LARGE, ApiErrorCode.AUDIO_TOO_LARGE)
+                : new CodedResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ApiErrorMessages.AUDIO_UNSUPPORTED, ApiErrorCode.AUDIO_UNSUPPORTED);
         } catch (AiEngineUnavailableException ex) {
             // Código estable: el frontend espera a que el motor despierte y reintenta solo.
             log.warn("AI engine unavailable: {}", ex.getMessage());

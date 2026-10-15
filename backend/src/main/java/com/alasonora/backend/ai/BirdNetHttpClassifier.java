@@ -35,16 +35,19 @@ public class BirdNetHttpClassifier implements BirdSoundClassifier {
     private final RestClient audioFetchClient;
     private final AiProperties.Engine engineProperties;
     private final ObjectMapper objectMapper;
+    private final AudioFileValidator audioFileValidator;
     /** Tiempo total que puede durar una clasificación sin pasar el request-timeout asíncrono de Spring MVC. */
     private final Duration requestBudget;
 
     public BirdNetHttpClassifier(
         AiProperties aiProperties,
         ObjectMapper objectMapper,
+        AudioFileValidator audioFileValidator,
         @Value("${spring.mvc.async.request-timeout}") Duration asyncRequestTimeout
     ) {
         this.engineProperties = aiProperties.engine();
         this.objectMapper = objectMapper;
+        this.audioFileValidator = audioFileValidator;
         this.requestBudget = asyncRequestTimeout.minusMillis(engineProperties.asyncSafetyMarginMs());
         // Falla al arrancar si la configuración no cabe: mejor que un 503 de Spring en producción.
         long worstCaseMs = engineProperties.audioFetchTimeoutMs() + engineProperties.timeoutMs();
@@ -72,6 +75,8 @@ public class BirdNetHttpClassifier implements BirdSoundClassifier {
     public List<RawClassificationCandidate> classify(ClassificationRequest request) {
         long deadline = System.nanoTime() + requestBudget.toNanos();
         byte[] audioBytes = fetchAudio(request.audioUrl());
+        // Mismo límite y formatos que valida el frontend antes de subir: nunca confío solo en el cliente.
+        audioFileValidator.requireSupported(audioBytes);
 
         MultipartBodyBuilder body = new MultipartBodyBuilder();
         body.part("audio", audioBytes).filename("recording.wav").contentType(MediaType.valueOf("audio/wav"));

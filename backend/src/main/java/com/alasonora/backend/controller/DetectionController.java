@@ -61,6 +61,12 @@ public class DetectionController {
         return detectionService.getPublicDetections();
     }
 
+    /** Mapa con sesión: públicas de todos más mis privadas. Requiere token (no está en PublicEndpoints). */
+    @GetMapping("/feed")
+    public List<DetectionDto> getFeed(@AuthenticationPrincipal Jwt jwt) {
+        return detectionService.getFeedFor(UUID.fromString(jwt.getSubject()));
+    }
+
     @GetMapping("/mine")
     public List<DetectionDto> getMine(@AuthenticationPrincipal Jwt jwt) {
         return detectionService.getMyDetections(UUID.fromString(jwt.getSubject()));
