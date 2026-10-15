@@ -20,6 +20,13 @@ import com.alasonora.backend.entity.Visibility;
 import com.alasonora.backend.repository.DetectionRepository;
 import com.alasonora.backend.storage.PrivateObjectSignedUrlResolver;
 import com.alasonora.backend.storage.SignedUrlException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.alasonora.backend.entity.Profile;
+import com.alasonora.backend.repository.ProfileRepository;
 
 @Service
 public class DetectionService {
@@ -28,13 +35,16 @@ public class DetectionService {
     private final SpeciesService speciesService;
     private final PrivateObjectSignedUrlResolver signedUrlResolver;
     private final SupabaseProperties.Storage storageProperties;
+    private final ProfileRepository profileRepository;
 
     public DetectionService(
         DetectionRepository detectionRepository,
         SpeciesService speciesService,
         PrivateObjectSignedUrlResolver signedUrlResolver,
-        SupabaseProperties supabaseProperties
+        SupabaseProperties supabaseProperties,
+        ProfileRepository profileRepository
     ) {
+        this.profileRepository = profileRepository;
         this.detectionRepository = detectionRepository;
         this.speciesService = speciesService;
         this.signedUrlResolver = signedUrlResolver;
@@ -45,14 +55,18 @@ public class DetectionService {
     // species/alternatives son lazy y open-in-view está desactivado.
     @Transactional(readOnly = true)
     public List<DetectionDto> getPublicDetections() {
-        return detectionRepository.findByVisibilityOrderByRecordedAtDesc(Visibility.PUBLIC).stream()
-            .map(this::toDto).toList();
+        return toDtos(detectionRepository.findByVisibilityOrderByRecordedAtDesc(Visibility.PUBLIC));
     }
 
     @Transactional(readOnly = true)
     public List<DetectionDto> getMyDetections(UUID ownerId) {
-        return detectionRepository.findByOwnerIdOrderByRecordedAtDesc(ownerId).stream()
-            .map(this::toDto).toList();
+        return toDtos(detectionRepository.findByOwnerIdOrderByRecordedAtDesc(ownerId));
+    }
+
+    /** Mapa con sesión: públicas de todos más las privadas propias (el filtro lo hace la consulta). */
+    @Transactional(readOnly = true)
+    public List<DetectionDto> getFeedFor(UUID requesterId) {
+        return toDtos(detectionRepository.findVisibleTo(Visibility.PUBLIC, requesterId));
     }
 
     // Una detección PRIVATE solo revela sus URLs (audio, foto del observador)
@@ -137,7 +151,26 @@ public class DetectionService {
         }
     }
 
+    /** Una sola consulta de perfiles por lista: el nombre visible es el usuario actual de cada dueño. */
+    private List<DetectionDto> toDtos(List<Detection> detections) {
+        Set<UUID> owners = detections.stream().map(detection -> detection.getOwnerId()).collect(Collectors.toSet());
+        Map<UUID, String> usernames = usernamesOf(owners);
+        return detections.stream().map(detection -> toDto(detection, usernames)).toList();
+    }
+
     private DetectionDto toDto(Detection detection) {
+        return toDto(detection, usernamesOf(Set.of(detection.getOwnerId())));
+    }
+
+    private Map<UUID, String> usernamesOf(Set<UUID> ownerIds) {
+        Map<UUID, String> usernames = new HashMap<>();
+        for (Profile profile : profileRepository.findAllById(ownerIds)) {
+            if (profile.getUsername() != null && !profile.getUsername().isBlank()) usernames.put(profile.getId(), profile.getUsername());
+        }
+        return usernames;
+    }
+
+    private DetectionDto toDto(Detection detection, Map<UUID, String> usernames) {
         String signedAudioUrl = detection.getAudioStoragePath() == null
             ? null
             : signedUrlResolver.resolveSignedUrl(
@@ -146,7 +179,9 @@ public class DetectionService {
                 storageProperties.signedUrlTtlSeconds()
             );
         String signedObserverPhotoUrl = resolveObserverPhotoUrl(detection);
-        return DetectionDto.fromEntity(detection, signedAudioUrl, signedObserverPhotoUrl);
+        // Sin usuario (cuenta aún sin migrar) uso el nombre que se guardó con la detección.
+        String observerName = usernames.getOrDefault(detection.getOwnerId(), detection.getObserverName());
+        return DetectionDto.fromEntity(detection, signedAudioUrl, signedObserverPhotoUrl, observerName);
     }
 
     // A diferencia del audio (la función central de la detección, que debe
