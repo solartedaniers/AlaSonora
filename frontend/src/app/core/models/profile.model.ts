@@ -7,6 +7,7 @@ export type SystemRole = 'user' | 'admin';
 export interface Profile {
   id: string;
   displayName: string;
+  username: string;
   avatarUrl?: string;
   role: ObserverRole;
   institution?: string;

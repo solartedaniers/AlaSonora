@@ -3,6 +3,7 @@ export type ObserverRole = 'ornithologist' | 'ranger' | 'biologist' | 'hobbyist'
 export interface AppUser {
   id: string;
   fullName: string;
+  username: string;
   email: string;
   role: ObserverRole;
   institution?: string;
