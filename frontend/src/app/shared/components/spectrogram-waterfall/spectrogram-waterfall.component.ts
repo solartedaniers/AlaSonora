@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { SpectrogramFrame } from '../../../core/services/audio-capture.service';
+import { FrameHistory } from '../../../core/services/frame-history';
 import { ThemeService } from '../../../core/services/theme.service';
 import { I18nService } from '../../../core/services/i18n.service';
 import { MotionPreferenceService } from '../../../core/services/motion-preference.service';
@@ -42,7 +43,9 @@ const MS_PER_SECOND = 1000;
   template: `<canvas #canvas class="block w-full h-full" role="img" [attr.aria-label]="ariaLabelKey() | translate"></canvas>`,
 })
 export class SpectrogramWaterfallComponent implements AfterViewInit, OnDestroy {
-  readonly getFrame = input.required<() => SpectrogramFrame | null>();
+  readonly getFrame = input<() => SpectrogramFrame | null>(() => null);
+  /** Historial compartido de la grabación: si llega, pinto desde él en vez de acumular mi propia copia. */
+  readonly frameHistory = input<FrameHistory | null>(null);
   /** Filas ya en pantalla al iniciar la vista, la más antigua primero. */
   readonly initialColumns = input<Float32Array[]>([]);
   readonly rows = input(56);
@@ -64,6 +67,7 @@ export class SpectrogramWaterfallComponent implements AfterViewInit, OnDestroy {
   private painter?: WaterfallPainter;
   private history: Float32Array[] = [];
   private lastFrame: SpectrogramFrame | null = null;
+  private lastRevision = -1;
   private rafId?: number;
   private lastPushAt = 0;
   private periodMs = DEFAULT_PERIOD_MS;
@@ -88,7 +92,8 @@ export class SpectrogramWaterfallComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (!this.isBrowser) return;
-    this.history = this.initialColumns().slice(-this.rows());
+    this.history = this.frameHistory()?.latest(this.rows()) ?? this.initialColumns().slice(-this.rows());
+    this.lastRevision = this.frameHistory()?.revision ?? -1;
     this.resetPainter();
     this.resizeObserver = new ResizeObserver(() => {
       this.painter?.resize();
@@ -118,11 +123,21 @@ export class SpectrogramWaterfallComponent implements AfterViewInit, OnDestroy {
   }
 
   private loop = (now: number): void => {
-    const frame = this.getFrame()();
-    // Una fila por frame nuevo: el audio en vivo devuelve el mismo frame hasta que llega otro.
-    if (frame && frame !== this.lastFrame) {
-      this.lastFrame = frame;
-      this.push(frame.magnitudes, now);
+    const shared = this.frameHistory();
+    if (shared) {
+      // Solo leo: el historial lo llena el servicio de captura al recibir cada mensaje del worker.
+      if (shared.revision !== this.lastRevision) {
+        this.lastRevision = shared.revision;
+        this.history = shared.latest(this.rows());
+        this.measurePeriod(now);
+      }
+    } else {
+      const frame = this.getFrame()();
+      // Una fila por frame nuevo: el audio en vivo devuelve el mismo frame hasta que llega otro.
+      if (frame && frame !== this.lastFrame) {
+        this.lastFrame = frame;
+        this.push(frame.magnitudes, now);
+      }
     }
     const advance = Math.min(1, (now - this.lastPushAt) / this.periodMs);
     this.paint(advance);
@@ -130,10 +145,15 @@ export class SpectrogramWaterfallComponent implements AfterViewInit, OnDestroy {
   };
 
   private push(magnitudes: Float32Array, now: number): void {
-    if (this.lastPushAt) this.periodMs += ((now - this.lastPushAt) - this.periodMs) * PERIOD_SMOOTHING;
-    this.lastPushAt = now;
+    this.measurePeriod(now);
     this.history.push(magnitudes);
     if (this.history.length > this.rows()) this.history.shift();
+  }
+
+  /** Tiempo entre filas nuevas, suavizado: marca cuánto avanza la cascada entre una y otra. */
+  private measurePeriod(now: number): void {
+    if (this.lastPushAt) this.periodMs += ((now - this.lastPushAt) - this.periodMs) * PERIOD_SMOOTHING;
+    this.lastPushAt = now;
   }
 
   private paint(advance: number): void {

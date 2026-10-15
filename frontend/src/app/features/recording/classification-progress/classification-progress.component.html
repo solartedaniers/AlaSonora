@@ -1,0 +1,39 @@
+<section class="cprogress" [class.cprogress--failed]="progress().error()" [class.cprogress--estimating]="progress().stage() === 'analyzing' || progress().stage() === 'waking'">
+  <div class="cprogress__head">
+    <!-- La etapa se anuncia al cambiar; el porcentaje lo lee el lector en la barra, sin repetirlo a cada paso. -->
+    <p class="cprogress__stage" aria-live="polite">{{ stageKey() | translate }}</p>
+    <span class="cprogress__percent" aria-hidden="true">{{ rounded() }}{{ 'units.percent' | translate }}</span>
+  </div>
+
+  <div
+    class="cprogress__track"
+    role="progressbar"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    [attr.aria-valuenow]="rounded()"
+    [attr.aria-valuetext]="(stageKey() | translate) + ' ' + rounded() + ('units.percent' | translate)"
+    [attr.aria-label]="'recording.progress.label' | translate"
+  >
+    <span class="cprogress__fill" [style.transform]="'scaleX(' + progress().percent() / 100 + ')'"></span>
+  </div>
+
+  <ol class="cprogress__steps">
+    @for (step of steps(); track step.labelKey) {
+      <li class="cprogress__step" [attr.data-state]="step.state" [attr.aria-current]="step.state === 'current' ? 'step' : null">
+        <span class="cprogress__dot" aria-hidden="true"></span>
+        {{ step.labelKey | translate }}
+      </li>
+    }
+  </ol>
+
+  @if (progress().error(); as error) {
+    <div role="alert" class="cprogress__error">
+      <span class="material-symbols-outlined shrink-0" aria-hidden="true">error</span>
+      <p class="flex-1">{{ error }}</p>
+      <button type="button" class="btn btn--quiet shrink-0" (click)="retry.emit()">
+        <span class="material-symbols-outlined" aria-hidden="true">refresh</span>
+        {{ 'recording.progress.retry' | translate }}
+      </button>
+    </div>
+  }
+</section>

@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { SpectrogramFrame } from '../../../core/services/audio-capture.service';
+import { FrameHistory } from '../../../core/services/frame-history';
 import { ThemeService } from '../../../core/services/theme.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { SpectrogramPainter } from './spectrogram-painter';
@@ -47,7 +48,9 @@ import { LIVE_INTENSITY_GAIN } from './spectrogram-scale';
   `,
 })
 export class SpectrogramViewComponent implements AfterViewInit, OnDestroy {
-  readonly getFrame = input.required<() => SpectrogramFrame | null>();
+  readonly getFrame = input<() => SpectrogramFrame | null>(() => null);
+  /** Historial compartido de la grabación: si llega, pinto desde él en vez de acumular mi propia copia. */
+  readonly frameHistory = input<FrameHistory | null>(null);
   /** Columnas visibles: menos = barras más anchas y legibles. */
   readonly columns = input(48);
   /** Dónde aparecen las columnas nuevas hasta llenar la vista: al centro, o al borde derecho como un sonograma que avanza. */
@@ -64,6 +67,7 @@ export class SpectrogramViewComponent implements AfterViewInit, OnDestroy {
   private rafId?: number;
   private history: Float32Array[] = [];
   private lastFrame: SpectrogramFrame | null = null;
+  private lastRevision = -1;
   // En SSR/prerender no hay canvas real: no se pinta nada.
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
@@ -78,7 +82,8 @@ export class SpectrogramViewComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (!this.isBrowser) return;
-    this.history = this.initialColumns().slice(-this.columns());
+    this.history = this.frameHistory()?.latest(this.columns()) ?? this.initialColumns().slice(-this.columns());
+    this.lastRevision = this.frameHistory()?.revision ?? -1;
     this.resetPainter();
     // El bucle de dibujo no necesita disparar detección de cambios de
     // Angular en cada frame — corre fuera de la zona.
@@ -90,6 +95,17 @@ export class SpectrogramViewComponent implements AfterViewInit, OnDestroy {
   }
 
   private loop = (): void => {
+    const shared = this.frameHistory();
+    if (shared) {
+      // Solo leo: el historial lo llena el servicio de captura al recibir cada mensaje del worker.
+      if (shared.revision !== this.lastRevision) {
+        this.lastRevision = shared.revision;
+        this.history = shared.latest(this.columns());
+        this.draw();
+      }
+      this.rafId = requestAnimationFrame(this.loop);
+      return;
+    }
     const frame = this.getFrame()();
     // Una columna por frame nuevo del worker: el signal devuelve el mismo frame hasta que llega otro,
     // y sin esta comparación la velocidad dependería de la pantalla (60 o 120 Hz) y no del audio.
