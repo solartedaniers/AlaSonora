@@ -4,6 +4,10 @@ package com.alasonora.backend.exception;
 public final class ApiErrorMessages {
 
     public static final String USER_NOT_FOUND = "User not found";
+    public static final String USERNAME_INVALID = "Username must contain only letters and numbers within the allowed length";
+    public static final String USERNAME_TAKEN = "Username is already taken";
+    public static final String AUDIO_TOO_LARGE = "The audio file exceeds the maximum allowed size";
+    public static final String AUDIO_UNSUPPORTED = "Unsupported audio format; use WAV, FLAC or MP3";
     public static final String DETECTION_NOT_FOUND = "Detection not found";
     public static final String SPECIES_NOT_FOUND = "Species not found: ";
     public static final String ONLY_PUBLIC_VISIBILITY = "Only visibility=public is supported here";
