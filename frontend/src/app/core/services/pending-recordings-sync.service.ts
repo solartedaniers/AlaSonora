@@ -93,7 +93,7 @@ export class PendingRecordingsSyncService {
       peakFrequencyHz: recording.peakFrequencyHz,
       alternatives: result.alternatives.map((a) => ({ speciesId: a.species.id, confidence: a.confidence })),
       location: recording.gpsLocation ?? FALLBACK_LOCATION,
-      observerName: this.userService.currentUser()?.fullName,
+      observerName: this.userService.currentUser()?.username,
       visibility: 'PRIVATE',
     });
   }

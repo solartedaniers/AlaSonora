@@ -56,6 +56,15 @@ export class UserService {
     return data.session?.user.id ?? null;
   }
 
+  /** Pregunto al backend si el nombre de usuario tiene formato válido y está libre. */
+  async checkUsername(username: string): Promise<{ valid: boolean; available: boolean }> {
+    return firstValueFrom(
+      this.http.get<{ valid: boolean; available: boolean }>(`${environment.apiBaseUrl}/usernames/availability`, {
+        params: { username },
+      })
+    );
+  }
+
   // Se envía la zona horaria del navegador para que la racha cuente días
   // del calendario del usuario, no del servidor.
   async getStats(): Promise<UserStats> {
@@ -70,13 +79,15 @@ export class UserService {
     if (error) throw error;
   }
 
-  async register(fullName: string, email: string, password: string, role: ObserverRole): Promise<void> {
-    const { error } = await this.supabase.auth.signUp({
+  /** Devuelve true si la cuenta quedó con sesión (sin confirmación de correo pendiente). */
+  async register(username: string, email: string, password: string, role: ObserverRole): Promise<boolean> {
+    const { data, error } = await this.supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName, role } },
+      options: { data: { username, role } },
     });
     if (error) throw error;
+    return data.session !== null;
   }
 
   async logout(): Promise<void> {
@@ -102,7 +113,7 @@ export class UserService {
    * una segunda fuente para los mismos campos.
    */
   async syncMetadata(patch: {
-    full_name?: string;
+    username?: string;
     avatar_url?: string;
     institution?: string;
     orcid_id?: string;
@@ -126,6 +137,7 @@ export class UserService {
     return {
       id: user.id,
       fullName: metadata['full_name'] ?? user.email ?? '',
+      username: metadata['username'] ?? '',
       email: user.email ?? '',
       role: (metadata['role'] as ObserverRole) ?? DEFAULT_ROLE,
       institution: metadata['institution'],

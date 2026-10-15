@@ -8,6 +8,7 @@ import { ObserverRole, Profile, SystemRole } from '../models';
 interface BackendProfile {
   id: string;
   displayName: string;
+  username: string;
   avatarUrl: string | null;
   role: string;
   institution: string | null;
@@ -20,12 +21,12 @@ interface BackendProfile {
 export interface CreateUserRequest {
   email: string;
   password: string;
-  displayName: string;
+  username: string;
   systemRole: SystemRole;
 }
 
 export interface UpdateUserRequest {
-  displayName: string;
+  username: string;
   role: ObserverRole;
   institution?: string;
   orcidId?: string;
@@ -53,7 +54,7 @@ export class AdminUsersService {
   async update(id: string, request: UpdateUserRequest): Promise<Profile> {
     const updated = await firstValueFrom(
       this.http.put<BackendProfile>(`${this.baseUrl}/${id}`, {
-        displayName: request.displayName,
+        username: request.username,
         avatarUrl: null,
         role: request.role.toUpperCase(),
         institution: request.institution ?? null,
@@ -85,6 +86,7 @@ export class AdminUsersService {
     return {
       id: dto.id,
       displayName: dto.displayName,
+      username: dto.username,
       avatarUrl: dto.avatarUrl ?? undefined,
       role: dto.role.toLowerCase() as ObserverRole,
       institution: dto.institution ?? undefined,

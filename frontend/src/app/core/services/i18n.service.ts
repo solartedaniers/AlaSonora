@@ -47,8 +47,8 @@ export class I18nService {
     this.lang.set(this.lang() === 'es' ? 'en' : 'es');
   }
 
-  /** Resuelve una clave con notación de puntos, ej. "landing.hero.title". */
-  translate(key: string): string {
+  /** Resuelve una clave con notación de puntos, ej. "landing.hero.title"; `{nombre}` se cambia por params.nombre. */
+  translate(key: string, params?: Record<string, string | number>): string {
     const parts = key.split('.');
     let node: unknown = this.dict();
     for (const part of parts) {
@@ -58,7 +58,8 @@ export class I18nService {
         return key; // fallback visible para detectar claves faltantes en desarrollo
       }
     }
-    return typeof node === 'string' ? node : key;
+    if (typeof node !== 'string') return key;
+    return params ? node.replace(/\{(\w+)\}/g, (match, name: string) => String(params[name] ?? match)) : node;
   }
 
   private async loadDictionary(lang: AppLang): Promise<void> {

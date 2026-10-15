@@ -13,6 +13,7 @@ const AVATAR_BUCKET = 'avatars';
 interface BackendProfile {
   id: string;
   displayName: string;
+  username: string;
   avatarUrl: string | null;
   role: string;
   institution: string | null;
@@ -23,7 +24,7 @@ interface BackendProfile {
 }
 
 export interface ProfileUpdate {
-  displayName: string;
+  username: string;
   role: ObserverRole;
   avatarUrl?: string;
   institution?: string;
@@ -65,7 +66,7 @@ export class ProfileService {
   async update(patch: ProfileUpdate): Promise<Profile> {
     const dto = await firstValueFrom(
       this.http.put<BackendProfile>(`${environment.apiBaseUrl}/profile/me`, {
-        displayName: patch.displayName,
+        username: patch.username,
         avatarUrl: patch.avatarUrl ?? null,
         role: patch.role.toUpperCase(),
         institution: patch.institution ?? null,
@@ -92,13 +93,20 @@ export class ProfileService {
 
   private async fetchMine(): Promise<Profile> {
     const dto = await firstValueFrom(this.http.get<BackendProfile>(`${environment.apiBaseUrl}/profile/me`));
-    return this.fromBackend(dto);
+    const profile = this.fromBackend(dto);
+    // Las cuentas creadas antes del nombre de usuario no lo tienen en user_metadata: lo copio
+    // una vez para que el saludo y la cabecera lo muestren sin pedir el perfil en cada pantalla.
+    if (profile.username && this.user.currentUser()?.username !== profile.username) {
+      this.user.syncMetadata({ username: profile.username }).catch(() => undefined);
+    }
+    return profile;
   }
 
   private fromBackend(dto: BackendProfile): Profile {
     return {
       id: dto.id,
       displayName: dto.displayName,
+      username: dto.username,
       avatarUrl: dto.avatarUrl ?? undefined,
       role: dto.role.toLowerCase() as ObserverRole,
       institution: dto.institution ?? undefined,

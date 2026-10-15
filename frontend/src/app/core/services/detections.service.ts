@@ -35,6 +35,12 @@ export class DetectionsService {
     return detections.map((d) => this.withSyncStatus(d));
   }
 
+  /** Con sesión: las públicas más mis privadas (GET /api/detections/feed); nunca pasa por la caché del SSR. */
+  async getFeed(): Promise<Detection[]> {
+    const detections = await firstValueFrom(this.http.get<DetectionApiResponse[]>(`${this.baseUrl}/feed`));
+    return detections.map((d) => this.withSyncStatus(d));
+  }
+
   async create(request: CreateDetectionRequest): Promise<Detection> {
     const created = await firstValueFrom(
       this.http.post<DetectionApiResponse>(this.baseUrl, request)
