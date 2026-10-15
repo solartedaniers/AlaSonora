@@ -15,7 +15,9 @@ public final class PublicEndpoints {
         PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/species/**"),
         PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/network-stats"),
         // Solo el listado público (?visibility=public); /mine y /{id} son otras rutas.
-        PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/detections")
+        PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/detections"),
+        // Disponibilidad del nombre de usuario: se consulta en el registro, antes de tener sesión.
+        PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/api/usernames/availability")
     );
 
     private PublicEndpoints() {
