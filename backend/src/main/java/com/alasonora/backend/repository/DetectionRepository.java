@@ -17,6 +17,10 @@ public interface DetectionRepository extends JpaRepository<Detection, Long> {
 
     List<Detection> findByOwnerIdOrderByRecordedAtDesc(UUID ownerId);
 
+    // Mapa con sesión: todas las públicas más las privadas del propio usuario, nunca las privadas de otros.
+    @Query("select d from Detection d where d.visibility = :visibility or d.ownerId = :ownerId order by d.recordedAt desc")
+    List<Detection> findVisibleTo(@Param("visibility") Visibility visibility, @Param("ownerId") UUID ownerId);
+
     long countByVisibility(Visibility visibility);
 
     @Query("select count(distinct d.ownerId) from Detection d where d.visibility = :visibility")
