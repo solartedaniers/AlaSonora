@@ -17,6 +17,11 @@ import { FALLBACK_LOCATION, PendingRecordingsSyncService } from '../../core/serv
 import { GeoLocation } from '../../core/models';
 import { LoggerService } from '../../core/services/logger.service';
 import { AiEngineStatusService } from '../../core/services/ai-engine-status.service';
+import {
+  AUDIO_UPLOAD_ACCEPT,
+  AUDIO_UPLOAD_MAX_MB,
+  audioUploadProblem,
+} from '../../core/validators/audio-upload.validator';
 
 type RecordingTab = 'live' | 'upload';
 type SonogramView = 'flat' | 'waterfall';
@@ -28,6 +33,9 @@ const NO_SPECIES_IDENTIFIED_LEGACY_DETAIL = 'No bird species were identified in 
 // Motor dormido: código estable del backend o las respuestas del proxy de Render mientras arranca.
 const AI_ENGINE_UNAVAILABLE_CODE = 'AI_ENGINE_UNAVAILABLE';
 const ENGINE_ASLEEP_STATUSES = [502, 503, 504];
+// Audio rechazado por el backend (formato o tamaño): mismos textos que la validación local.
+const AUDIO_TOO_LARGE_CODE = 'AUDIO_TOO_LARGE';
+const AUDIO_UNSUPPORTED_CODE = 'AUDIO_UNSUPPORTED';
 // ?tab=upload abre directo la pestaña de subir archivo (enlace del Dashboard).
 const TAB_QUERY_PARAM = 'tab';
 
@@ -135,6 +143,8 @@ export class RecordingComponent {
 
   readonly isClassifying = signal(false);
   readonly classifyError = signal<string | null>(null);
+  readonly uploadAccept = AUDIO_UPLOAD_ACCEPT;
+  readonly uploadMaxMb = AUDIO_UPLOAD_MAX_MB;
   /** La grabación espera a que el motor de IA despierte para analizarse sola. */
   readonly waitingForEngine = signal(false);
   /** El motor no despertó a tiempo: la grabación sigue en memoria para reintentar. */
@@ -167,12 +177,30 @@ export class RecordingComponent {
     event.preventDefault();
     this.isDragOver.set(false);
     const file = event.dataTransfer?.files?.[0];
-    if (file) await this.classifyAndNavigate(file, await this.audioDurationSeconds(file), 0);
+    if (file) await this.classifyFile(file);
   }
 
   async onFileSelected(event: Event): Promise<void> {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) await this.classifyAndNavigate(file, await this.audioDurationSeconds(file), 0);
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    // Limpio el selector para que elegir el mismo archivo otra vez vuelva a disparar change.
+    input.value = '';
+    if (file) await this.classifyFile(file);
+  }
+
+  private async classifyFile(file: File): Promise<void> {
+    const problem = audioUploadProblem(file);
+    if (problem) {
+      this.classifyError.set(this.uploadProblemMessage(problem));
+      return;
+    }
+    await this.classifyAndNavigate(file, await this.audioDurationSeconds(file), 0);
+  }
+
+  private uploadProblemMessage(problem: 'unsupported' | 'tooLarge'): string {
+    return problem === 'tooLarge'
+      ? this.i18n.translate('recording.fileTooLarge', { max: this.uploadMaxMb })
+      : this.i18n.translate('recording.fileUnsupported');
   }
 
   /** Reintenta con la misma grabación que esperaba al motor de IA. */
@@ -295,6 +323,9 @@ export class RecordingComponent {
    * que no existía en los casos 422.
    */
   private resolveClassifyErrorMessage(error: unknown): string {
+    const code = error instanceof HttpErrorResponse ? (error.error as { errorCode?: string } | null)?.errorCode : undefined;
+    if (code === AUDIO_TOO_LARGE_CODE) return this.uploadProblemMessage('tooLarge');
+    if (code === AUDIO_UNSUPPORTED_CODE) return this.uploadProblemMessage('unsupported');
     if (error instanceof HttpErrorResponse && error.status === 422) {
       const body = error.error as { message?: string; errorCode?: string } | null;
       const detail = body?.message;

@@ -28,12 +28,6 @@
           <p class="text-xl sm:text-2xl italic text-on-surface-variant">{{ d.species.scientificName }}</p>
           <div class="flex flex-wrap items-center gap-3 pt-2">
             <app-confidence-badge [value]="d.confidence" />
-            <span class="font-data text-sm text-on-surface-variant">
-              @if (d.species.family) {
-                {{ d.species.family }} ·
-              }
-              {{ ('iucn.' + d.species.iucnStatus.toLowerCase()) | translate }}
-            </span>
           </div>
           @if (isDraft()) {
             <p class="text-on-surface-variant">{{ 'result.draftHint' | translate }}</p>
@@ -214,14 +208,6 @@
           <a routerLink="/history" class="sono-link min-h-touch px-3 inline-flex items-center font-display font-bold text-primary">
             {{ 'result.viewHistory' | translate }}
           </a>
-        </div>
-        <!-- Aún sin función: deshabilitado y con su etiqueta, para que no parezca que reporta algo. -->
-        <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <button type="button" class="inline-flex items-center gap-2 min-h-touch text-sm text-start text-on-surface-variant cursor-not-allowed" disabled aria-disabled="true" aria-describedby="result-report-soon">
-            <span class="material-symbols-outlined text-lg" aria-hidden="true">flag</span>
-            {{ 'result.reportIncorrect' | translate }}
-          </button>
-          <span id="result-report-soon" class="soon-tag">{{ 'common.comingSoon' | translate }}</span>
         </div>
       </section>
     }

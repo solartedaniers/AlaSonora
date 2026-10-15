@@ -247,12 +247,12 @@
             <h2 class="text-3xl font-extrabold tracking-display">
               {{ (isClassifying() ? 'recording.classifying' : 'recording.dropzoneTitle') | translate }}
             </h2>
-            <p class="text-on-surface-variant">{{ 'recording.dropzoneBody' | translate }}</p>
+            <p class="text-on-surface-variant">{{ 'recording.dropzoneBody' | translate: { max: uploadMaxMb } }}</p>
           </div>
           <button type="button" class="btn btn--ink" [disabled]="isClassifying()">
             {{ 'recording.browseFiles' | translate }}
           </button>
-          <input #fileInput type="file" accept="audio/*" class="sr-only" tabindex="-1" (change)="onFileSelected($event)" />
+          <input #fileInput type="file" [accept]="uploadAccept" class="sr-only" tabindex="-1" (change)="onFileSelected($event)" />
         </div>
       </section>
     }

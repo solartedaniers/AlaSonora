@@ -45,19 +45,7 @@
     "languages": {
       "es": "Español",
       "en": "English"
-    },
-    "comingSoon": "Coming soon"
-  },
-  "iucn": {
-    "lc": "Least Concern",
-    "nt": "Near Threatened",
-    "vu": "Vulnerable",
-    "en": "Endangered",
-    "cr": "Critically Endangered",
-    "dd": "Data Deficient",
-    "ne": "Not Evaluated",
-    "ew": "Extinct in the Wild",
-    "ex": "Extinct"
+    }
   },
   "vocalizationTag": {
     "song": "Song",
@@ -136,9 +124,6 @@
       "eyebrow": "Global Registration Station",
       "title": "Join the Bioacoustics & Conservation Network",
       "subtitle": "Monitor bioindicators, sync field recordings with taxonomic AI, and collaborate on the planetary acoustic map.",
-      "fullName": "Full Name",
-      "fullNamePlaceholder": "Dr. Elena Valenzuela",
-      "fullNameError": "Name can only contain letters and spaces.",
       "role": "Observer Profile",
       "email": "Email Address",
       "emailPlaceholder": "researcher@institute.org",
@@ -157,7 +142,13 @@
         "medium": "Medium",
         "strong": "Strong",
         "excellent": "Excellent"
-      }
+      },
+      "username": "Username",
+      "usernamePlaceholder": "observer23",
+      "usernameTaken": "That username is already taken.",
+      "usernameError": "Use {min} to {max} letters or numbers, no spaces or symbols.",
+      "consentRequired": "You must check this box to create the account.",
+      "confirmEmailToast": "Confirm in your email that it's you."
     },
     "login": {
       "title": "Welcome back to the field",
@@ -221,7 +212,7 @@
     "recordCta": "New field recording",
     "recordCtaBody": "Record a song with your microphone and let the AI identify it.",
     "uploadCta": "Upload Audio File",
-    "uploadCtaBody": "WAV, FLAC, MP3 up to 500MB",
+    "uploadCtaBody": "WAV, FLAC, MP3 up to {max} MB",
     "metricsEyebrow": "Metrics",
     "personalStatsTitle": "Personal Statistics",
     "metrics": {
@@ -267,7 +258,7 @@
     "highPassFilterHelp": "Attenuates very low frequencies (wind, traffic, footsteps) without affecting bird calls, which are usually higher-pitched.",
     "stopAndClassify": "Stop & Classify Sample",
     "dropzoneTitle": "Drag your audio here or browse files",
-    "dropzoneBody": "Supports WAV, MP3, and FLAC up to 500MB.",
+    "dropzoneBody": "Supports WAV, MP3, and FLAC up to {max} MB.",
     "browseFiles": "Browse Local Files",
     "notSignedIn": "Your session is still loading. Wait a moment and try again.",
     "classifyError": "Could not classify the audio. Check your connection and try again.",
@@ -293,7 +284,9 @@
       "queued": "Starting the AI engine; your recording will be analyzed as soon as it is ready",
       "timeout": "The AI engine is off. Try again in a moment.",
       "retry": "Retry"
-    }
+    },
+    "fileUnsupported": "That file type isn't supported. Use WAV, FLAC or MP3.",
+    "fileTooLarge": "The file exceeds the maximum size of {max} MB."
   },
   "result": {
     "completedTitle": "Bioacoustic Identification Complete",
@@ -319,7 +312,6 @@
     "visibilityHint": "Public detections show up on the Public Map and network stats; private ones are visible only to you.",
     "reRecord": "Record Another Sample",
     "viewHistory": "View in My History",
-    "reportIncorrect": "Not correct? Report for community review",
     "peakFrequency": "Peak Frequency",
     "duration": "Duration",
     "eyebrowDraft": "Unsaved draft",
@@ -350,7 +342,6 @@
     "statusAll": "All",
     "statusValidated": "Validated",
     "statusPending": "Pending Offline",
-    "export": "Export to eBird / Darwin Core",
     "emptyTitle": "No recordings yet",
     "emptyBody": "Record or upload your first audio to start your field notebook.",
     "stats": {
@@ -366,23 +357,20 @@
     "noMatchesBody": "Try another name, species or place, or change the filter."
   },
   "map": {
-    "searchPlaceholder": "Search by species, family, or natural park…",
-    "filterFamily": "Filter by Family",
     "contribute": "Contribute Record",
     "liveFeed": "Live Detections",
-    "threatenedOnly": "Threatened species only (IUCN)",
-    "heatmapLayer": "Heatmap layer",
     "syncedTabs": "tabs synced",
     "emptyFeedTitle": "No live detections",
     "emptyFeedBody": "No recent public recordings in your area yet. Check back soon.",
     "mapLabel": "Map of public sightings",
     "errorTitle": "We could not load the sightings",
-    "errorBody": "Check your connection and try again in a few minutes."
+    "errorBody": "Check your connection and try again in a few minutes.",
+    "privateTag": "Private",
+    "feedFocusHint": "Double-click or press Enter to see the sighting on the map."
   },
   "profile": {
     "observerTitle": "Observer Profile",
     "editProfile": "Edit Profile Details",
-    "credential": "Scientific Credential",
     "institution": "Institution / Organization",
     "orcidId": "ORCID ID",
     "stationName": "Field Station",

@@ -14,6 +14,7 @@ import { DetectionsService } from '../../core/services/detections.service';
 import { I18nService } from '../../core/services/i18n.service';
 import { Detection, UserStats, speciesDisplayName } from '../../core/models';
 import { AiEngineStatusService } from '../../core/services/ai-engine-status.service';
+import { AUDIO_UPLOAD_MAX_MB } from '../../core/validators/audio-upload.validator';
 
 interface PersonalReading {
   labelKey: string;
@@ -46,6 +47,7 @@ const LATEST_PLATE_MAX_KHZ = 12;
 })
 export class DashboardComponent implements OnInit {
   readonly user = inject(UserService);
+  readonly uploadMaxMb = AUDIO_UPLOAD_MAX_MB;
   private readonly detectionsService = inject(DetectionsService);
   private readonly i18n = inject(I18nService);
   private readonly aiEngine = inject(AiEngineStatusService);

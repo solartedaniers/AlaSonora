@@ -8,16 +8,18 @@ import { CursorGlowService } from './core/services/cursor-glow.service';
 import { AppUpdateService } from './core/services/app-update.service';
 import { RouteMetaService } from './core/services/route-meta.service';
 import { UpdatePromptComponent } from './shared/components/update-prompt/update-prompt.component';
+import { ToastComponent } from './shared/components/toast/toast.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, KhzRulerComponent, UpdatePromptComponent],
+  imports: [RouterOutlet, KhzRulerComponent, UpdatePromptComponent, ToastComponent],
   changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <app-khz-ruler />
     <router-outlet />
     <app-update-prompt />
+    <app-toast />
   `,
 })
 export class AppComponent {

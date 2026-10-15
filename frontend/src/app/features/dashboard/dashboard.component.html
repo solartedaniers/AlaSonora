@@ -6,7 +6,7 @@
     <header class="dashboard-greeting">
       <div class="flex flex-col gap-3 min-w-0">
         <p class="eyebrow-label">{{ 'dashboard.welcome' | translate }}</p>
-        <h1 class="text-5xl font-extrabold tracking-display break-words">{{ user.currentUser()?.fullName }}</h1>
+        <h1 class="text-5xl font-extrabold tracking-display break-words">{{ user.currentUser()?.username }}</h1>
         @if (user.currentUser()?.stationName; as station) {
           <p class="inline-flex items-center gap-2 text-on-surface-variant">
             <span class="material-symbols-outlined text-xl text-primary" aria-hidden="true">location_on</span>
@@ -38,7 +38,7 @@
         </span>
         <span class="flex flex-col gap-1">
           <span class="font-display text-lg font-extrabold">{{ 'dashboard.uploadCta' | translate }}</span>
-          <span class="text-sm text-on-surface-variant font-data">{{ 'dashboard.uploadCtaBody' | translate }}</span>
+          <span class="text-sm text-on-surface-variant font-data">{{ 'dashboard.uploadCtaBody' | translate: { max: uploadMaxMb } }}</span>
         </span>
       </a>
     </section>

@@ -17,6 +17,20 @@ export const environment = {
     wakeTimeoutMs: 180000,
     readyFreshMs: 600000,
   },
+  // Nombre de usuario: solo letras y números; los mismos límites que profile.username.* del backend.
+  username: {
+    minLength: 3,
+    maxLength: 20,
+    pattern: /^[A-Za-z0-9]+$/,
+    checkDebounceMs: 400,
+  },
+  // Audio que acepto subir: el mismo tope que audio.upload.max-bytes del backend (10 MB).
+  audioUpload: {
+    maxBytes: 10485760,
+    extensions: ['wav', 'flac', 'mp3'],
+  },
+  // Duración de los avisos breves (p. ej. "Confirma en tu correo" al registrarse).
+  toastMs: 3000,
   // Cuenta de ejemplo que pidió el profesor: solo se muestra como placeholder en el login.
   demoAccount: {
     email: 'omairalimas05@gmail.com',

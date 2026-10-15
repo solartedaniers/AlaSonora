@@ -130,7 +130,7 @@ export class ResultComponent implements OnInit {
         peakFrequencyHz: draft.peakFrequencyHz,
         alternatives: draft.alternatives.map((a) => ({ speciesId: a.species.id, confidence: a.confidence })),
         location: draft.location,
-        observerName: this.user.currentUser()?.fullName,
+        observerName: this.user.currentUser()?.username,
         fieldNotes: this.fieldNotesDraft() || undefined,
         visibility: this.visibility(),
       });

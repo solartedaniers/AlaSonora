@@ -8,14 +8,6 @@
         <h1 class="mt-2 text-5xl font-extrabold tracking-display">{{ 'history.title' | translate }}</h1>
         <p class="mt-3 max-w-xl sm:text-lg text-on-surface-variant">{{ 'history.subtitle' | translate }}</p>
       </div>
-      <!-- Exportar aún no tiene función: deshabilitado, con su etiqueta, y en el celular no ocupa espacio. -->
-      <div class="hidden sm:inline-flex flex-wrap items-center gap-3">
-        <button type="button" class="btn btn--quiet" disabled aria-disabled="true" aria-describedby="history-export-soon">
-          <span class="material-symbols-outlined" aria-hidden="true">file_download</span>
-          {{ 'history.export' | translate }}
-        </button>
-        <span id="history-export-soon" class="soon-tag">{{ 'common.comingSoon' | translate }}</span>
-      </div>
     </header>
 
     @if (loadState() === 'ready' && all().length > 0) {

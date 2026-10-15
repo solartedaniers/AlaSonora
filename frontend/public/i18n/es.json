@@ -45,19 +45,7 @@
     "languages": {
       "es": "Español",
       "en": "English"
-    },
-    "comingSoon": "Próximamente"
-  },
-  "iucn": {
-    "lc": "Preocupación Menor",
-    "nt": "Casi Amenazada",
-    "vu": "Vulnerable",
-    "en": "En Peligro",
-    "cr": "En Peligro Crítico",
-    "dd": "Datos Insuficientes",
-    "ne": "No Evaluada",
-    "ew": "Extinta en Estado Silvestre",
-    "ex": "Extinta"
+    }
   },
   "vocalizationTag": {
     "song": "Canto",
@@ -136,9 +124,6 @@
       "eyebrow": "Estación de Registro Global",
       "title": "Únete a la Red de Bioacústica y Conservación",
       "subtitle": "Monitorea bioindicadores, sincroniza grabaciones de campo con IA taxonómica y colabora en el mapeo acústico planetario.",
-      "fullName": "Nombre y Apellido",
-      "fullNamePlaceholder": "Dra. Elena Valenzuela",
-      "fullNameError": "El nombre solo puede contener letras y espacios.",
       "role": "Perfil de Observador",
       "email": "Correo Electrónico",
       "emailPlaceholder": "investigador@instituto.org",
@@ -157,7 +142,13 @@
         "medium": "Media",
         "strong": "Fuerte",
         "excellent": "Excelente"
-      }
+      },
+      "username": "Usuario",
+      "usernamePlaceholder": "observador23",
+      "usernameTaken": "Ese usuario ya está en uso.",
+      "usernameError": "Usa de {min} a {max} letras o números, sin espacios ni símbolos.",
+      "consentRequired": "Debes marcar esta casilla para crear la cuenta.",
+      "confirmEmailToast": "Confirma en tu correo que eres tú."
     },
     "login": {
       "title": "Bienvenido de vuelta al campo",
@@ -221,7 +212,7 @@
     "recordCta": "Nueva grabación en campo",
     "recordCtaBody": "Graba un canto con el micrófono y deja que la IA lo identifique.",
     "uploadCta": "Subir Archivo de Audio",
-    "uploadCtaBody": "WAV, FLAC, MP3 hasta 500MB",
+    "uploadCtaBody": "WAV, FLAC, MP3 hasta {max} MB",
     "metricsEyebrow": "Métricas",
     "personalStatsTitle": "Estadísticas Personales",
     "metrics": {
@@ -267,7 +258,7 @@
     "highPassFilterHelp": "Atenúa frecuencias muy bajas (viento, tráfico, pasos) sin afectar los cantos de aves, que suelen ser más agudos.",
     "stopAndClassify": "Detener y Clasificar Muestra",
     "dropzoneTitle": "Arrastra tu audio aquí o examina archivos",
-    "dropzoneBody": "Soporta WAV, MP3 y FLAC de hasta 500MB.",
+    "dropzoneBody": "Soporta WAV, MP3 y FLAC de hasta {max} MB.",
     "browseFiles": "Explorar Archivos Locales",
     "notSignedIn": "Tu sesión aún se está cargando. Espera un momento e inténtalo de nuevo.",
     "classifyError": "No se pudo clasificar el audio. Revisa tu conexión e inténtalo de nuevo.",
@@ -293,7 +284,9 @@
       "queued": "Encendiendo el motor de IA, tu grabación se analizará en cuanto esté listo",
       "timeout": "Motor de IA apagado. Inténtalo de nuevo en un momento.",
       "retry": "Reintentar"
-    }
+    },
+    "fileUnsupported": "Ese tipo de archivo no es compatible. Usa WAV, FLAC o MP3.",
+    "fileTooLarge": "El archivo supera el tamaño máximo de {max} MB."
   },
   "result": {
     "completedTitle": "Identificación Bioacústica Completada",
@@ -319,7 +312,6 @@
     "visibilityHint": "Las detecciones públicas aparecen en el Mapa Público y en las estadísticas de la red; las privadas solo son visibles para ti.",
     "reRecord": "Grabar Otra Muestra",
     "viewHistory": "Ver en Mi Historial",
-    "reportIncorrect": "¿No es correcto? Reportar para revisión comunitaria",
     "peakFrequency": "Pico Espectral",
     "duration": "Duración",
     "eyebrowDraft": "Borrador sin guardar",
@@ -350,7 +342,6 @@
     "statusAll": "Todas",
     "statusValidated": "Validadas",
     "statusPending": "Pendientes Offline",
-    "export": "Exportar a eBird / Darwin Core",
     "emptyTitle": "Aún no hay grabaciones",
     "emptyBody": "Graba o sube tu primer audio para empezar tu cuaderno de campo.",
     "stats": {
@@ -366,23 +357,20 @@
     "noMatchesBody": "Prueba con otro nombre, especie o lugar, o cambia el filtro."
   },
   "map": {
-    "searchPlaceholder": "Buscar por especie, familia o parque natural…",
-    "filterFamily": "Filtrar por Familia",
     "contribute": "Aportar Registro",
     "liveFeed": "Detecciones en Vivo",
-    "threatenedOnly": "Solo especies amenazadas (UICN)",
-    "heatmapLayer": "Capa de puntos calientes",
     "syncedTabs": "pestañas sincronizadas",
     "emptyFeedTitle": "Sin detecciones en vivo",
     "emptyFeedBody": "Aún no hay grabaciones públicas recientes en tu área. Vuelve pronto.",
     "mapLabel": "Mapa de avistamientos públicos",
     "errorTitle": "No pudimos cargar los avistamientos",
-    "errorBody": "Revisa tu conexión e inténtalo de nuevo en unos minutos."
+    "errorBody": "Revisa tu conexión e inténtalo de nuevo en unos minutos.",
+    "privateTag": "Privada",
+    "feedFocusHint": "Doble clic o Enter para ver el avistamiento en el mapa."
   },
   "profile": {
     "observerTitle": "Perfil del Observador",
     "editProfile": "Editar Datos de Perfil",
-    "credential": "Credencial Científica",
     "institution": "Institución / Organización",
     "orcidId": "ID ORCID",
     "stationName": "Estación de Campo",
