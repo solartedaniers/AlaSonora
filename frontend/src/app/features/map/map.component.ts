@@ -13,7 +13,9 @@ import {
   PLATFORM_ID,
 } from '@angular/core';
 import { DatePipe, DecimalPipe, isPlatformBrowser } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 // Solo tipos: Leaflet toca `window` apenas se importa, así que el módulo
 // real se carga con import() dinámico y únicamente en el navegador (esta
 // ruta se renderiza en el servidor con SSR).
@@ -39,6 +41,8 @@ const PIN_SIZE: Leaflet.PointExpression = [28, 36];
 const PIN_ANCHOR: Leaflet.PointExpression = [14, 34];
 // Acercamiento al enfocar un avistamiento desde el feed (doble clic o Enter).
 const FOCUS_ZOOM = 15;
+// ?focus=<id> (desde un aviso de la campana) ubica ese avistamiento al abrir el mapa.
+const FOCUS_QUERY_PARAM = 'focus';
 
 type MapLoadState = 'loading' | 'ready' | 'error';
 
@@ -78,6 +82,12 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   private map?: Leaflet.Map;
   private markersLayer?: Leaflet.LayerGroup;
   private readonly markers = new Map<string, Leaflet.Marker>();
+  private readonly mapReady = signal(false);
+  private readonly focusId = toSignal(inject(ActivatedRoute).queryParamMap.pipe(map((params) => params.get(FOCUS_QUERY_PARAM))), {
+    initialValue: null,
+  });
+  /** El avistamiento pedido por ?focus ya se ubicó: recargar el feed no vuelve a mover el mapa. */
+  private focusedId: string | null = null;
   private destroyed = false;
 
   constructor() {
@@ -98,6 +108,14 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     // Resalto el pin del avistamiento seleccionado, venga del feed o de otro pin.
     effect(() => this.highlightMarker(this.selected()?.id));
+    // Va después del efecto que dibuja: así su fitBounds no cancela el vuelo al avistamiento pedido.
+    effect(() => {
+      const id = this.focusId();
+      const target = this.feed().find((detection) => detection.id === id);
+      if (!target || !this.mapReady() || this.focusedId === id) return;
+      this.focusedId = id;
+      untracked(() => this.focusOnMap(target));
+    });
   }
 
   async ngOnInit(): Promise<void> {
@@ -156,6 +174,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     }).addTo(this.map);
     this.markersLayer = L.layerGroup().addTo(this.map);
     this.renderMarkers(this.feed());
+    this.mapReady.set(true);
   }
 
   ngOnDestroy(): void {

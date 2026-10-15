@@ -16,7 +16,13 @@
   },
   "notifications": {
     "title": "Notifications",
-    "empty": "No new public detections"
+    "empty": "No public detections from other observers yet.",
+    "item": "{user} detected {species} {where} · {ago}",
+    "near": "near {area}",
+    "at": "at {latitude}, {longitude}",
+    "bellUnread": "Notifications: {count} unread",
+    "new": "New:",
+    "showOnMap": "Show on map"
   },
   "theme": {
     "light": "Light Mode",
@@ -251,7 +257,7 @@
     "fieldTipTitle": "Field Tip",
     "fieldTipBody": "Aim toward the mid-to-upper canopy layer and avoid crosswind gusts to keep harmonics above the noise floor.",
     "samplingTime": "Sampling Time",
-    "classifying": "AI Analyzing Sample…",
+    "classifying": "Processing the recording…",
     "gain": "Preamp Gain",
     "gainHelp": "Amplifies the microphone signal before recording. Raise it in quiet settings or when the bird is far away; lower it if the audio sounds clipped.",
     "highPassFilter": "High-Pass (Anti-Wind) Filter",
@@ -281,12 +287,24 @@
       "waking": "AI engine off · starting…",
       "ready": "AI engine on",
       "unavailable": "AI engine off",
-      "queued": "Starting the AI engine; your recording will be analyzed as soon as it is ready",
-      "timeout": "The AI engine is off. Try again in a moment.",
-      "retry": "Retry"
+      "timeout": "The AI engine is off. Try again in a moment."
     },
     "fileUnsupported": "That file type isn't supported. Use WAV, FLAC or MP3.",
-    "fileTooLarge": "The file exceeds the maximum size of {max} MB."
+    "fileTooLarge": "The file exceeds the maximum size of {max} MB.",
+    "progress": {
+      "label": "Analysis progress",
+      "uploading": "Uploading audio…",
+      "verifying": "Checking spectrogram…",
+      "waking": "Starting the AI engine…",
+      "analyzing": "Analyzing with AI…",
+      "done": "Done",
+      "retry": "Retry",
+      "steps": {
+        "upload": "Upload",
+        "verify": "Check",
+        "analyze": "Analyze"
+      }
+    }
   },
   "result": {
     "completedTitle": "Bioacoustic Identification Complete",

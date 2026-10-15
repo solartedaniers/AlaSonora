@@ -29,6 +29,16 @@ export const environment = {
     maxBytes: 10485760,
     extensions: ['wav', 'flac', 'mp3'],
   },
+  // Barra de progreso al clasificar (en %): la subida real llega hasta uploadEnd, la verificación hasta
+  // verifyEnd y el análisis avanza estimado (sin dato real del servidor) sin pasar de estimateCap hasta
+  // que llega la respuesta. estimateTauMs marca qué tan rápido se acerca a ese tope.
+  classificationProgress: {
+    uploadEnd: 60,
+    verifyEnd: 70,
+    estimateCap: 95,
+    estimateTauMs: 15000,
+    tickMs: 200,
+  },
   // Duración de los avisos breves (p. ej. "Confirma en tu correo" al registrarse).
   toastMs: 3000,
   // Cuenta de ejemplo que pidió el profesor: solo se muestra como placeholder en el login.

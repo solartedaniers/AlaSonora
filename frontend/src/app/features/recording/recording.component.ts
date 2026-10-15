@@ -1,4 +1,4 @@
-import { Component, afterNextRender, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DestroyRef, afterNextRender, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,7 +9,7 @@ import { SongSonogramComponent } from '../../shared/components/song-sonogram/son
 import { SpectrogramWaterfallComponent } from '../../shared/components/spectrogram-waterfall/spectrogram-waterfall.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { AudioCaptureService } from '../../core/services/audio-capture.service';
-import { ClassificationService } from '../../core/services/classification.service';
+import { ClassificationResult, ClassificationService, UploadedRecording } from '../../core/services/classification.service';
 import { UserService } from '../../core/services/user.service';
 import { I18nService } from '../../core/services/i18n.service';
 import { DetectionDraftService, DRAFT_DETECTION_ID } from '../../core/services/detection-draft.service';
@@ -22,9 +22,24 @@ import {
   AUDIO_UPLOAD_MAX_MB,
   audioUploadProblem,
 } from '../../core/validators/audio-upload.validator';
+import { ClassificationProgress } from './classification-progress';
+import { ClassificationProgressComponent } from './classification-progress/classification-progress.component';
 
 type RecordingTab = 'live' | 'upload';
 type SonogramView = 'flat' | 'waterfall';
+
+/** Audio a clasificar: la duración se conoce al grabar; para un archivo se mide al verificarlo. */
+interface AudioSubmission {
+  audio: Blob;
+  peakFrequencyHz: number;
+  durationSeconds?: number;
+}
+
+/** Último intento, para reintentar sin volver a grabar ni (si ya subió) volver a subir. */
+interface ClassificationAttempt {
+  submission: AudioSubmission;
+  uploaded?: UploadedRecording;
+}
 
 // 422 legítimo cuando BirdNET no encuentra especie: identifico por el código estable
 // (ApiErrorCode en el backend) y acepto el texto antiguo mientras haya backends sin el código.
@@ -57,6 +72,7 @@ const PLATE_MAX_KHZ = 12;
     SongSonogramComponent,
     SpectrogramWaterfallComponent,
     TranslatePipe,
+    ClassificationProgressComponent,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './recording.component.html',
@@ -84,10 +100,6 @@ export class RecordingComponent {
   ];
   readonly isDragOver = signal(false);
 
-  // Se pasa como función (no como valor) para que el componente de canvas
-  // pueda leer el signal en cada tick de rAF sin que este componente padre
-  // tenga que re-renderizarse en cada frame de audio.
-  readonly getLatestFrame = () => this.capture.latestFrame();
   readonly liveColumns = LIVE_COLUMNS;
   /** Solo cambia cómo se pinta el audio en vivo: el plano es el predeterminado por legibilidad. */
   readonly sonogramView = signal<SonogramView>('flat');
@@ -112,6 +124,8 @@ export class RecordingComponent {
   });
 
   constructor() {
+    // Si salgo de la pantalla a mitad del análisis, el avance estimado deja de correr.
+    inject(DestroyRef).onDestroy(() => this.progress.reset());
     // Detecto el soporte tras el primer render, en el navegador: nunca creo un AudioContext al construir.
     afterNextRender(() => {
       // Despierto el motor de IA al entrar: el indicador muestra si ya está listo.
@@ -141,14 +155,14 @@ export class RecordingComponent {
     this.activeTab.set(tab);
   }
 
-  readonly isClassifying = signal(false);
+  /** Barra de subida → verificación → análisis; si falla, guarda el error y ofrece reintentar. */
+  readonly progress = new ClassificationProgress();
+  readonly isClassifying = computed(() => this.progress.active() && !this.progress.error());
+  /** Errores antes de empezar (formato, tamaño, sin sesión); los de la clasificación van en la barra. */
   readonly classifyError = signal<string | null>(null);
   readonly uploadAccept = AUDIO_UPLOAD_ACCEPT;
   readonly uploadMaxMb = AUDIO_UPLOAD_MAX_MB;
-  /** La grabación espera a que el motor de IA despierte para analizarse sola. */
-  readonly waitingForEngine = signal(false);
-  /** El motor no despertó a tiempo: la grabación sigue en memoria para reintentar. */
-  readonly pendingRetry = signal<{ audio: Blob; durationSeconds: number; peakFrequencyHz: number } | null>(null);
+  private lastAttempt: ClassificationAttempt | null = null;
   readonly savedOffline = signal(false);
   readonly micDenied = signal(false);
   /** La placa de esta pantalla ya tiene sonograma pintado (se empezó a grabar). */
@@ -159,9 +173,12 @@ export class RecordingComponent {
       const durationSeconds = Math.round(this.capture.elapsedSeconds());
       const peakFrequencyHz = this.capture.latestFrame()?.peakFrequencyHz ?? 0;
       const wavBlob = await this.capture.stop();
-      await this.classifyAndNavigate(wavBlob, durationSeconds, peakFrequencyHz);
+      await this.classifyAndNavigate({ audio: wavBlob, durationSeconds, peakFrequencyHz });
     } else {
       try {
+        // Una grabación nueva reemplaza al intento anterior que hubiera fallado.
+        this.progress.reset();
+        this.classifyError.set(null);
         await this.capture.start();
         this.micDenied.set(false);
         this.hasSonogram.set(true);
@@ -191,10 +208,11 @@ export class RecordingComponent {
   private async classifyFile(file: File): Promise<void> {
     const problem = audioUploadProblem(file);
     if (problem) {
+      this.progress.reset();
       this.classifyError.set(this.uploadProblemMessage(problem));
       return;
     }
-    await this.classifyAndNavigate(file, await this.audioDurationSeconds(file), 0);
+    await this.classifyAndNavigate({ audio: file, peakFrequencyHz: 0 });
   }
 
   private uploadProblemMessage(problem: 'unsupported' | 'tooLarge'): string {
@@ -203,19 +221,19 @@ export class RecordingComponent {
       : this.i18n.translate('recording.fileUnsupported');
   }
 
-  /** Reintenta con la misma grabación que esperaba al motor de IA. */
-  async retryPending(): Promise<void> {
-    const pending = this.pendingRetry();
-    if (pending) await this.classifyAndNavigate(pending.audio, pending.durationSeconds, pending.peakFrequencyHz);
+  /** Reintenta el último audio desde la barra; si ya había subido, no lo vuelve a subir. */
+  async retryClassification(): Promise<void> {
+    const attempt = this.lastAttempt;
+    if (attempt) await this.classifyAndNavigate(attempt.submission, attempt.uploaded);
   }
 
-  private async classifyAndNavigate(audio: Blob, durationSeconds: number, peakFrequencyHz: number): Promise<void> {
+  private async classifyAndNavigate(submission: AudioSubmission, uploaded?: UploadedRecording): Promise<void> {
     this.classifyError.set(null);
     this.savedOffline.set(false);
-    this.pendingRetry.set(null);
 
     if (!navigator.onLine) {
-      await this.saveForLater(audio, durationSeconds, peakFrequencyHz);
+      this.progress.reset();
+      await this.saveForLater(submission);
       return;
     }
 
@@ -227,47 +245,40 @@ export class RecordingComponent {
       return;
     }
 
-    this.isClassifying.set(true);
+    const attempt: ClassificationAttempt = { submission, uploaded };
+    this.lastAttempt = attempt;
+    this.progress.start();
+    // Solo se pasa a BirdNET cuando es un GPS real: el fallback de campo no representa dónde se
+    // grabó y acotaría los candidatos a una región inventada. Lo pido ya y lo espero al clasificar.
+    const gpsLocation = this.currentLocation();
     try {
       const recordedAt = new Date().toISOString();
-      // Solo se pasa a BirdNET cuando es un GPS real: el fallback de campo
-      // no representa dónde se grabó el audio, y narrowear candidatos con
-      // una ubicación inventada excluye especies legítimas fuera de esa
-      // región (ver BirdNetClassifier.classify en el ai-engine).
-      const gpsLocation = await this.currentLocation();
-      if (!(await this.waitForEngine())) {
-        this.pendingRetry.set({ audio, durationSeconds, peakFrequencyHz });
+      attempt.uploaded = await this.upload(userId, attempt);
+
+      this.progress.verifying();
+      const durationSeconds = submission.durationSeconds ?? (await this.audioDurationSeconds(submission.audio));
+      this.progress.verified();
+
+      const result = await this.classifyWhenEngineReady(attempt.uploaded.signedUrl, recordedAt, await gpsLocation);
+      if (!result) {
+        this.progress.fail(this.i18n.translate('recording.engine.timeout'));
         return;
       }
-      const { storagePath, signedUrl } = await this.classificationService.uploadRecording(userId, audio);
-      let result;
-      try {
-        result = await this.classificationService.classify(signedUrl, recordedAt, gpsLocation);
-      } catch (error) {
-        // Se durmió entre la consulta y la clasificación: espero de nuevo y reintento una vez.
-        if (!RecordingComponent.isEngineAsleep(error)) throw error;
-        this.aiEngine.markAsleep();
-        if (!(await this.waitForEngine())) {
-          this.pendingRetry.set({ audio, durationSeconds, peakFrequencyHz });
-          return;
-        }
-        result = await this.classificationService.classify(signedUrl, recordedAt, gpsLocation);
-      }
-      const location = gpsLocation ?? FALLBACK_LOCATION;
+      this.progress.complete();
 
       this.draftService.set({
         species: result.species,
         recordedAt,
-        audioStoragePath: storagePath,
+        audioStoragePath: attempt.uploaded.storagePath,
         // Válida solo por unos minutos; suficiente para revisar el resultado
         // antes de guardarlo. Tras guardar, el backend firma una nueva URL
         // cada vez que se pide la detección, a partir de audioStoragePath.
-        audioUrl: signedUrl,
+        audioUrl: attempt.uploaded.signedUrl,
         durationSeconds,
         confidence: result.confidence,
-        peakFrequencyHz,
+        peakFrequencyHz: submission.peakFrequencyHz,
         alternatives: result.alternatives,
-        location,
+        location: (await gpsLocation) ?? FALLBACK_LOCATION,
         disclaimer: result.disclaimer,
       });
 
@@ -275,24 +286,48 @@ export class RecordingComponent {
     } catch (error) {
       // Se cayó la señal al subir o clasificar: igual que grabar sin conexión.
       if (!navigator.onLine) {
-        await this.saveForLater(audio, durationSeconds, peakFrequencyHz);
+        this.progress.reset();
+        await this.saveForLater(submission);
         return;
       }
       this.logger.error('Recording', 'classification failed', error);
-      this.classifyError.set(this.resolveClassifyErrorMessage(error));
-    } finally {
-      this.isClassifying.set(false);
+      this.progress.fail(this.resolveClassifyErrorMessage(error));
     }
   }
 
-  /** Espera a que el motor responda; mientras tanto se ve el aviso de "encendiendo". */
-  private async waitForEngine(): Promise<boolean> {
-    if (this.aiEngine.status() !== 'ready') this.waitingForEngine.set(true);
-    try {
-      return await this.aiEngine.whenReady();
-    } finally {
-      this.waitingForEngine.set(false);
+  /** Sube con progreso real; al reintentar un audio ya subido solo pido una URL firmada nueva. */
+  private async upload(userId: string, attempt: ClassificationAttempt): Promise<UploadedRecording> {
+    if (attempt.uploaded) {
+      const signedUrl = await this.classificationService.signRecording(attempt.uploaded.storagePath);
+      this.progress.uploaded(1);
+      return { ...attempt.uploaded, signedUrl };
     }
+    return this.classificationService.uploadRecording(userId, attempt.submission.audio, (fraction) => this.progress.uploaded(fraction));
+  }
+
+  /** null si el motor no despertó a tiempo; si se durmió entre la consulta y la clasificación, espero y reintento una vez. */
+  private async classifyWhenEngineReady(
+    signedUrl: string,
+    recordedAt: string,
+    location: GeoLocation | undefined
+  ): Promise<ClassificationResult | null> {
+    if (!(await this.engineReady())) return null;
+    try {
+      return await this.classificationService.classify(signedUrl, recordedAt, location);
+    } catch (error) {
+      if (!RecordingComponent.isEngineAsleep(error)) throw error;
+      this.aiEngine.markAsleep();
+      if (!(await this.engineReady())) return null;
+      return this.classificationService.classify(signedUrl, recordedAt, location);
+    }
+  }
+
+  /** Mientras el motor arranca la etapa dice "Encendiendo…", sin perder el avance ya hecho. */
+  private async engineReady(): Promise<boolean> {
+    this.progress.analyzing(this.aiEngine.status() !== 'ready');
+    const ready = await this.aiEngine.whenReady();
+    if (ready) this.progress.analyzing();
+    return ready;
   }
 
   private static isEngineAsleep(error: unknown): boolean {
@@ -304,12 +339,12 @@ export class RecordingComponent {
   // Sin señal: la grabación queda en la cola de IndexedDB y
   // PendingRecordingsSyncService la clasifica y guarda sola al volver la
   // conexión. El GPS sí se intenta: no depende de datos móviles.
-  private async saveForLater(audio: Blob, durationSeconds: number, peakFrequencyHz: number): Promise<void> {
+  private async saveForLater(submission: AudioSubmission): Promise<void> {
     await this.pendingSync.enqueue({
       recordedAt: new Date().toISOString(),
-      audioBlob: audio,
-      durationSeconds,
-      peakFrequencyHz,
+      audioBlob: submission.audio,
+      durationSeconds: submission.durationSeconds ?? (await this.audioDurationSeconds(submission.audio)),
+      peakFrequencyHz: submission.peakFrequencyHz,
       gpsLocation: await this.currentLocation(),
     });
     this.savedOffline.set(true);
@@ -348,22 +383,27 @@ export class RecordingComponent {
     return nyquistKhz;
   }
 
-  /** Solo decodifico archivos subidos: la grabación en vivo ya lleva su propio tiempo. */
-  private async audioDurationSeconds(file: File): Promise<number> {
-    if (typeof AudioContext === 'undefined') return RecordingComponent.mediaDurationSeconds(file);
+  /**
+   * Solo decodifico archivos subidos: la grabación en vivo ya lleva su propio tiempo. Si el navegador
+   * no sabe decodificarlo, leo los metadatos; el backend vuelve a validar el contenido real.
+   */
+  private async audioDurationSeconds(audio: Blob): Promise<number> {
+    if (typeof AudioContext === 'undefined') return RecordingComponent.mediaDurationSeconds(audio);
     const audioContext = new AudioContext();
     try {
-      const buffer = await audioContext.decodeAudioData(await file.arrayBuffer());
+      const buffer = await audioContext.decodeAudioData(await audio.arrayBuffer());
       return Math.round(buffer.duration);
+    } catch {
+      return RecordingComponent.mediaDurationSeconds(audio);
     } finally {
       await audioContext.close();
     }
   }
 
   /** Sin Web Audio leo la duración de los metadatos con un <audio>; si tampoco puede, queda en 0. */
-  private static mediaDurationSeconds(file: File): Promise<number> {
+  private static mediaDurationSeconds(blob: Blob): Promise<number> {
     return new Promise((resolve) => {
-      const url = URL.createObjectURL(file);
+      const url = URL.createObjectURL(blob);
       const audio = new Audio();
       const done = (seconds: number) => {
         URL.revokeObjectURL(url);
