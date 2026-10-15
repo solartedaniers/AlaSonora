@@ -3,6 +3,7 @@ package com.alasonora.backend.service;
 import com.alasonora.backend.exception.ApiErrorMessages;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -20,13 +21,6 @@ import com.alasonora.backend.entity.Visibility;
 import com.alasonora.backend.repository.DetectionRepository;
 import com.alasonora.backend.storage.PrivateObjectSignedUrlResolver;
 import com.alasonora.backend.storage.SignedUrlException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import com.alasonora.backend.entity.Profile;
-import com.alasonora.backend.repository.ProfileRepository;
 
 @Service
 public class DetectionService {
@@ -35,16 +29,16 @@ public class DetectionService {
     private final SpeciesService speciesService;
     private final PrivateObjectSignedUrlResolver signedUrlResolver;
     private final SupabaseProperties.Storage storageProperties;
-    private final ProfileRepository profileRepository;
+    private final ObserverNames observerNames;
 
     public DetectionService(
         DetectionRepository detectionRepository,
         SpeciesService speciesService,
         PrivateObjectSignedUrlResolver signedUrlResolver,
         SupabaseProperties supabaseProperties,
-        ProfileRepository profileRepository
+        ObserverNames observerNames
     ) {
-        this.profileRepository = profileRepository;
+        this.observerNames = observerNames;
         this.detectionRepository = detectionRepository;
         this.speciesService = speciesService;
         this.signedUrlResolver = signedUrlResolver;
@@ -153,21 +147,12 @@ public class DetectionService {
 
     /** Una sola consulta de perfiles por lista: el nombre visible es el usuario actual de cada dueño. */
     private List<DetectionDto> toDtos(List<Detection> detections) {
-        Set<UUID> owners = detections.stream().map(detection -> detection.getOwnerId()).collect(Collectors.toSet());
-        Map<UUID, String> usernames = usernamesOf(owners);
+        Map<UUID, String> usernames = observerNames.usernamesOf(detections);
         return detections.stream().map(detection -> toDto(detection, usernames)).toList();
     }
 
     private DetectionDto toDto(Detection detection) {
-        return toDto(detection, usernamesOf(Set.of(detection.getOwnerId())));
-    }
-
-    private Map<UUID, String> usernamesOf(Set<UUID> ownerIds) {
-        Map<UUID, String> usernames = new HashMap<>();
-        for (Profile profile : profileRepository.findAllById(ownerIds)) {
-            if (profile.getUsername() != null && !profile.getUsername().isBlank()) usernames.put(profile.getId(), profile.getUsername());
-        }
-        return usernames;
+        return toDto(detection, observerNames.usernamesOf(List.of(detection)));
     }
 
     private DetectionDto toDto(Detection detection, Map<UUID, String> usernames) {
@@ -180,7 +165,7 @@ public class DetectionService {
             );
         String signedObserverPhotoUrl = resolveObserverPhotoUrl(detection);
         // Sin usuario (cuenta aún sin migrar) uso el nombre que se guardó con la detección.
-        String observerName = usernames.getOrDefault(detection.getOwnerId(), detection.getObserverName());
+        String observerName = ObserverNames.nameOf(detection, usernames);
         return DetectionDto.fromEntity(detection, signedAudioUrl, signedObserverPhotoUrl, observerName);
     }
 
