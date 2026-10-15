@@ -29,6 +29,9 @@ public class Profile {
     @Column(nullable = false)
     private String displayName;
 
+    // Único sin distinguir mayúsculas: lo garantiza el índice sobre lower(username) de la migración SQL.
+    private String username;
+
     private String avatarUrl;
 
     @Enumerated(EnumType.STRING)
